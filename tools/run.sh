@@ -2,7 +2,7 @@
 #
 # Run jekyll serve and then launch the site
 
-prod=false
+prod=true
 command="bundle exec jekyll s -l"
 host="127.0.0.1"
 
@@ -44,6 +44,10 @@ command="$command -H $host"
 
 if $prod; then
   command="JEKYLL_ENV=production $command"
+fi
+
+if [ -e /proc/1/cgroup ] && grep -q docker /proc/1/cgroup; then
+  command="$command --force_polling"
 fi
 
 echo -e "\n> $command\n"
