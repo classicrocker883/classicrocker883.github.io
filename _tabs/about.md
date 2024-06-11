@@ -4,6 +4,12 @@ icon: fas fa-info-circle
 order: 4
 ---
 
+
+<head>
+    <title>MRiscoCProUI Download</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
 <label for="model">Model:</label>
 <select id="model" onchange="updateModelSelections()">
     <option value="">None</option>
@@ -84,126 +90,154 @@ order: 4
     <!-- Add more secondary option options here -->
 </select>
 <br>
-<button id="resetButton" onclick="resetSelections()">Reset</button>
+<button onclick="resetSelections()">Reset</button>
 <br>
+<div id="download-link"></div>
 <div id="candidates"></div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('model').addEventListener('change', updateModelSelections);
-        document.getElementById('screen').addEventListener('change', updateCandidates);
-        document.getElementById('type').addEventListener('change', updateCandidates);
-        document.getElementById('features').addEventListener('change', updateCandidates);
-        document.getElementById('secondaryFeature').addEventListener('change', updateCandidates);
-        document.getElementById('leveling').addEventListener('change', updateCandidates);
-        document.getElementById('options').addEventListener('change', updateCandidates);
-        document.getElementById('secondaryOptions').addEventListener('change', updateCandidates);
-        document.getElementById('proUIExtraFeatures').addEventListener('change', updateCandidates);
-        document.getElementById('secondaryFeaturesDiv').addEventListener('change', updateCandidates);
-        document.getElementById('resetButton').addEventListener('click', resetSelections);
-        // Initialize candidates on page load
-        updateCandidates();
-    });
+    const repoOwner = 'classicrocker883';
+    const repoName = 'MRiscoCProUI';
 
-    async function fetchReleaseData(url) {
-        var response = await fetch(url);
-        var data = await response.json();
-        return data.assets;
-    }
+    async function fetchAssets() {
+        const modelDropdown = document.getElementById('model');
+        const screenDropdown = document.getElementById('screen');
+        const typeDropdown = document.getElementById('type');
+        const featuresDropdown = document.getElementById('features');
+        const secondaryFeaturesDropdown = document.getElementById('secondaryFeatures');
+        const levelingDropdown = document.getElementById('leveling');
+        const optionsDropdown = document.getElementById('options');
+        const secondaryOptionsDropdown = document.getElementById('secondaryOptions');
+        const proUIExtraFeaturesDropdown = document.getElementById('proUIExtraFeatures');
 
-    async function updateCandidates() {
-        var model = document.getElementById("model").value;
-        var screen = document.getElementById("screen").value;
-        var type = document.getElementById("type").value;
-        var features = document.getElementById("features").value;
-        var secondaryFeatures = document.getElementById("secondaryFeatures").value;
-        var leveling = document.getElementById("leveling").value;
-        var options = document.getElementById("options").value;
-        var secondaryOptions = document.getElementById("secondaryOptions").value;
-        var proUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
-        var secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
-        secondaryFeaturesDiv.style.display = ((features === "_SPRT13") ? "block" : "none");
-        var linkPrefix = "";
+        let apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`;
 
-        var assets;
+        // if (modelDropdown.value === "HC32" || typeDropdown.value === "HC32") {
+        //     apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/tags/2.1.3f-5-HC32-2`;
+        // } else if (modelDropdown.value === "Ender") {
+        //     apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/tags/2.1.3f-5-ender3-2`;
+        // } else {
+        //     apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`;
+        // }
 
-        // Fetch release data from the appropriate API
-        if (model === "HC32" || type === "HC32") {
-            // Adjust the linkPrefix and exclude the screen option
-            if (screen === "C2-") {
-                screen = "C2-";
-            } else if (screen === "") {
-                screen = "HC32";
-            } else if (screen === "None") {
-                screen = "";
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const assets = data.assets;
+
+        function updateDownloadLink() {
+            const selectedModel = modelDropdown.value;
+            const selectedScreen = screenDropdown.value;
+            const selectedType = typeDropdown.value;
+            const selectedFeatures = featuresDropdown.value;
+            const selectedSecondaryFeatures = secondaryFeaturesDropdown.value;
+            const selectedLeveling = levelingDropdown.value;
+            const selectedOptions = optionsDropdown.value;
+            const selectedSecondaryOptions = secondaryOptionsDropdown.value;
+            const selectedProUIExtraFeatures = proUIExtraFeaturesDropdown.value;
+
+            const selectedAsset = assets.find(asset => {
+                const nameParts = asset.name.split('_');
+                return (
+                    (nameParts[0] === selectedModel || selectedModel === "") &&
+                    (nameParts.includes(selectedScreen) || selectedScreen === "") &&
+                    (nameParts.includes(selectedType) || selectedType === "") &&
+                    (nameParts.includes(selectedFeatures) || selectedFeatures === "") &&
+                    (nameParts.includes(selectedSecondaryFeatures) || selectedSecondaryFeatures === "") &&
+                    (nameParts.includes(selectedLeveling) || selectedLeveling === "") &&
+                    (nameParts.includes(selectedOptions) || selectedOptions === "") &&
+                    (nameParts.includes(selectedSecondaryOptions) || selectedSecondaryOptions === "") &&
+                    (nameParts.includes(selectedProUIExtraFeatures) || selectedProUIExtraFeatures === "")
+                );
+            });
+
+            const downloadLink = document.getElementById('download-link');
+            if (selectedAsset) {
+                downloadLink.innerHTML = `<a href="${selectedAsset.browser_download_url}" download>${selectedAsset.name}</a>`;
+            } else {
+                downloadLink.innerHTML = 'No download available for the selected options.';
             }
-            assets = await fetchReleaseData('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/2.1.3f-5-HC32-2');
-        } else if (model === "Ender") {
-            if (screen === "") {
-                screen = "Ender";
-            }
-            assets = await fetchReleaseData('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/2.1.3f-5-ender3-2');
-        } else {
-            if (screen === "") {
-                screen = "Aquila";
-            }
-            assets = await fetchReleaseData('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest');
         }
 
-        linkPrefix = screen;
-
-        var candidates = [];
-
-        assets.forEach(asset => {
-            var name = asset.name;
-
-            // Check if "None" is selected for features
-            if (features === "") {
-                if (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13")) {
-                    return; // Skip this asset
-                }
-            }
-
-            if (
-                name.startsWith(linkPrefix) &&
-                (type === "" || name.includes(type)) &&
-                (features === "" || name.includes(features)) &&
-                (secondaryFeatures === "" || name.includes(secondaryFeatures)) &&
-                (leveling === "" || name.includes(leveling)) &&
-                (options === "" || name.includes(options)) &&
-                (secondaryOptions === "" || name.includes(secondaryOptions)) &&
-                (proUIExtraFeatures === "" || name.includes(proUIExtraFeatures))
-            ) {
-                var url = asset.browser_download_url;
-                var filename = url.substring(url.lastIndexOf('/') + 1); // Extract filename from URL
-                candidates.push({ url: url, filename: filename }); // Store both URL and filename
-            }
+        document.querySelectorAll('select').forEach(dropdown => {
+            dropdown.addEventListener('change', updateDownloadLink);
         });
 
-        var candidatesList = document.getElementById("candidates");
-        candidatesList.innerHTML = "<strong>Candidates:</strong><br>";
-        if (candidates.length > 0) {
-            candidates.forEach(candidate => {
-                candidatesList.innerHTML += "<a href='" + candidate.url + "'>" + candidate.filename + "</a><br>"; // Display filename instead of full URL
+        updateDownloadLink();
+    }
+
+    function updateCandidates() {
+        const modelDropdown = document.getElementById('model');
+        const screenDropdown = document.getElementById('screen');
+        const typeDropdown = document.getElementById('type');
+        const featuresDropdown = document.getElementById('features');
+        const secondaryFeaturesDropdown = document.getElementById('secondaryFeatures');
+        const levelingDropdown = document.getElementById('leveling');
+        const optionsDropdown = document.getElementById('options');
+        const secondaryOptionsDropdown = document.getElementById('secondaryOptions');
+        const proUIExtraFeaturesDropdown = document.getElementById('proUIExtraFeatures');
+
+        const selectedModel = modelDropdown.value;
+        const selectedScreen = screenDropdown.value;
+        const selectedType = typeDropdown.value;
+        const selectedFeatures = featuresDropdown.value;
+        const selectedSecondaryFeatures = secondaryFeaturesDropdown.value;
+        const selectedLeveling = levelingDropdown.value;
+        const selectedOptions = optionsDropdown.value;
+        const selectedSecondaryOptions = secondaryOptionsDropdown.value;
+        const selectedProUIExtraFeatures = proUIExtraFeaturesDropdown.value;
+
+        let candidates = [];
+
+        fetchAssets().then(() => {
+            assets.forEach(asset => {
+                const name = asset.name;
+
+                if (featuresDropdown.value === "") {
+                    if (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13")) {
+                        return;
+                    }
+                }
+
+                if (
+                    name.startsWith(selectedModel) &&
+                    (selectedScreen === "" || name.includes(selectedScreen)) &&
+                    (selectedType === "" || name.includes(selectedType)) &&
+                    (selectedFeatures === "" || name.includes(selectedFeatures)) &&
+                    (selectedSecondaryFeatures === "" || name.includes(selectedSecondaryFeatures)) &&
+                    (selectedLeveling === "" || name.includes(selectedLeveling)) &&
+                    (selectedOptions === "" || name.includes(selectedOptions)) &&
+                    (selectedSecondaryOptions === "" || name.includes(selectedSecondaryOptions)) &&
+                    (selectedProUIExtraFeatures === "" || name.includes(selectedProUIExtraFeatures))
+                ) {
+                    candidates.push({ url: asset.browser_download_url, filename: asset.name });
+                }
             });
-        } else {
-            candidatesList.textContent = "No candidates found.";
-        }
+
+            const candidatesList = document.getElementById("candidates");
+            candidatesList.innerHTML = "<strong>Candidates:</strong><br>";
+            if (candidates.length > 0) {
+                candidates.forEach(candidate => {
+                    candidatesList.innerHTML += `<a href="${candidate.url}">${candidate.filename}</a><br>`;
+                });
+            } else {
+                candidatesList.textContent = "No candidates found.";
+            }
+        });
     }
 
     function updateModelSelections() {
-        var model = document.getElementById("model").value;
+        const model = document.getElementById("model").value;
 
-        clearSelections(); // Clear previous selections except for model
+        clearSelections();
 
         if (model === "Aquila X3") {
-            features.value = "_IND"; // Induction Probe
+            document.getElementById("features").value = "_IND";
             document.getElementById("screen").selectedIndex = 1;
         } else if (model === "Aquila") {
-            type.value = "_GD32"; // GD32
+            document.getElementById("type").value = "_GD32";
             document.getElementById("screen").selectedIndex = 1;
         } else if (model === "HC32") {
-            type.value = "HC32"; // Set appropriate value for HC32
+            document.getElementById("type").value = "HC32";
             document.getElementById("screen").selectedIndex = 1;
         } else if (model === "Ender") {
             document.getElementById("screen").selectedIndex = 1;
@@ -230,7 +264,6 @@ order: 4
         updateCandidates();
     }
 
-    // Initialize candidates on page load
-    window.onload = updateCandidates;
+    window.onload = fetchAssets;
 </script>
 
