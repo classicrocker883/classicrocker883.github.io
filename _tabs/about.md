@@ -3,13 +3,13 @@
 icon: fas fa-info-circle
 order: 4
 ---
-
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dropdown Menu</title>
 </head>
-
+<body>
 <label for="model">Model:</label>
 <select id="model" onchange="updateModelSelections()">
     <option value="">None</option>
@@ -19,13 +19,13 @@ order: 4
     <option value="Ender">Ender-3V2/S1</option>
     <!-- Add more model options here -->
 </select>
-
+<br>
 <label for="proUIExtraFeatures">ProUI Extra Features:</label>
 <select id="proUIExtraFeatures" onchange="updateCandidates()">
     <option value="">No</option>
     <option value="-ProUI-EX">Yes</option>
 </select>
-
+<br>
 <label for="screen">Screen:</label>
 <select id="screen" onchange="updateCandidates()">
     <option value="None">None</option>
@@ -34,7 +34,7 @@ order: 4
     <option value="C2-">12864</option>
     <!-- Add more screen options here -->
 </select>
-
+<br>
 <label for="type">Type:</label>
 <select id="type" onchange="updateCandidates()">
     <option value="">None</option>
@@ -43,19 +43,19 @@ order: 4
     <option value="_GD32">GD32</option>
     <option value="_N32">N32</option>
     <option value="HC32">HC32</option>
-    <option value="_SKR-Mini-E3-">SKR</option>
+    <option value="_SKR-Mini-E3-">SKR Mini E3</option>
     <!-- Add more type options here -->
 </select>
-
+<br>
 <label for="features">Features:</label>
 <select id="features" onchange="updateCandidates()">
     <option value="">None</option>
     <option value="_BMP">BIQU MicroProbe V2</option>
     <option value="_IND">Induction Probe</option>
-    <option value="_SPRT13">_SPRT13</option>
+    <option value="_SPRT13">Creality Sprite</option>
     <!-- Add feature options here -->
 </select>
-
+<br>
 <div id="secondaryFeaturesDiv" style="display: none;">
     <label for="secondaryFeatures">Secondary Features:</label>
     <select id="secondaryFeatures" onchange="updateCandidates()">
@@ -64,7 +64,7 @@ order: 4
         <!-- Add more SKR version options here -->
     </select>
 </div>
-
+<br>
 <label for="leveling">Leveling:</label>
 <select id="leveling" onchange="updateCandidates()">
     <option value="">None</option>
@@ -74,7 +74,7 @@ order: 4
     <option value="_MM">Manual Mesh</option>
     <!-- Add more leveling options here -->
 </select>
-
+<br>
 <label for="options">Options:</label>
 <select id="options" onchange="updateCandidates()">
     <option value="">None</option>
@@ -82,16 +82,16 @@ order: 4
     <option value="-IS">Input Shaping</option>
     <!-- Add more option options here -->
 </select>
-
+<br>
 <label for="secondaryOptions">Secondary Options:</label>
 <select id="secondaryOptions" onchange="updateCandidates()">
     <option value="">None</option>
     <option value="-MPC">MPC</option>
     <!-- Add more secondary option options here -->
 </select>
-
+<br>
 <button onclick="resetSelections()">Reset</button>
-
+<br>
 <div id="candidates"></div>
 
 <script>
@@ -223,3 +223,5 @@ order: 4
     // Initialize candidates on page load
     window.onload = updateCandidates;
 </script>
+</body>
+</html>
