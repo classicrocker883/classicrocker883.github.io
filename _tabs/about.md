@@ -11,11 +11,13 @@ order: 4
     <option value="HC32">HC32</option>
     <option value="Ender">Ender-3V2/S1</option>
 </select>
+<br>
 <label for="proUIExtraFeatures">ProUI Extra Features:</label>
 <select id="proUIExtraFeatures" onchange="updateCandidates()">
     <option value="">No</option>
     <option value="-ProUI-EX">Yes</option>
 </select>
+<br>
 <label for="screen">Screen:</label>
 <select id="screen" onchange="updateCandidates()">
     <option value="None">None</option>
@@ -23,6 +25,7 @@ order: 4
     <option value="TJC-">TJC</option>
     <option value="C2-">12864</option>
 </select>
+<br>
 <label for="type">Type:</label>
 <select id="type" onchange="updateCandidates()">
     <option value="">None</option>
@@ -33,19 +36,22 @@ order: 4
     <option value="HC32">HC32</option>
     <option value="_SKR-Mini-E3-">SKR</option>
 </select>
+<br>
 <label for="features">Features:</label>
 <select id="features" onchange="updateCandidates()">
     <option value="">None</option>
     <option value="_BMP">BIQU MicroProbe V2</option>
     <option value="_IND">Induction Probe</option>
-    <option value="_SPRT13">_SPRT13</option>
+    <option value="_SPRT13">Creality Sprite</option>
 </select>
+<br>
 <div id="secondaryFeaturesDiv" style="display: none;">
     <label for="secondaryFeatures">Secondary Features:</label>
     <select id="secondaryFeatures" onchange="updateCandidates()">
         <option value="">None</option>
         <option value="_BMP">BIQU MicroProbe V2</option>
     </select>
+<br>
 </div>
 <label for="leveling">Leveling:</label>
 <select id="leveling" onchange="updateCandidates()">
@@ -55,17 +61,20 @@ order: 4
     <option value="_UBL">Unified Bed Leveling</option>
     <option value="_MM">Manual Mesh</option>
 </select>
+<br>
 <label for="options">Options:</label>
 <select id="options" onchange="updateCandidates()">
     <option value="">None</option>
     <option value="-MPC">MPC</option>
     <option value="-IS">Input Shaping</option>
 </select>
+<br>
 <label for="secondaryOptions">Secondary Options:</label>
 <select id="secondaryOptions" onchange="updateCandidates()">
     <option value="">None</option>
     <option value="-MPC">MPC</option>
 </select>
+<br>
 <button onclick="resetSelections()">Reset</button>
 <div id="candidates"></div>
 <script>
