@@ -3,13 +3,7 @@
 icon: fas fa-info-circle
 order: 4
 ---
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown Menu</title>
-</head>
-<body>
+
 <label for="model">Model:</label>
 <select id="model" onchange="updateModelSelections()">
     <option value="">None</option>
@@ -92,6 +86,7 @@ order: 4
 <br>
 <button onclick="resetSelections()">Reset</button>
 <br>
+<div id="candidates"></div>
 
 <script>
     async function fetchReleaseData(url) {
@@ -222,7 +217,4 @@ order: 4
     // Initialize candidates on page load
     window.onload = updateCandidates;
 </script>
-<div id="candidates"></div>
 
-</body>
-</html>
