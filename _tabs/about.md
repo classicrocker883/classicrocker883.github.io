@@ -92,7 +92,6 @@ order: 4
 <br>
 <button onclick="resetSelections()">Reset</button>
 <br>
-<div id="candidates"></div>
 
 <script>
     async function fetchReleaseData(url) {
@@ -223,5 +222,7 @@ order: 4
     // Initialize candidates on page load
     window.onload = updateCandidates;
 </script>
+<div id="candidates"></div>
+
 </body>
 </html>
