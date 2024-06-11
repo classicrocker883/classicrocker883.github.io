@@ -27,6 +27,7 @@ url: ""
 
 github:
   username: classicrocker883 # change to your github username
+  token: "{{ site.github.MYTOKEN }}"
 
 twitter:
   username: twitter_username # change to your twitter username

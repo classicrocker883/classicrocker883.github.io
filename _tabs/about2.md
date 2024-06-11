@@ -32,9 +32,16 @@ order: 5
 // Function to fetch firmware data from GitHub releases
 const repoOwner = 'classicrocker883';
 const repoName = 'MRiscoCProUI';
+// Function to fetch firmware data from GitHub releases using authentication
+// Access GitHub token from Jekyll site configuration
+const githubToken = "{{ site.github.token }}";
 async function fetchFirmwareData() {
   try {
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`);
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`, {
+      headers: {
+        Authorization: `token ${githubToken}`
+      }
+    });
     const data = await response.json();
     return data.assets.map(asset => asset.name);
   } catch (error) {
