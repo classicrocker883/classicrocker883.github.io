@@ -84,32 +84,48 @@ order: 4
     <!-- Add more secondary option options here -->
 </select>
 <br>
-<button onclick="resetSelections()">Reset</button>
+<button id="resetButton" onclick="resetSelections()">Reset</button>
 <br>
 <div id="candidates"></div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('model').addEventListener('change', updateModelSelections);
+        document.getElementById('screen').addEventListener('change', updateCandidates);
+        document.getElementById('type').addEventListener('change', updateCandidates);
+        document.getElementById('features').addEventListener('change', updateCandidates);
+        document.getElementById('secondaryFeature').addEventListener('change', updateCandidates);
+        document.getElementById('leveling').addEventListener('change', updateCandidates);
+        document.getElementById('options').addEventListener('change', updateCandidates);
+        document.getElementById('secondaryOptions').addEventListener('change', updateCandidates);
+        document.getElementById('proUIExtraFeatures').addEventListener('change', updateCandidates);
+        document.getElementById('secondaryFeaturesDiv').addEventListener('change', updateCandidates);
+        document.getElementById('resetButton').addEventListener('click', resetSelections);
+        // Initialize candidates on page load
+        updateCandidates();
+    });
+
     async function fetchReleaseData(url) {
-        const response = await fetch(url);
-        const data = await response.json();
+        var response = await fetch(url);
+        var data = await response.json();
         return data.assets;
     }
 
     async function updateCandidates() {
-        const model = document.getElementById("model").value;
-        const screen = document.getElementById("screen").value;
-        const type = document.getElementById("type").value;
-        const features = document.getElementById("features").value;
-        const secondaryFeatures = document.getElementById("secondaryFeatures").value;
-        const leveling = document.getElementById("leveling").value;
-        const options = document.getElementById("options").value;
-        const secondaryOptions = document.getElementById("secondaryOptions").value;
-        const proUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
-        const secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
+        var model = document.getElementById("model").value;
+        var screen = document.getElementById("screen").value;
+        var type = document.getElementById("type").value;
+        var features = document.getElementById("features").value;
+        var secondaryFeatures = document.getElementById("secondaryFeatures").value;
+        var leveling = document.getElementById("leveling").value;
+        var options = document.getElementById("options").value;
+        var secondaryOptions = document.getElementById("secondaryOptions").value;
+        var proUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
+        var secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
         secondaryFeaturesDiv.style.display = ((features === "_SPRT13") ? "block" : "none");
-        const linkPrefix = "";
+        var linkPrefix = "";
 
-        const assets;
+        var assets;
 
         // Fetch release data from the appropriate API
         if (model === "HC32" || type === "HC32") {
@@ -136,10 +152,10 @@ order: 4
 
         linkPrefix = screen;
 
-        const candidates = [];
+        var candidates = [];
 
         assets.forEach(asset => {
-            const name = asset.name;
+            var name = asset.name;
 
             // Check if "None" is selected for features
             if (features === "") {
@@ -158,13 +174,13 @@ order: 4
                 (secondaryOptions === "" || name.includes(secondaryOptions)) &&
                 (proUIExtraFeatures === "" || name.includes(proUIExtraFeatures))
             ) {
-                const url = asset.browser_download_url;
-                const filename = url.substring(url.lastIndexOf('/') + 1); // Extract filename from URL
+                var url = asset.browser_download_url;
+                var filename = url.substring(url.lastIndexOf('/') + 1); // Extract filename from URL
                 candidates.push({ url: url, filename: filename }); // Store both URL and filename
             }
         });
 
-        const candidatesList = document.getElementById("candidates");
+        var candidatesList = document.getElementById("candidates");
         candidatesList.innerHTML = "<strong>Candidates:</strong><br>";
         if (candidates.length > 0) {
             candidates.forEach(candidate => {
@@ -176,7 +192,7 @@ order: 4
     }
 
     function updateModelSelections() {
-        const model = document.getElementById("model").value;
+        var model = document.getElementById("model").value;
 
         clearSelections(); // Clear previous selections except for model
 
