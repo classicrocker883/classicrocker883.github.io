@@ -4,12 +4,6 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-
-<head>
-    <title>MRiscoCProUI Download</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-</head>
-
 <label for="model">Model:</label>
 <select id="model" onchange="updateModelSelections()">
     <option value="">None</option>
