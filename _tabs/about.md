@@ -13,13 +13,13 @@ order: 4
     <option value="Ender">Ender-3V2/S1</option>
     <!-- Add more model options here -->
 </select>
-<br>
+
 <label for="proUIExtraFeatures">ProUI Extra Features:</label>
 <select id="proUIExtraFeatures" onchange="updateCandidates()">
     <option value="">No</option>
     <option value="-ProUI-EX">Yes</option>
 </select>
-<br>
+
 <label for="screen">Screen:</label>
 <select id="screen" onchange="updateCandidates()">
     <option value="None">None</option>
@@ -28,7 +28,7 @@ order: 4
     <option value="C2-">12864</option>
     <!-- Add more screen options here -->
 </select>
-<br>
+
 <label for="type">Type:</label>
 <select id="type" onchange="updateCandidates()">
     <option value="">None</option>
@@ -37,19 +37,19 @@ order: 4
     <option value="_GD32">GD32</option>
     <option value="_N32">N32</option>
     <option value="HC32">HC32</option>
-    <option value="_SKR-Mini-E3-">SKR Mini E3</option>
+    <option value="_SKR-Mini-E3-">SKR</option>
     <!-- Add more type options here -->
 </select>
-<br>
+
 <label for="features">Features:</label>
 <select id="features" onchange="updateCandidates()">
     <option value="">None</option>
     <option value="_BMP">BIQU MicroProbe V2</option>
     <option value="_IND">Induction Probe</option>
-    <option value="_SPRT13">Creality Sprite</option>
+    <option value="_SPRT13">_SPRT13</option>
     <!-- Add feature options here -->
 </select>
-<br>
+
 <div id="secondaryFeaturesDiv" style="display: none;">
     <label for="secondaryFeatures">Secondary Features:</label>
     <select id="secondaryFeatures" onchange="updateCandidates()">
@@ -58,7 +58,7 @@ order: 4
         <!-- Add more SKR version options here -->
     </select>
 </div>
-<br>
+
 <label for="leveling">Leveling:</label>
 <select id="leveling" onchange="updateCandidates()">
     <option value="">None</option>
@@ -68,7 +68,7 @@ order: 4
     <option value="_MM">Manual Mesh</option>
     <!-- Add more leveling options here -->
 </select>
-<br>
+
 <label for="options">Options:</label>
 <select id="options" onchange="updateCandidates()">
     <option value="">None</option>
@@ -76,162 +76,118 @@ order: 4
     <option value="-IS">Input Shaping</option>
     <!-- Add more option options here -->
 </select>
-<br>
+
 <label for="secondaryOptions">Secondary Options:</label>
 <select id="secondaryOptions" onchange="updateCandidates()">
     <option value="">None</option>
     <option value="-MPC">MPC</option>
     <!-- Add more secondary option options here -->
 </select>
-<br>
+
 <button onclick="resetSelections()">Reset</button>
-<br>
-<div id="download-link"></div>
+
 <div id="candidates"></div>
 
 <script>
-    const repoOwner = 'classicrocker883';
-    const repoName = 'MRiscoCProUI';
+    async function updateCandidates() {
+        var model = document.getElementById("model").value;
+        var screen = document.getElementById("screen").value;
+        var type = document.getElementById("type").value;
+        var features = document.getElementById("features").value;
+        var secondaryFeatures = document.getElementById("secondaryFeatures").value;
+        var leveling = document.getElementById("leveling").value;
+        var options = document.getElementById("options").value;
+        var secondaryOptions = document.getElementById("secondaryOptions").value;
+        var proUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
+        var secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
+        secondaryFeaturesDiv.style.display = ((features === "_SPRT13") ? "block" : "none");
+        var linkPrefix = "";
 
-    async function fetchAssets() {
-        const modelDropdown = document.getElementById('model');
-        const screenDropdown = document.getElementById('screen');
-        const typeDropdown = document.getElementById('type');
-        const featuresDropdown = document.getElementById('features');
-        const secondaryFeaturesDropdown = document.getElementById('secondaryFeatures');
-        const levelingDropdown = document.getElementById('leveling');
-        const optionsDropdown = document.getElementById('options');
-        const secondaryOptionsDropdown = document.getElementById('secondaryOptions');
-        const proUIExtraFeaturesDropdown = document.getElementById('proUIExtraFeatures');
+        var response;
 
-        let apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`;
-
-        // if (modelDropdown.value === "HC32" || typeDropdown.value === "HC32") {
-        //     apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/tags/2.1.3f-5-HC32-2`;
-        // } else if (modelDropdown.value === "Ender") {
-        //     apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/tags/2.1.3f-5-ender3-2`;
-        // } else {
-        //     apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`;
-        // }
-
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        const assets = data.assets;
-
-        function updateDownloadLink() {
-            const selectedModel = modelDropdown.value;
-            const selectedScreen = screenDropdown.value;
-            const selectedType = typeDropdown.value;
-            const selectedFeatures = featuresDropdown.value;
-            const selectedSecondaryFeatures = secondaryFeaturesDropdown.value;
-            const selectedLeveling = levelingDropdown.value;
-            const selectedOptions = optionsDropdown.value;
-            const selectedSecondaryOptions = secondaryOptionsDropdown.value;
-            const selectedProUIExtraFeatures = proUIExtraFeaturesDropdown.value;
-
-            const selectedAsset = assets.find(asset => {
-                const nameParts = asset.name.split('_');
-                return (
-                    (nameParts[0] === selectedModel || selectedModel === "") &&
-                    (nameParts.includes(selectedScreen) || selectedScreen === "") &&
-                    (nameParts.includes(selectedType) || selectedType === "") &&
-                    (nameParts.includes(selectedFeatures) || selectedFeatures === "") &&
-                    (nameParts.includes(selectedSecondaryFeatures) || selectedSecondaryFeatures === "") &&
-                    (nameParts.includes(selectedLeveling) || selectedLeveling === "") &&
-                    (nameParts.includes(selectedOptions) || selectedOptions === "") &&
-                    (nameParts.includes(selectedSecondaryOptions) || selectedSecondaryOptions === "") &&
-                    (nameParts.includes(selectedProUIExtraFeatures) || selectedProUIExtraFeatures === "")
-                );
-            });
-
-            const downloadLink = document.getElementById('download-link');
-            if (selectedAsset) {
-                downloadLink.innerHTML = `<a href="${selectedAsset.browser_download_url}" download>${selectedAsset.name}</a>`;
-            } else {
-                downloadLink.innerHTML = 'No download available for the selected options.';
+        // Fetch release data from the appropriate API
+        if (model === "HC32" || type === "HC32") {
+            // Adjust the linkPrefix and exclude the screen option
+            if (screen === "C2-") {
+                screen = "C2-";
+            } else if (screen === "") {
+                screen = "HC32";
+            } else if (screen === "None") {
+                screen = "";
             }
+            response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/2.1.3f-5-HC32-2');
+            var data = await response.json();
+            dataAssets = data.assets;
+        } else if (model === "Ender") {
+            if (screen === "") {
+                screen = "Ender";
+            }
+            response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/2.1.3f-5-ender3-2');
+            var data = await response.json();
+            dataAssets = data.assets;
+        } else {
+            if (screen === "") {
+                screen = "Aquila";
+            }
+            response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest');
+            var data = await response.json();
+            dataAssets = data.assets;
         }
 
-        document.querySelectorAll('select').forEach(dropdown => {
-            dropdown.addEventListener('change', updateDownloadLink);
-        });
+        linkPrefix = screen;
 
-        updateDownloadLink();
-    }
+        var candidates = [];
 
-    function updateCandidates() {
-        const modelDropdown = document.getElementById('model');
-        const screenDropdown = document.getElementById('screen');
-        const typeDropdown = document.getElementById('type');
-        const featuresDropdown = document.getElementById('features');
-        const secondaryFeaturesDropdown = document.getElementById('secondaryFeatures');
-        const levelingDropdown = document.getElementById('leveling');
-        const optionsDropdown = document.getElementById('options');
-        const secondaryOptionsDropdown = document.getElementById('secondaryOptions');
-        const proUIExtraFeaturesDropdown = document.getElementById('proUIExtraFeatures');
+        dataAssets.forEach(asset => {
+            var name = asset.name;
 
-        const selectedModel = modelDropdown.value;
-        const selectedScreen = screenDropdown.value;
-        const selectedType = typeDropdown.value;
-        const selectedFeatures = featuresDropdown.value;
-        const selectedSecondaryFeatures = secondaryFeaturesDropdown.value;
-        const selectedLeveling = levelingDropdown.value;
-        const selectedOptions = optionsDropdown.value;
-        const selectedSecondaryOptions = secondaryOptionsDropdown.value;
-        const selectedProUIExtraFeatures = proUIExtraFeaturesDropdown.value;
-
-        let candidates = [];
-
-        fetchAssets().then(() => {
-            assets.forEach(asset => {
-                const name = asset.name;
-
-                if (featuresDropdown.value === "") {
-                    if (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13")) {
-                        return;
-                    }
+            // Check if "None" is selected for features
+            if (features === "") {
+                if (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13")) {
+                    return; // Skip this asset
                 }
+            }
 
-                if (
-                    name.startsWith(selectedModel) &&
-                    (selectedScreen === "" || name.includes(selectedScreen)) &&
-                    (selectedType === "" || name.includes(selectedType)) &&
-                    (selectedFeatures === "" || name.includes(selectedFeatures)) &&
-                    (selectedSecondaryFeatures === "" || name.includes(selectedSecondaryFeatures)) &&
-                    (selectedLeveling === "" || name.includes(selectedLeveling)) &&
-                    (selectedOptions === "" || name.includes(selectedOptions)) &&
-                    (selectedSecondaryOptions === "" || name.includes(selectedSecondaryOptions)) &&
-                    (selectedProUIExtraFeatures === "" || name.includes(selectedProUIExtraFeatures))
-                ) {
-                    candidates.push({ url: asset.browser_download_url, filename: asset.name });
-                }
-            });
-
-            const candidatesList = document.getElementById("candidates");
-            candidatesList.innerHTML = "<strong>Candidates:</strong><br>";
-            if (candidates.length > 0) {
-                candidates.forEach(candidate => {
-                    candidatesList.innerHTML += `<a href="${candidate.url}">${candidate.filename}</a><br>`;
-                });
-            } else {
-                candidatesList.textContent = "No candidates found.";
+            if (
+                name.startsWith(linkPrefix) &&
+                (type === "" || name.includes(type)) &&
+                (features === "" || name.includes(features)) &&
+                (secondaryFeatures === "" || name.includes(secondaryFeatures)) &&
+                (leveling === "" || name.includes(leveling)) &&
+                (options === "" || name.includes(options)) &&
+                (secondaryOptions === "" || name.includes(secondaryOptions)) &&
+                (proUIExtraFeatures === "" || name.includes(proUIExtraFeatures))
+            ) {
+                var url = asset.browser_download_url;
+                var filename = url.substring(url.lastIndexOf('/') + 1); // Extract filename from URL
+                candidates.push({ url: url, filename: filename }); // Store both URL and filename
             }
         });
+
+        var candidatesList = document.getElementById("candidates");
+        candidatesList.innerHTML = "<strong>Candidates:</strong><br>";
+        if (candidates.length > 0) {
+            candidates.forEach(candidate => {
+                candidatesList.innerHTML += "<a href='" + candidate.url + "'>" + candidate.filename + "</a><br>"; // Display filename instead of full URL
+            });
+        } else {
+            candidatesList.textContent = "No candidates found.";
+        }
     }
 
     function updateModelSelections() {
-        const model = document.getElementById("model").value;
+        var model = document.getElementById("model").value;
 
-        clearSelections();
+        clearSelections(); // Clear previous selections except for model
 
         if (model === "Aquila X3") {
-            document.getElementById("features").value = "_IND";
+            features.value = "_IND"; // Induction Probe
             document.getElementById("screen").selectedIndex = 1;
         } else if (model === "Aquila") {
-            document.getElementById("type").value = "_GD32";
+            type.value = "_GD32"; // GD32
             document.getElementById("screen").selectedIndex = 1;
         } else if (model === "HC32") {
-            document.getElementById("type").value = "HC32";
+            type.value = "HC32"; // Set appropriate value for HC32
             document.getElementById("screen").selectedIndex = 1;
         } else if (model === "Ender") {
             document.getElementById("screen").selectedIndex = 1;
@@ -258,6 +214,6 @@ order: 4
         updateCandidates();
     }
 
-    window.onload = fetchAssets;
+    // Initialize candidates on page load
+    window.onload = updateCandidates;
 </script>
-
