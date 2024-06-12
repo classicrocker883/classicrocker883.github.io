@@ -26,14 +26,10 @@ order: 5
 </select>
 <br>
 <div id="firmwareList">
-  <!-- Firmware list will be dynamically populated here -->
 </div>
 <script>
-// Function to fetch firmware data from GitHub releases
 const repoOwner = 'classicrocker883';
 const repoName = 'MRiscoCProUI';
-// Function to fetch firmware data from GitHub releases using authentication
-// Access GitHub token from Jekyll site configuration
 const githubToken = "{{ site.github.token }}";
 async function fetchFirmwareData() {
   try {
@@ -49,7 +45,6 @@ async function fetchFirmwareData() {
     return [];
   }
 }
-// Function to filter firmware based on selection
 function filterFirmware() {
   const type = document.getElementById("typeSelector").value;
   const leveling = document.getElementById("levelingSelector").value;
@@ -61,7 +56,6 @@ function filterFirmware() {
     if (proUi === "no" && firmware.includes("ProUI-EX")) return false;
     return true;
   });
-  // Display filtered firmware
   const firmwareList = document.getElementById("firmwareList");
   firmwareList.innerHTML = "";
   filteredFirmware.forEach(firmware => {
@@ -73,11 +67,9 @@ function filterFirmware() {
     firmwareList.appendChild(document.createElement("br"));
   });
 }
-// Event listeners for selectors
 document.getElementById("typeSelector").addEventListener("change", filterFirmware);
 document.getElementById("levelingSelector").addEventListener("change", filterFirmware);
 document.getElementById("proUiSelector").addEventListener("change", filterFirmware);
-// Initial fetching and filtering
 let firmwareData = [];
 fetchFirmwareData().then(data => {
   firmwareData = data;
