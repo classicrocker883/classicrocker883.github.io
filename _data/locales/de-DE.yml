@@ -51,7 +51,7 @@ notification:
 # ----- Posts related labels -----
 
 post:
-  written_by: Von
+  written_by: Von ClassicRocker883
   posted: Veröffentlicht
   updated: Aktualisiert
   words: Wörter
@@ -76,7 +76,7 @@ df:
   post:
     strftime: "%d.%m.%Y"
     dayjs: "DD.MM.YYYY"
-    
+
 # categories page
 categories:
   category_measure:

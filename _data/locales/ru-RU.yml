@@ -51,7 +51,7 @@ notification:
 # ----- Posts related labels -----
 
 post:
-  written_by: Автор
+  written_by: Автор ClassicRocker883
   posted: Опубликовано
   updated: Обновлено
   words: слов
@@ -76,7 +76,7 @@ df:
   post:
     strftime: "%d.%m.%Y"
     dayjs: "DD.MM.YYYY"
-    
+
 # categories page
 categories:
   category_measure:

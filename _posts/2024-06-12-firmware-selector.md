@@ -1,7 +1,16 @@
 ---
-# the default layout is 'page'
-icon: fas fa-info-circle
-order: 4
+title: Firmware Selector
+description: >-
+    Firmware Selection.
+author: ClassicRocker883
+permalink: /firmware
+date: 2024-06-12 00:00:00 -0400
+categories: [Firmware, Tutorial]
+tags: [firmware]
+pin: true
+image:
+  path: /assets/img/icon_printer.png
+  alt: Printer.
 ---
 <html lang="en">
 <head>
