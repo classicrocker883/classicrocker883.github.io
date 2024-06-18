@@ -12,20 +12,20 @@ image:
   path: /assets/img/icon_printer.png
   alt: Printer.
 ---
+
 <html lang="en">
 <head>
     <style>
         .form-row {
             display: flex;
             justify-content: space-between;
-            align-items: right;
             margin-bottom: 5px;
             border-bottom: 1px solid #ccc;
             padding-bottom: 10px;
         }
         .label-container {
-            flex: 0 0 auto;
-            margin-right: 20px;
+            flex: 0 0 50%;
+            text-align: right;
             font-weight: bold;
             color: #883;
             text-transform: uppercase;
@@ -35,9 +35,11 @@ image:
         }
         .select-container {
             flex: 1;
+            padding-left: 2%;
         }
         select {
-            width: 45%;
+            position: absolute;
+            width: 25%;
             padding: 2px;
             border: 1px solid #ccc;
             border-radius: 2px;
@@ -46,10 +48,19 @@ image:
             color: #f9f9f9;
         }
         .candidates-row {
+            margin-left: 25%;
+            padding-left: 1%;
             flex: 0 0 auto;
             display: list-item;
-            border: 2px solid #ccc;
+            border: 2px solid #333;
             width: 60%;
+        }
+        .candidates-container {
+            display: flex; justify-content: center; align-items: center;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
         }
         .button {
             position: relative;
@@ -81,7 +92,7 @@ image:
             border-color: #fff566;
             color: #c0c0c0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            animation: pulse-animation 0.15s both;
+            animation: pulse-animation 0.1s both;
             animation-play-state: paused;
             transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
@@ -110,8 +121,6 @@ image:
             font-size: 20px;
         }
         .button .label {
-            align-items: center;
-            justify-content: center;
             flex-grow: 1;
             text-align: center;
         }
@@ -121,7 +130,7 @@ image:
     <hr>
 </head>
 <body>
-    <label for="month-select">Select Release:</label>
+    <label for="month-select"><h3>Select a Release:</h3></label>
     <select id="month-select">
         <option value="latest">Latest Release</option>
         <option>Loading...</option>
@@ -133,6 +142,7 @@ image:
     </div>
     <br>
     <div>
+    <br>
         <strong>Selected Release Tag:</strong>
         <div id="selected-release-tag">latest</div>
     </div>
@@ -255,11 +265,13 @@ image:
         </div>
     </div>
     <br>
-    <button class="button" id="resetButton">
-        <span class="icon">🔄</span>
-        <span class="label">Reset</span>
-        <span class="icon2">🔄</span>
-    </button>
+    <div class="button-container">
+        <button class="button" id="resetButton">
+            <span class="icon">🔄</span>
+            <span class="label">Reset</span>
+            <span class="icon2">🔄</span>
+        </button>
+    </div>
     <hr>
     <p>
     <div id="candidates"></div>
@@ -479,7 +491,7 @@ image:
                     );
                 });
                 const candidatesList = document.getElementById("candidates");
-                candidatesList.innerHTML = '<a class="fas fa-download"></a><strong> Candidates:</strong><br>';
+                candidatesList.innerHTML = '<div class="candidates-container"><a class="fas fa-download"></a><strong> Candidates:</strong></div><br>';
                 if (candidates.length > 0) {
                     candidates.forEach(candidate => {
                         const url = candidate.browser_download_url;
