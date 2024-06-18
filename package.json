@@ -27,6 +27,7 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.11",
+    "octokit": "^4.0.2",
     "strftime": "^0.10.3"
   },
   "devDependencies": {
