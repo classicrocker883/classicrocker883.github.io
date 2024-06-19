@@ -119,13 +119,18 @@ permalink: /firmware-selector
             flex-grow: 1;
             text-align: center;
         }
+        .downloadcontainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
     <h1><i class="fas fa-code-compare"></i> Firmware Selector</h1>
     <p>Version information below</p>
     <hr>
 </head>
 <body>
-    <label for="month-select"><h3>Select a Release:</h3></label>
+    <label for="month-select"><h3><i class="icon fas fa-list-check"></i> Select a Release:</h3></label>
     <select id="month-select">
         <option value="latest">Latest Release</option>
         <option>Loading...</option>
@@ -143,7 +148,7 @@ permalink: /firmware-selector
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="model">Model:</label>
+            <label for="model"><i class="icon fas fa-cubes"></i> Model:</label>
         </div>
         <div class="select-container">
             <select id="model" onchange="updateModelSelections()">
@@ -157,7 +162,7 @@ permalink: /firmware-selector
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="proUIExtraFeatures">ProUI Extra Features:</label>
+            <label for="proUIExtraFeatures"><i class="icon fas fa-shield-halved"></i> ProUI Extra Features:</label>
         </div>
         <div class="select-container">
             <select id="proUIExtraFeatures" onchange="updateCandidates()">
@@ -168,7 +173,7 @@ permalink: /firmware-selector
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="screen">Screen:</label>
+            <label for="screen"><i class="icon fas fa-mobile-screen-button"></i> LCD Display:</label>
         </div>
         <div class="select-container">
             <select id="screen" onchange="updateCandidates()">
@@ -181,7 +186,7 @@ permalink: /firmware-selector
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="type">Board Type:</label>
+            <label for="type"><i class="icon fas fa-microchip"></i> Board Type:</label>
         </div>
         <div class="select-container">
             <select id="type" onchange="updateCandidates()">
@@ -197,7 +202,7 @@ permalink: /firmware-selector
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="features">Features:</label>
+            <label for="features"><i class="icon fas fa-bars"></i> Features:</label>
         </div>
         <div class="select-container">
             <select id="features" onchange="updateCandidates()">
@@ -211,19 +216,20 @@ permalink: /firmware-selector
     <div id="secondaryFeaturesDiv" style="display: none;">
         <div class="form-row">
             <div class="label-container">
-                <label for="secondaryFeatures">Secondary Features:</label>
+                <label for="secondaryFeatures"><i class="icon fas fa-bars-staggered"></i> Secondary Features:</label>
             </div>
             <div class="select-container">
                 <select id="secondaryFeatures" onchange="updateCandidates()">
                     <option value="">--Select--</option>
                     <option value="_BMP">BIQU MicroProbe V2</option>
+                    <option value="_SPRT13">Creality Sprite</option>
                 </select>
             </div>
         </div>
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="leveling">Leveling:</label>
+            <label for="leveling"><i class="icon fas fa-layer-group"></i> Leveling:</label>
         </div>
         <div class="select-container">
             <select id="leveling" onchange="updateCandidates()">
@@ -237,7 +243,7 @@ permalink: /firmware-selector
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="options">Options:</label>
+            <label for="options"><i class="icon fas fa-gears"></i> Options:</label>
         </div>
         <div class="select-container">
             <select id="options" onchange="updateCandidates()">
@@ -248,15 +254,18 @@ permalink: /firmware-selector
             </select>
         </div>
     </div>
-    <div class="form-row">
-        <div class="label-container">
-            <label for="secondaryOptions">Secondary Options:</label>
-        </div>
-        <div class="select-container">
-            <select id="secondaryOptions" onchange="updateCandidates()">
-                <option value="">--Select--</option>
-                <option value="-MPC">MPC</option>
-            </select>
+    <div id="secondaryOptionsDiv" style="display: none;">
+        <div class="form-row">
+            <div class="label-container">
+                <label for="secondaryOptions"><i class="icon fas fa-gear"></i> Secondary Options:</label>
+            </div>
+            <div class="select-container">
+                <select id="secondaryOptions" onchange="updateCandidates()">
+                    <option value="">--Select--</option>
+                    <option value="-MPC">MPC</option>
+                    <option value="-IS">Input Shaping</option>
+                </select>
+            </div>
         </div>
     </div>
     <br>
@@ -446,10 +455,33 @@ permalink: /firmware-selector
                 const type = document.getElementById("type").value;
                 const features = document.getElementById("features").value;
                 const secondaryFeatures = document.getElementById("secondaryFeatures").value;
+                const secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
+                const secondaryFeaturesSelect = document.getElementById("secondaryFeatures");
+                const selectedSecondaryFeature = secondaryFeaturesSelect.value;
                 const leveling = document.getElementById("leveling").value;
                 const options = document.getElementById("options").value;
                 const secondaryOptions = document.getElementById("secondaryOptions").value;
-                secondaryFeaturesDiv.style.display = (features === "_SPRT13") ? "block" : "none";
+                const secondaryOptionsDiv = document.getElementById("secondaryOptionsDiv");
+                const secondaryOptionsSelect = document.getElementById("secondaryOptions");
+                const selectedSecondaryOption = secondaryOptionsSelect.value;
+                secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_BMP") ? "block" : "none";
+                secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS") ? "block" : "none";
+                secondaryFeaturesSelect.innerHTML = '<option value="">--Select--</option>';
+                if (features === "_SPRT13") {
+                    secondaryFeaturesSelect.innerHTML += '<option value="_BMP">BIQU MicroProbe V2</option>';
+                } else if (features === "_BMP") {
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13">Creality Sprite</option>';
+                }
+                secondaryFeaturesSelect.value = selectedSecondaryFeature;
+                secondaryOptionsSelect.innerHTML = '<option value="">--Select--</option>';
+                if (options === "-IS") {
+                    secondaryOptionsSelect.innerHTML += '<option value="-MPC">MPC</option>';
+                } else if (options === "-MPC") {
+                    secondaryOptionsSelect.innerHTML += '<option value="-IS">Input Shaping</option>';
+                } else {
+                    secondaryOptionsSelect.innerHTML += '<option value="-MPC">MPC</option><option value="-IS">Input Shaping</option>';
+                }
+                secondaryOptionsSelect.value = selectedSecondaryOption;
                 if (screen === "C2-") {
                     proUIExtraFeatures = "";
                     document.getElementById("proUIExtraFeatures").value = proUIExtraFeatures;
@@ -473,6 +505,9 @@ permalink: /firmware-selector
                     const name = asset.name;
                     if (features === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13"))) return false;
                     if (features === "_SPRT13" && secondaryFeatures === "" && name.includes("_BMP")) return false;
+                    if (features === "_BMP" && secondaryFeatures === "" && name.includes("_SPRT13")) return false;
+                    if (options === "-MPC" && secondaryOptions === "" && name.includes("-IS")) return false;
+                    if (options === "-IS" && secondaryOptions === "" && name.includes("-MPC")) return false;
                     if (proUIExtraFeatures === "" && name.includes("-ProUI")) return false;
                     return (
                         name.startsWith(linkPrefix) &&
@@ -486,12 +521,12 @@ permalink: /firmware-selector
                     );
                 });
                 const candidatesList = document.getElementById("candidates");
-                candidatesList.innerHTML = '<div class="candidates-container"><a class="fas fa-download"></a><strong> Candidates:</strong></div><br>';
+                candidatesList.innerHTML = '<div class="candidates-container"><a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>Candidates:</strong><br></div><br>';
                 if (candidates.length > 0) {
                     candidates.forEach(candidate => {
                         const url = candidate.browser_download_url;
                         const filename = url.substring(url.lastIndexOf('/') + 1);
-                        candidatesList.innerHTML += `<div class='candidates-row'><a href='${url}'>${filename}</a></div>`;
+                        candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style="color: brown">${filename}</span><a style="margin-left: auto; margin-right: 2%; font-size: 20px;" href='${url}' class="fas fa-download"></a></span></div>`;
                     });
                 } else {
                     candidatesList.textContent = "No candidates found.";
@@ -525,6 +560,12 @@ permalink: /firmware-selector
                 clearSelections();
                 updateCandidates();
             }
+            document.getElementById("features").addEventListener("change", () => {
+                document.getElementById("secondaryFeatures").value = "";
+            });
+            document.getElementById("options").addEventListener("change", () => {
+                document.getElementById("secondaryOptions").value = "";
+            });
             resetButton.addEventListener('mousedown', () => resetButton.style.animationPlayState = 'running');
             resetButton.addEventListener('mouseup', () => resetButton.style.animationPlayState = 'paused');
             resetButton.addEventListener('click', resetSelections);
