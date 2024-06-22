@@ -13,3 +13,5 @@ group :test do
   gem 'jekyll', '~> 4.3.3'
   gem 'csv'
 end
+
+gem "webrick", "~> 1.8"

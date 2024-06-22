@@ -48,7 +48,7 @@ permalink: /firmware-selector
             flex: 0 0 auto;
             display: list-item;
             border: 2px solid #333;
-            width: 60%;
+            width: 70%;
         }
         .candidates-container {
             display: flex; justify-content: center; align-items: center;
@@ -283,14 +283,28 @@ permalink: /firmware-selector
     <h3>📚 Versions</h3>
     <hr>
     <p>Some versions <i>do</i> have options like Power-loss Recovery despite not having it in the file name.<br>
-        Board types <b>422</b>, <b>427</b>, and leveling options <b>Default</b>, and <b>Manual Mesh</b> should have this
-        and other options enabled.</p>
+        Board types <b>422</b>/<b>427</b>, and leveling options <b>Default</b>/<b>Manual Mesh</b> should have this
+        and other options enabled which may not be available in <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions.</p>
     <p>These are the special configurations offered:</p>
     <ul>
         <li>[ -ProUI-EX ]<br>
             | ProUI Extra Features |
             <br><b>Toolbar, change bed physical dimensions, and other special features and options</b>
         </li>
+        <br>
+        <dt>Features</dt>
+        <li>[ _SPRT13 ]<br>
+            | Creality Sprite Extruder | (uses thermistor # 13)
+        </li>
+        <li>[ _IND ]<br>
+            | Inductive Sensor | (probe used on X3/S2 models)
+        </li>
+        <li>[ _BMP ]<br>
+            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>TOUCH</b>)
+            <br><sup>Use <b>ONLY</b> if you <b>DO</b> have this probe</sup>
+        </li>
+        <br>
+        <dt>Options</dt>
         <li>[ -IS ]<br>
             | Input Shaping | (similar to Linear Advance)
         </li>
@@ -299,16 +313,6 @@ permalink: /firmware-selector
         </li>
         <li>[ -PLR ]<br>
             | Power-Loss Recovery | (resumes where a print job left off when there is a <i>power outage</i>)
-        </li>
-        <li>[ _SPRT13 ]<br>
-            | Sprite Extruder | (uses thermistor # 13)
-        </li>
-        <li>[ _IND ]<br>
-            | Inductive Sensor | (probe used on X3/S2 models)
-        </li>
-        <li>[ _BMP ]<br>
-            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>TOUCH</b>)
-            <br><sup>Use <b>ONLY</b> this firmware with "<i>_BMP</i>" if you <b>DO</b> have this probe</sup>
         </li>
     </ul>
     <script>
@@ -376,7 +380,8 @@ permalink: /firmware-selector
                 releaseList.appendChild(label);
             }
             function updateSelectedReleaseTag() {
-                selectedReleaseTagDiv.textContent = releaseTag || 'latest';
+                let releaseTagName = releaseTag.replace("tags/", "");
+                selectedReleaseTagDiv.textContent = releaseTagName || 'latest';
             }
             function fetchReleasesByMonth(month, releases) {
                 const filteredReleases = releases.filter(release => formatMonthYear(release.published_at) === month);
@@ -420,8 +425,8 @@ permalink: /firmware-selector
             }
             async function fetchReleaseData(model) {
                 const releaseHTML = await fetchReleaseHTML(`https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/${releaseTag}`);
-                const areleaseTag = extractTagName(releaseHTML);
-                const split = splitTag(areleaseTag);
+                const extractedTag = extractTagName(releaseHTML);
+                const split = splitTag(extractedTag);
                 if (model === "HC32") {
                     split.model = "HC32";
                 } else if (model === "Ender") {
@@ -526,7 +531,7 @@ permalink: /firmware-selector
                     candidates.forEach(candidate => {
                         const url = candidate.browser_download_url;
                         const filename = url.substring(url.lastIndexOf('/') + 1);
-                        candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style="color: brown">${filename}</span><a style="margin-left: auto; margin-right: 2%; font-size: 20px;" href='${url}' class="fas fa-download"></a></span></div>`;
+                        candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style='color: brown'>${filename}</span><a style='margin-left: auto; margin-right: 2%; font-size: 20px;' href='${url}' class='fas fa-download'></a></span></div>`;
                     });
                 } else {
                     candidatesList.textContent = "No candidates found.";
