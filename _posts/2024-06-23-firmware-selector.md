@@ -4,13 +4,13 @@ description: >-
     Firmware Selection.
 author: ClassicRocker883
 permalink: /firmware
-date: 2024-06-17 00:00:00 -0400
+date: 2024-06-23 00:00:00 -0400
 categories: [Firmware, Tutorial]
 tags: [firmware]
 pin: true
 image:
   path: /assets/img/firmware-selector.gif
-  alt: Printer.
+  alt: Firmware Selector
 ---
 
 <html lang="en">
