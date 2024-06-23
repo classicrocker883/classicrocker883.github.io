@@ -48,12 +48,11 @@ image:
             color: #f9f9f9;
         }
         .candidates-row {
-            margin-left: 25%;
             padding-left: 1%;
             flex: 0 0 auto;
             display: list-item;
             border: 2px solid #333;
-            width: 70%;
+            width: 110%;
         }
         .candidates-container {
             display: flex; justify-content: center; align-items: center;
@@ -143,7 +142,7 @@ image:
 <body>
     <label for="month-select"><h3><i class="icon fas fa-list-check"></i> Select a Release:</h3></label>
     <select id="month-select">
-        <option value="latest">Latest Release</option>
+        <option value="latest" title="The most recent release version">Latest Release</option>
         <option>Loading...</option>
     </select>
     <div id="releases-container" style="display: none;">
@@ -164,11 +163,11 @@ image:
         </div>
         <div class="select-container">
             <select id="model" onchange="updateModelSelections()">
-                <option value="">--Optional--</option>
-                <option value="Aquila">Aquila</option>
-                <option value="Aquila X3">Aquila X3</option>
-                <option value="HC32">HC32</option>
-                <option value="Ender">Ender-3V2/S1</option>
+                <option value="" title="No specific model">--Optional--</option>
+                <option value="Aquila" title="Aquila OG/X2">Aquila</option>
+                <option value="Aquila X3" title="Aquila X3">Aquila X3</option>
+                <option value="HC32" title="H32">HC32</option>
+                <option value="Ender" title="Ender-3V2/S1">Ender-3V2/S1</option>
             </select>
         </div>
     </div>
@@ -178,8 +177,8 @@ image:
         </div>
         <div class="select-container">
             <select id="proUIExtraFeatures" onchange="updateCandidates()">
-                <option value="-ProUI">Yes</option>
-                <option value="">No</option>
+                <option value="-ProUI" title="ProUI-EX">Yes</option>
+                <option value="" title="No ProUI Extra Features">No</option>
             </select>
         </div>
     </div>
@@ -189,10 +188,10 @@ image:
         </div>
         <div class="select-container">
             <select id="screen" onchange="updateCandidates()">
-                <option value="">--Select--</option>
+                <option value="" title="No specific display selected">--Select--</option>
                 <option value="DWIN">DWIN</option>
-                <option value="TJC-">TJC</option>
-                <option value="C2-">12864</option>
+                <option value="TJC-" title="TJC-">TJC</option>
+                <option value="C2-" title="'C2-' (Monochrome LCD Display)">12864</option>
             </select>
         </div>
     </div>
@@ -202,13 +201,13 @@ image:
         </div>
         <div class="select-container">
             <select id="type" onchange="updateCandidates()">
-                <option value="">--Select--</option>
-                <option value="_GD32">GD32</option>
-                <option value="_N32">N32</option>
-                <option value="HC32">HC32</option>
-                <option value="_427">427</option>
-                <option value="_422">422</option>
-                <option value="_SKR-Mini-E3-">SKR</option>
+                <option value="" title="No specific board type">--Select--</option>
+                <option value="_GD32" title="_GD32">GD32</option>
+                <option value="_N32" title="_N32">N32</option>
+                <option value="HC32" title="HC32">HC32</option>
+                <option value="_427" title="_427">427</option>
+                <option value="_422" title="_422">422</option>
+                <option value="_SKR-Mini-E3-" title="_SKR-Mini-E3-">SKR</option>
             </select>
         </div>
     </div>
@@ -218,11 +217,11 @@ image:
         </div>
         <div class="select-container">
             <select id="features" onchange="updateCandidates()">
-                <option value="">--Select--</option>
+                <option value="" title="No specific features">--Select--</option>
                 <option value="">CR/3D/BL-Touch</option>
-                <option value="_BMP">BIQU MicroProbe V2</option>
-                <option value="_IND">Induction Probe</option>
-                <option value="_SPRT13">Creality Sprite</option>
+                <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
+                <option value="_IND" title="_IND">Induction Probe</option>
+                <option value="_SPRT13" title="_SPRT13">Creality Sprite</option>
             </select>
         </div>
     </div>
@@ -233,9 +232,9 @@ image:
             </div>
             <div class="select-container">
                 <select id="secondaryFeatures" onchange="updateCandidates()">
-                    <option value="">--Select--</option>
-                    <option value="_BMP">BIQU MicroProbe V2</option>
-                    <option value="_SPRT13">Creality Sprite</option>
+                    <option value="" title="No specific secondary features">--Select--</option>
+                    <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
+                    <option value="_SPRT13" title="_SPRT13">Creality Sprite</option>
                 </select>
             </div>
         </div>
@@ -246,11 +245,11 @@ image:
         </div>
         <div class="select-container">
             <select id="leveling" onchange="updateCandidates()">
-                <option value="">--Select--</option>
-                <option value="_UBL">Unified Bed Leveling</option>
-                <option value="_BLT">Bilinear Bed Leveling</option>
-                <option value="_MM">Manual Mesh</option>
-                <option value="_Default">Default</option>
+                <option value="" title="No specific leveling method">--Select--</option>
+                <option value="_UBL" title="_UBL">Unified Bed Leveling</option>
+                <option value="_BLT" title="_BLT">Bilinear Bed Leveling</option>
+                <option value="_MM" title="_MM">Manual Mesh</option>
+                <option value="_Default" title="_Default">Default</option>
             </select>
         </div>
     </div>
@@ -260,10 +259,10 @@ image:
         </div>
         <div class="select-container">
             <select id="options" onchange="updateCandidates()">
-                <option value="">--Select--</option>
-                <option value="-MPC">MPC</option>
-                <option value="-IS">Input Shaping</option>
-                <option value="-PLR">Power-loss Recovery</option>
+                <option value="" title="No specific options">--Select--</option>
+                <option value="-MPC" title="-MPC">MPC</option>
+                <option value="-IS" title="-IS">Input Shaping</option>
+                <option value="-PLR" title="-PLR">Power-loss Recovery</option>
             </select>
         </div>
     </div>
@@ -274,9 +273,9 @@ image:
             </div>
             <div class="select-container">
                 <select id="secondaryOptions" onchange="updateCandidates()">
-                    <option value="">--Select--</option>
-                    <option value="-MPC">MPC</option>
-                    <option value="-IS">Input Shaping</option>
+                    <option value="" title="No specific secondary options">--Select--</option>
+                    <option value="-MPC" title="-MPC">MPC</option>
+                    <option value="-IS" title="-IS">Input Shaping</option>
                 </select>
             </div>
         </div>
@@ -290,9 +289,15 @@ image:
         </button>
     </div>
     <hr>
-    <p>
-    <div id="candidates"></div>
-    </p>
+    <div class="candidates-container">
+        <table id="versionsTable">
+            <thead>
+                <tr>
+                    <th id="candidates"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
     <h3 id="versions">📚 Versions</h3>
     <hr>
     <p>Some versions <i>do</i> have options like Power-loss Recovery despite not having it in the file name.<br>
@@ -484,22 +489,20 @@ image:
                 const secondaryOptionsSelect = document.getElementById("secondaryOptions");
                 secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_BMP") ? "block" : "none";
                 secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS") ? "block" : "none";
-                secondaryFeaturesSelect.innerHTML = '<option value="">--Select--</option>';
+                secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
                 if (features === "_SPRT13") {
-                    secondaryFeaturesSelect.innerHTML += '<option value="_BMP">BIQU MicroProbe V2</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
                     document.getElementById("leveling").value = "_UBL";
                 } else if (features === "_BMP") {
-                    secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13">Creality Sprite</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
                     document.getElementById("leveling").value = "_UBL";
                 }
                 secondaryFeaturesSelect.value = secondaryFeatures;
-                secondaryOptionsSelect.innerHTML = '<option value="">--Select--</option>';
+                secondaryOptionsSelect.innerHTML = '<option value="" title="No specific secondary option">--Select--</option>';
                 if (options === "-IS") {
-                    secondaryOptionsSelect.innerHTML += '<option value="-MPC">MPC</option>';
+                    secondaryOptionsSelect.innerHTML += '<option value="-MPC" title="-MPC">MPC</option>';
                 } else if (options === "-MPC") {
-                    secondaryOptionsSelect.innerHTML += '<option value="-IS">Input Shaping</option>';
-                } else {
-                    secondaryOptionsSelect.innerHTML += '<option value="-MPC">MPC</option><option value="-IS">Input Shaping</option>';
+                    secondaryOptionsSelect.innerHTML += '<option value="-IS" title="-IS">Input Shaping</option>';
                 }
                 secondaryOptionsSelect.value = secondaryOptions;
                 if (screen === "C2-" || leveling === "_Default") {
@@ -541,15 +544,12 @@ image:
                     );
                 });
                 const candidatesList = document.getElementById("candidates");
-                candidatesList.innerHTML = '<div class="candidates-container"><a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>Candidates:</strong><br></div><br>';
+                candidatesList.innerHTML = '<div class="candidates-container"><a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>&nbsp;Candidates:</strong><br></div><br>';
                 if (candidates.length > 0) {
                     candidates.forEach(candidate => {
                         const url = candidate.browser_download_url;
                         const filename = url.substring(url.lastIndexOf('/') + 1);
                         candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style='color: brown'>${filename}</span><a style='margin-left: auto; margin-right: 2%; font-size: 20px;' href='${url}' class='fas fa-download'></a></span></div>`;
-                        /*<img alt="GitHub Downloads (all assets, latest release)" src="https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total">
-                        <img alt="GitHub Downloads (all assets, specific tag)" src="https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total?link=${url}">;
-                        <img alt="GitHub Downloads (specific asset, specific tag)" src="https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/2.1.3f-5-2/Aquila_422_BLT-ProUI-EX-05-23.bin">*/
                     });
                 } else {
                     candidatesList.textContent = "No candidates found.";
