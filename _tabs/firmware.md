@@ -124,9 +124,15 @@ permalink: /firmware-selector
             justify-content: space-between;
             align-items: center;
         }
+        .center {
+          display: block;
+          text-align: center;
+          margin: 0 auto;
+        }
     </style>
-    <h1><i class="fas fa-code-compare"></i> Firmware Selector</h1>
-    <p>Version information below</p>
+    <h1 class="center"><i class="fas fa-code-compare"></i> Firmware Selector</h1>
+    <p class="center" style=""><a href="#versions">Version information below</a></p>
+    <img alt="Firmware Selector Logo" src="https://classicrocker883.github.io/assets/img/firmware-selector.png" width="200" height="200" class="center">
     <hr>
 </head>
 <body>
@@ -145,6 +151,7 @@ permalink: /firmware-selector
     <br>
         <strong>Selected Release Tag:</strong>
         <div id="selected-release-tag">latest</div>
+        <div id="total-downloads"></div>
     </div>
     <div class="form-row">
         <div class="label-container">
@@ -207,6 +214,7 @@ permalink: /firmware-selector
         <div class="select-container">
             <select id="features" onchange="updateCandidates()">
                 <option value="">--Select--</option>
+                <option value="">CR/3D/BL-Touch</option>
                 <option value="_BMP">BIQU MicroProbe V2</option>
                 <option value="_IND">Induction Probe</option>
                 <option value="_SPRT13">Creality Sprite</option>
@@ -234,10 +242,10 @@ permalink: /firmware-selector
         <div class="select-container">
             <select id="leveling" onchange="updateCandidates()">
                 <option value="">--Select--</option>
-                <option value="_Default">Default</option>
-                <option value="_MM">Manual Mesh</option>
-                <option value="_BLT">Bilinear Bed Leveling</option>
                 <option value="_UBL">Unified Bed Leveling</option>
+                <option value="_BLT">Bilinear Bed Leveling</option>
+                <option value="_MM">Manual Mesh</option>
+                <option value="_Default">Default</option>
             </select>
         </div>
     </div>
@@ -280,7 +288,7 @@ permalink: /firmware-selector
     <p>
     <div id="candidates"></div>
     </p>
-    <h3>📚 Versions</h3>
+    <h3 id="versions">📚 Versions</h3>
     <hr>
     <p>Some versions <i>do</i> have options like Power-loss Recovery despite not having it in the file name.<br>
         Board types <b>422</b>/<b>427</b>, and leveling options <b>Default</b>/<b>Manual Mesh</b> should have this
@@ -300,7 +308,7 @@ permalink: /firmware-selector
             | Inductive Sensor | (probe used on X3/S2 models)
         </li>
         <li>[ _BMP ]<br>
-            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>TOUCH</b>)
+            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>-<b>Touch</b>)
             <br><sup>Use <b>ONLY</b> if you <b>DO</b> have this probe</sup>
         </li>
         <br>
@@ -322,6 +330,7 @@ permalink: /firmware-selector
             const releaseList = document.getElementById('release-list');
             const selectedReleaseTagDiv = document.getElementById('selected-release-tag');
             const resetButton = document.getElementById('resetButton');
+            const totalDownloads = document.getElementById('total-downloads');
             let releaseTag = 'latest';
             const repoUrl = 'https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases';
             async function fetchAllReleases(url, page = 1, releases = []) {
@@ -382,6 +391,7 @@ permalink: /firmware-selector
             function updateSelectedReleaseTag() {
                 let releaseTagName = releaseTag.replace("tags/", "");
                 selectedReleaseTagDiv.textContent = releaseTagName || 'latest';
+                totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${releaseTagName}/total'> - Total</label>`
             }
             function fetchReleasesByMonth(month, releases) {
                 const filteredReleases = releases.filter(release => formatMonthYear(release.published_at) === month);
@@ -462,22 +472,22 @@ permalink: /firmware-selector
                 const secondaryFeatures = document.getElementById("secondaryFeatures").value;
                 const secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
                 const secondaryFeaturesSelect = document.getElementById("secondaryFeatures");
-                const selectedSecondaryFeature = secondaryFeaturesSelect.value;
                 const leveling = document.getElementById("leveling").value;
                 const options = document.getElementById("options").value;
                 const secondaryOptions = document.getElementById("secondaryOptions").value;
                 const secondaryOptionsDiv = document.getElementById("secondaryOptionsDiv");
                 const secondaryOptionsSelect = document.getElementById("secondaryOptions");
-                const selectedSecondaryOption = secondaryOptionsSelect.value;
                 secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_BMP") ? "block" : "none";
                 secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS") ? "block" : "none";
                 secondaryFeaturesSelect.innerHTML = '<option value="">--Select--</option>';
                 if (features === "_SPRT13") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP">BIQU MicroProbe V2</option>';
+                    document.getElementById("leveling").value = "_UBL";
                 } else if (features === "_BMP") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13">Creality Sprite</option>';
+                    document.getElementById("leveling").value = "_UBL";
                 }
-                secondaryFeaturesSelect.value = selectedSecondaryFeature;
+                secondaryFeaturesSelect.value = secondaryFeatures;
                 secondaryOptionsSelect.innerHTML = '<option value="">--Select--</option>';
                 if (options === "-IS") {
                     secondaryOptionsSelect.innerHTML += '<option value="-MPC">MPC</option>';
@@ -486,8 +496,8 @@ permalink: /firmware-selector
                 } else {
                     secondaryOptionsSelect.innerHTML += '<option value="-MPC">MPC</option><option value="-IS">Input Shaping</option>';
                 }
-                secondaryOptionsSelect.value = selectedSecondaryOption;
-                if (screen === "C2-") {
+                secondaryOptionsSelect.value = secondaryOptions;
+                if (screen === "C2-" || leveling === "_Default") {
                     proUIExtraFeatures = "";
                     document.getElementById("proUIExtraFeatures").value = proUIExtraFeatures;
                 }

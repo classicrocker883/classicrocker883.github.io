@@ -9,7 +9,7 @@ categories: [Firmware, Tutorial]
 tags: [firmware]
 pin: true
 image:
-  path: /assets/img/icon_printer.png
+  path: /assets/img/firmware-selector.gif
   alt: Printer.
 ---
 
@@ -53,7 +53,7 @@ image:
             flex: 0 0 auto;
             display: list-item;
             border: 2px solid #333;
-            width: 60%;
+            width: 70%;
         }
         .candidates-container {
             display: flex; justify-content: center; align-items: center;
@@ -124,13 +124,24 @@ image:
             flex-grow: 1;
             text-align: center;
         }
+        .downloadcontainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .center {
+          display: block;
+          text-align: center;
+          margin: 0 auto;
+        }
     </style>
-    <h1><i class="fas fa-code-compare"></i> Firmware Selector</h1>
-    <p>Version information below</p>
+    <h1 class="center"><i class="fas fa-code-compare"></i> Firmware Selector</h1>
+    <p class="center" style=""><a href="#versions">Version information below</a></p>
+    <img alt="Firmware Selector Logo" src="https://classicrocker883.github.io/assets/img/firmware-selector.png" width="200" height="200" class="center">
     <hr>
 </head>
 <body>
-    <label for="month-select"><h3>Select a Release:</h3></label>
+    <label for="month-select"><h3><i class="icon fas fa-list-check"></i> Select a Release:</h3></label>
     <select id="month-select">
         <option value="latest">Latest Release</option>
         <option>Loading...</option>
@@ -145,10 +156,11 @@ image:
     <br>
         <strong>Selected Release Tag:</strong>
         <div id="selected-release-tag">latest</div>
+        <div id="total-downloads"></div>
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="model">Model:</label>
+            <label for="model"><i class="icon fas fa-cubes"></i> Model:</label>
         </div>
         <div class="select-container">
             <select id="model" onchange="updateModelSelections()">
@@ -162,7 +174,7 @@ image:
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="proUIExtraFeatures">ProUI Extra Features:</label>
+            <label for="proUIExtraFeatures"><i class="icon fas fa-shield-halved"></i> ProUI Extra Features:</label>
         </div>
         <div class="select-container">
             <select id="proUIExtraFeatures" onchange="updateCandidates()">
@@ -173,7 +185,7 @@ image:
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="screen">Screen:</label>
+            <label for="screen"><i class="icon fas fa-mobile-screen-button"></i> LCD Display:</label>
         </div>
         <div class="select-container">
             <select id="screen" onchange="updateCandidates()">
@@ -186,7 +198,7 @@ image:
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="type">Board Type:</label>
+            <label for="type"><i class="icon fas fa-microchip"></i> Board Type:</label>
         </div>
         <div class="select-container">
             <select id="type" onchange="updateCandidates()">
@@ -202,11 +214,12 @@ image:
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="features">Features:</label>
+            <label for="features"><i class="icon fas fa-bars"></i> Features:</label>
         </div>
         <div class="select-container">
             <select id="features" onchange="updateCandidates()">
                 <option value="">--Select--</option>
+                <option value="">CR/3D/BL-Touch</option>
                 <option value="_BMP">BIQU MicroProbe V2</option>
                 <option value="_IND">Induction Probe</option>
                 <option value="_SPRT13">Creality Sprite</option>
@@ -216,33 +229,34 @@ image:
     <div id="secondaryFeaturesDiv" style="display: none;">
         <div class="form-row">
             <div class="label-container">
-                <label for="secondaryFeatures">Secondary Features:</label>
+                <label for="secondaryFeatures"><i class="icon fas fa-bars-staggered"></i> Secondary Features:</label>
             </div>
             <div class="select-container">
                 <select id="secondaryFeatures" onchange="updateCandidates()">
                     <option value="">--Select--</option>
                     <option value="_BMP">BIQU MicroProbe V2</option>
+                    <option value="_SPRT13">Creality Sprite</option>
                 </select>
             </div>
         </div>
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="leveling">Leveling:</label>
+            <label for="leveling"><i class="icon fas fa-layer-group"></i> Leveling:</label>
         </div>
         <div class="select-container">
             <select id="leveling" onchange="updateCandidates()">
                 <option value="">--Select--</option>
-                <option value="_Default">Default</option>
-                <option value="_MM">Manual Mesh</option>
-                <option value="_BLT">Bilinear Bed Leveling</option>
                 <option value="_UBL">Unified Bed Leveling</option>
+                <option value="_BLT">Bilinear Bed Leveling</option>
+                <option value="_MM">Manual Mesh</option>
+                <option value="_Default">Default</option>
             </select>
         </div>
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="options">Options:</label>
+            <label for="options"><i class="icon fas fa-gears"></i> Options:</label>
         </div>
         <div class="select-container">
             <select id="options" onchange="updateCandidates()">
@@ -253,15 +267,18 @@ image:
             </select>
         </div>
     </div>
-    <div class="form-row">
-        <div class="label-container">
-            <label for="secondaryOptions">Secondary Options:</label>
-        </div>
-        <div class="select-container">
-            <select id="secondaryOptions" onchange="updateCandidates()">
-                <option value="">--Select--</option>
-                <option value="-MPC">MPC</option>
-            </select>
+    <div id="secondaryOptionsDiv" style="display: none;">
+        <div class="form-row">
+            <div class="label-container">
+                <label for="secondaryOptions"><i class="icon fas fa-gear"></i> Secondary Options:</label>
+            </div>
+            <div class="select-container">
+                <select id="secondaryOptions" onchange="updateCandidates()">
+                    <option value="">--Select--</option>
+                    <option value="-MPC">MPC</option>
+                    <option value="-IS">Input Shaping</option>
+                </select>
+            </div>
         </div>
     </div>
     <br>
@@ -276,17 +293,31 @@ image:
     <p>
     <div id="candidates"></div>
     </p>
-    <h3>📚 Versions</h3>
+    <h3 id="versions">📚 Versions</h3>
     <hr>
     <p>Some versions <i>do</i> have options like Power-loss Recovery despite not having it in the file name.<br>
-        Board types <b>422</b>, <b>427</b>, and leveling options <b>Default</b>, and <b>Manual Mesh</b> should have this
-        and other options enabled.</p>
+        Board types <b>422</b>/<b>427</b>, and leveling options <b>Default</b>/<b>Manual Mesh</b> should have this
+        and other options enabled which may not be available in <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions.</p>
     <p>These are the special configurations offered:</p>
     <ul>
         <li>[ -ProUI-EX ]<br>
             | ProUI Extra Features |
             <br><b>Toolbar, change bed physical dimensions, and other special features and options</b>
         </li>
+        <br>
+        <dt>Features</dt>
+        <li>[ _SPRT13 ]<br>
+            | Creality Sprite Extruder | (uses thermistor # 13)
+        </li>
+        <li>[ _IND ]<br>
+            | Inductive Sensor | (probe used on X3/S2 models)
+        </li>
+        <li>[ _BMP ]<br>
+            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>-<b>Touch</b>)
+            <br><sup>Use <b>ONLY</b> if you <b>DO</b> have this probe</sup>
+        </li>
+        <br>
+        <dt>Options</dt>
         <li>[ -IS ]<br>
             | Input Shaping | (similar to Linear Advance)
         </li>
@@ -296,16 +327,6 @@ image:
         <li>[ -PLR ]<br>
             | Power-Loss Recovery | (resumes where a print job left off when there is a <i>power outage</i>)
         </li>
-        <li>[ _SPRT13 ]<br>
-            | Sprite Extruder | (uses thermistor # 13)
-        </li>
-        <li>[ _IND ]<br>
-            | Inductive Sensor | (probe used on X3/S2 models)
-        </li>
-        <li>[ _BMP ]<br>
-            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>TOUCH</b>)
-            <br><sup>Use <b>ONLY</b> this firmware with "<i>_BMP</i>" if you <b>DO</b> have this probe</sup>
-        </li>
     </ul>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -314,6 +335,7 @@ image:
             const releaseList = document.getElementById('release-list');
             const selectedReleaseTagDiv = document.getElementById('selected-release-tag');
             const resetButton = document.getElementById('resetButton');
+            const totalDownloads = document.getElementById('total-downloads');
             let releaseTag = 'latest';
             const repoUrl = 'https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases';
             async function fetchAllReleases(url, page = 1, releases = []) {
@@ -372,7 +394,9 @@ image:
                 releaseList.appendChild(label);
             }
             function updateSelectedReleaseTag() {
-                selectedReleaseTagDiv.textContent = releaseTag || 'latest';
+                let releaseTagName = releaseTag.replace("tags/", "");
+                selectedReleaseTagDiv.textContent = releaseTagName || 'latest';
+                totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${releaseTagName}/total'> - Total</label>`
             }
             function fetchReleasesByMonth(month, releases) {
                 const filteredReleases = releases.filter(release => formatMonthYear(release.published_at) === month);
@@ -416,8 +440,8 @@ image:
             }
             async function fetchReleaseData(model) {
                 const releaseHTML = await fetchReleaseHTML(`https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/${releaseTag}`);
-                const areleaseTag = extractTagName(releaseHTML);
-                const split = splitTag(areleaseTag);
+                const extractedTag = extractTagName(releaseHTML);
+                const split = splitTag(extractedTag);
                 if (model === "HC32") {
                     split.model = "HC32";
                 } else if (model === "Ender") {
@@ -451,11 +475,34 @@ image:
                 const type = document.getElementById("type").value;
                 const features = document.getElementById("features").value;
                 const secondaryFeatures = document.getElementById("secondaryFeatures").value;
+                const secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
+                const secondaryFeaturesSelect = document.getElementById("secondaryFeatures");
                 const leveling = document.getElementById("leveling").value;
                 const options = document.getElementById("options").value;
                 const secondaryOptions = document.getElementById("secondaryOptions").value;
-                secondaryFeaturesDiv.style.display = (features === "_SPRT13") ? "block" : "none";
-                if (screen === "C2-") {
+                const secondaryOptionsDiv = document.getElementById("secondaryOptionsDiv");
+                const secondaryOptionsSelect = document.getElementById("secondaryOptions");
+                secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_BMP") ? "block" : "none";
+                secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS") ? "block" : "none";
+                secondaryFeaturesSelect.innerHTML = '<option value="">--Select--</option>';
+                if (features === "_SPRT13") {
+                    secondaryFeaturesSelect.innerHTML += '<option value="_BMP">BIQU MicroProbe V2</option>';
+                    document.getElementById("leveling").value = "_UBL";
+                } else if (features === "_BMP") {
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13">Creality Sprite</option>';
+                    document.getElementById("leveling").value = "_UBL";
+                }
+                secondaryFeaturesSelect.value = secondaryFeatures;
+                secondaryOptionsSelect.innerHTML = '<option value="">--Select--</option>';
+                if (options === "-IS") {
+                    secondaryOptionsSelect.innerHTML += '<option value="-MPC">MPC</option>';
+                } else if (options === "-MPC") {
+                    secondaryOptionsSelect.innerHTML += '<option value="-IS">Input Shaping</option>';
+                } else {
+                    secondaryOptionsSelect.innerHTML += '<option value="-MPC">MPC</option><option value="-IS">Input Shaping</option>';
+                }
+                secondaryOptionsSelect.value = secondaryOptions;
+                if (screen === "C2-" || leveling === "_Default") {
                     proUIExtraFeatures = "";
                     document.getElementById("proUIExtraFeatures").value = proUIExtraFeatures;
                 }
@@ -478,6 +525,9 @@ image:
                     const name = asset.name;
                     if (features === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13"))) return false;
                     if (features === "_SPRT13" && secondaryFeatures === "" && name.includes("_BMP")) return false;
+                    if (features === "_BMP" && secondaryFeatures === "" && name.includes("_SPRT13")) return false;
+                    if (options === "-MPC" && secondaryOptions === "" && name.includes("-IS")) return false;
+                    if (options === "-IS" && secondaryOptions === "" && name.includes("-MPC")) return false;
                     if (proUIExtraFeatures === "" && name.includes("-ProUI")) return false;
                     return (
                         name.startsWith(linkPrefix) &&
@@ -491,12 +541,15 @@ image:
                     );
                 });
                 const candidatesList = document.getElementById("candidates");
-                candidatesList.innerHTML = '<div class="candidates-container"><a class="fas fa-download"></a><strong> Candidates:</strong></div><br>';
+                candidatesList.innerHTML = '<div class="candidates-container"><a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>Candidates:</strong><br></div><br>';
                 if (candidates.length > 0) {
                     candidates.forEach(candidate => {
                         const url = candidate.browser_download_url;
                         const filename = url.substring(url.lastIndexOf('/') + 1);
-                        candidatesList.innerHTML += `<div class='candidates-row'><a href='${url}'>${filename}</a></div>`;
+                        candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style='color: brown'>${filename}</span><a style='margin-left: auto; margin-right: 2%; font-size: 20px;' href='${url}' class='fas fa-download'></a></span></div>`;
+                        /*<img alt="GitHub Downloads (all assets, latest release)" src="https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total">
+                        <img alt="GitHub Downloads (all assets, specific tag)" src="https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total?link=${url}">;
+                        <img alt="GitHub Downloads (specific asset, specific tag)" src="https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/2.1.3f-5-2/Aquila_422_BLT-ProUI-EX-05-23.bin">*/
                     });
                 } else {
                     candidatesList.textContent = "No candidates found.";
@@ -530,6 +583,12 @@ image:
                 clearSelections();
                 updateCandidates();
             }
+            document.getElementById("features").addEventListener("change", () => {
+                document.getElementById("secondaryFeatures").value = "";
+            });
+            document.getElementById("options").addEventListener("change", () => {
+                document.getElementById("secondaryOptions").value = "";
+            });
             resetButton.addEventListener('mousedown', () => resetButton.style.animationPlayState = 'running');
             resetButton.addEventListener('mouseup', () => resetButton.style.animationPlayState = 'paused');
             resetButton.addEventListener('click', resetSelections);
