@@ -487,10 +487,8 @@ permalink: /firmware-selector
                 secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
                 if (features === "_SPRT13") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
-                    document.getElementById("leveling").value = "_UBL";
                 } else if (features === "_BMP") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
-                    document.getElementById("leveling").value = "_UBL";
                 }
                 secondaryFeaturesSelect.value = secondaryFeatures;
                 secondaryOptionsSelect.innerHTML = '<option value="" title="No specific secondary option">--Select--</option>';
@@ -506,7 +504,14 @@ permalink: /firmware-selector
                 }
                 let linkPrefix = "";
                 if (model === "HC32" || type === "HC32") {
-                    linkPrefix = (screen === "C2-") ? "C2-HC32" : "HC32";
+                    if (screen === "C2-") {
+                        linkPrefix = "C2-HC32";
+                    } else if (screen === "TJC-") {
+                        linkPrefix = "TJC-HC32";
+                    } else {
+                        linkPrefix = "HC32";
+                    }
+                    type = "";
                 } else if (model === "Ender") {
                     linkPrefix = (screen === "TJC-") ? "TJC-Ender" : "Ender";
                 } else {
