@@ -302,12 +302,12 @@ permalink: /firmware-selector
     <ul>
         <li>[ -ProUI-EX ]<br>
             | ProUI Extra Features |
-            <br><b>Toolbar, change bed physical dimensions, and other special features and options</b>
+            <br>Toolbar, change bed physical dimensions, and other special features and options
         </li>
         <br>
         <dt>Features</dt>
         <li>[ _SPRT13 ]<br>
-            | Creality Sprite Extruder | (uses thermistor # 13)
+            | Creality Sprite Extruder | (uses thermistor #13)
         </li>
         <li>[ _IND ]<br>
             | Inductive Sensor | (probe used on X3/S2 models)
@@ -511,7 +511,6 @@ permalink: /firmware-selector
                     } else {
                         linkPrefix = "HC32";
                     }
-                    type = "";
                 } else if (model === "Ender") {
                     linkPrefix = (screen === "TJC-") ? "TJC-Ender" : "Ender";
                 } else {
