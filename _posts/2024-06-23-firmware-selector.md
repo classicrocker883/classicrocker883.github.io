@@ -13,6 +13,16 @@ image:
   alt: Firmware Selector
 ---
 
+---
+# the default layout is 'page'
+layout: default
+title: Firmware Selector
+show_title: false
+icon: fas fa-code-compare
+order: 1
+permalink: /firmware-selector
+---
+
 <html lang="en">
 <head>
     <style>
@@ -302,36 +312,38 @@ image:
     <hr>
     <p>Some versions <i>do</i> have options like Power-loss Recovery despite not having it in the file name.<br>
         Board types <b>422</b>/<b>427</b>, and leveling options <b>Default</b>/<b>Manual Mesh</b> should have this
-        and other options enabled which may not be available in <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions.</p>
+        and other options enabled which may not be available in base <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions.</p>
     <p>These are the special configurations offered:</p>
     <ul>
-        <li>[ -ProUI-EX ]<br>
-            | ProUI Extra Features |
-            <br><b>Toolbar, change bed physical dimensions, and other special features and options</b>
-        </li>
-        <br>
-        <dt>Features</dt>
-        <li>[ _SPRT13 ]<br>
-            | Creality Sprite Extruder | (uses thermistor # 13)
-        </li>
-        <li>[ _IND ]<br>
-            | Inductive Sensor | (probe used on X3/S2 models)
-        </li>
-        <li>[ _BMP ]<br>
-            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>-<b>Touch</b>)
-            <br><sup>Use <b>ONLY</b> if you <b>DO</b> have this probe</sup>
-        </li>
-        <br>
-        <dt>Options</dt>
-        <li>[ -IS ]<br>
-            | Input Shaping | (similar to Linear Advance)
-        </li>
-        <li>[ -MPC ]<br>
-            | MPC Autotune | (replaces <b>PID</b> for hotend)
-        </li>
-        <li>[ -PLR ]<br>
-            | Power-Loss Recovery | (resumes where a print job left off when there is a <i>power outage</i>)
-        </li>
+        <dl>
+            <li>[ -ProUI-EX ]<br>
+                | ProUI Extra Features |
+                <br>Toolbar, change bed physical dimensions, and other special features and options
+            </li>
+            <br>
+                <dt>Features</dt>
+            <li>[ _SPRT13 ]<br>
+                | Creality Sprite Extruder | (uses thermistor #13)
+            </li>
+            <li>[ _IND ]<br>
+                | Inductive Sensor | (probe used on X3/S2 models)
+            </li>
+            <li>[ _BMP ]<br>
+                | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>-<b>Touch</b>)
+                <br><sup>Use <b>ONLY</b> if you <b>DO</b> have this probe</sup>
+            </li>
+            <br>
+                <dt>Options</dt>
+            <li>[ -IS ]<br>
+                | Input Shaping | (similar to Linear Advance)
+            </li>
+            <li>[ -MPC ]<br>
+                | MPC Autotune | (replaces <b>PID</b> for hotend)
+            </li>
+            <li>[ -PLR ]<br>
+                | Power-Loss Recovery | (resumes where a print job left off when there is a <i>power outage</i>)
+            </li>
+        </dl>
     </ul>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -447,7 +459,8 @@ image:
                 const releaseHTML = await fetchReleaseHTML(`https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/${releaseTag}`);
                 const extractedTag = extractTagName(releaseHTML);
                 const split = splitTag(extractedTag);
-                if (model === "HC32") {
+                const type = document.getElementById("type").value;
+                if (model === "HC32" || type === "HC32") {
                     split.model = "HC32";
                 } else if (model === "Ender") {
                     split.model = "ender3";
@@ -492,10 +505,8 @@ image:
                 secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
                 if (features === "_SPRT13") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
-                    document.getElementById("leveling").value = "_UBL";
                 } else if (features === "_BMP") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
-                    document.getElementById("leveling").value = "_UBL";
                 }
                 secondaryFeaturesSelect.value = secondaryFeatures;
                 secondaryOptionsSelect.innerHTML = '<option value="" title="No specific secondary option">--Select--</option>';
@@ -511,7 +522,13 @@ image:
                 }
                 let linkPrefix = "";
                 if (model === "HC32" || type === "HC32") {
-                    linkPrefix = (screen === "C2-") ? "C2-HC32" : "HC32";
+                    if (screen === "C2-") {
+                        linkPrefix = "C2-HC32";
+                    } else if (screen === "TJC-") {
+                        linkPrefix = "TJC-HC32";
+                    } else {
+                        linkPrefix = "HC32";
+                    }
                 } else if (model === "Ender") {
                     linkPrefix = (screen === "TJC-") ? "TJC-Ender" : "Ender";
                 } else {
@@ -527,6 +544,7 @@ image:
                 const candidates = assets.filter(asset => {
                     const name = asset.name;
                     if (features === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13"))) return false;
+                    if (options === "" && (name.includes("-MPC") || name.includes("-IS") || name.includes("-PLR"))) return false;
                     if (features === "_SPRT13" && secondaryFeatures === "" && name.includes("_BMP")) return false;
                     if (features === "_BMP" && secondaryFeatures === "" && name.includes("_SPRT13")) return false;
                     if (options === "-MPC" && secondaryOptions === "" && name.includes("-IS")) return false;
