@@ -29,12 +29,11 @@ permalink: /firmware-selector
             display: block;
         }
         .select-container {
-            flex: 1;
             padding-left: 2%;
+            margin-right: 50%;
         }
         select {
-            position: absolute;
-            width: 25%;
+            width: 10em;
             padding: 2px;
             border: 1px solid #ccc;
             border-radius: 2px;
@@ -186,7 +185,7 @@ permalink: /firmware-selector
                 <option value="" title="No specific display selected">--Select--</option>
                 <option value="DWIN">DWIN</option>
                 <option value="TJC-" title="TJC-">TJC</option>
-                <option value="C2-" title="'C2-' (Monochrome LCD Display)">12864</option>
+                <option value="C2-" title="C2- (Monochrome LCD Display)">12864</option>
             </select>
         </div>
     </div>
@@ -240,7 +239,7 @@ permalink: /firmware-selector
         </div>
         <div class="select-container">
             <select id="leveling" onchange="updateCandidates()">
-                <option value="" title="No specific leveling method">--Select--</option>
+                <option value="" title="Choose bed leveling">--Select--</option>
                 <option value="_UBL" title="_UBL">Unified Bed Leveling</option>
                 <option value="_BLT" title="_BLT">Bilinear Bed Leveling</option>
                 <option value="_MM" title="_MM">Manual Mesh</option>
@@ -300,35 +299,33 @@ permalink: /firmware-selector
         and other options enabled which may not be available in base <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions.</p>
     <p>These are the special configurations offered:</p>
     <ul>
-        <dl>
-            <li>[ -ProUI-EX ]<br>
-                | ProUI Extra Features |
-                <br>Toolbar, change bed physical dimensions, and other special features and options
-            </li>
-            <br>
-                <dt>Features</dt>
-            <li>[ _SPRT13 ]<br>
-                | Creality Sprite Extruder | (uses thermistor #13)
-            </li>
-            <li>[ _IND ]<br>
-                | Inductive Sensor | (probe used on X3/S2 models)
-            </li>
-            <li>[ _BMP ]<br>
-                | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>-<b>Touch</b>)
-                <br><sup>Use <b>ONLY</b> if you <b>DO</b> have this probe</sup>
-            </li>
-            <br>
-                <dt>Options</dt>
-            <li>[ -IS ]<br>
-                | Input Shaping | (similar to Linear Advance)
-            </li>
-            <li>[ -MPC ]<br>
-                | MPC Autotune | (replaces <b>PID</b> for hotend)
-            </li>
-            <li>[ -PLR ]<br>
-                | Power-Loss Recovery | (resumes where a print job left off when there is a <i>power outage</i>)
-            </li>
-        </dl>
+        <li>[ -ProUI-EX ]<br>
+            | ProUI Extra Features |
+            <br>Toolbar, change bed physical dimensions, and other special features and options
+        </li>
+        <br>
+            <strong>Features</strong>
+        <li>[ _SPRT13 ]<br>
+            | Creality Sprite Extruder | (uses thermistor #13)
+        </li>
+        <li>[ _IND ]<br>
+            | Inductive Sensor | (probe used on X3/S2 models)
+        </li>
+        <li>[ _BMP ]<br>
+            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>-<b>Touch</b>)
+            <br><sup>Use <b>ONLY</b> if you <b>DO</b> have this probe</sup>
+        </li>
+        <br>
+            <strong>Options</strong>
+        <li>[ -IS ]<br>
+            | Input Shaping | (similar to Linear Advance)
+        </li>
+        <li>[ -MPC ]<br>
+            | MPC Autotune | (replaces <b>PID</b> for hotend)
+        </li>
+        <li>[ -PLR ]<br>
+            | Power-Loss Recovery | (resumes where a print job left off when there is a <i>power outage</i>)
+        </li>
     </ul>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -528,10 +525,20 @@ permalink: /firmware-selector
                 const assets = await fetchReleaseData(model);
                 const candidates = assets.filter(asset => {
                     const name = asset.name;
+                    if (type !== "_GD32" && name.includes("_GD32")) return false;
+                    if (type !== "_N32" && name.includes("_N32")) return false;
+                    if (type !== "HC32" && name.includes("HC32")) return false;
+                    if (type !== "_427" && name.includes("_427")) return false;
+                    if (type !== "_422" && name.includes("_422")) return false;
+                    if (type !== "_SKR-Mini-E3-" && name.includes("_SKR-Mini-E3-")) return false;
                     if (features === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13"))) return false;
-                    if (options === "" && (name.includes("-MPC") || name.includes("-IS") || name.includes("-PLR"))) return false;
                     if (features === "_SPRT13" && secondaryFeatures === "" && name.includes("_BMP")) return false;
                     if (features === "_BMP" && secondaryFeatures === "" && name.includes("_SPRT13")) return false;
+                    if (leveling !== "_UBL" && name.includes("_UBL")) return false;
+                    if (leveling !== "_BLT" && name.includes("_BLT")) return false;
+                    if (leveling !== "_MM" && name.includes("_MM")) return false;
+                    if (leveling !== "_Default" && name.includes("_Default")) return false;
+                    if (options === "" && (name.includes("-MPC") || name.includes("-IS") || name.includes("-PLR"))) return false;
                     if (options === "-MPC" && secondaryOptions === "" && name.includes("-IS")) return false;
                     if (options === "-IS" && secondaryOptions === "" && name.includes("-MPC")) return false;
                     if (proUIExtraFeatures === "" && name.includes("-ProUI")) return false;
