@@ -302,36 +302,53 @@ image:
     <p>Some versions <i>do</i> have options like Power-loss Recovery despite not having it in the file name.<br>
         Board types <b>422</b>/<b>427</b>, and leveling options <b>Default</b>/<b>Manual Mesh</b> should have this
         and other options enabled which may not be available in base <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions.</p>
-    <p>These are the special configurations offered:</p>
+    <dl>
+        <dt>These are the configurations offered:</dt>
+    </dl>
+    <h3>Bed Leveling Options</h3>
     <ul>
-        <li>[ -ProUI-EX ]<br>
-            | ProUI Extra Features |
-            <br>Toolbar, change bed physical dimensions, and other special features and options
-        </li>
-        <br>
-            <strong>Features</strong>
-        <li>[ _SPRT13 ]<br>
-            | Creality Sprite Extruder | (uses thermistor #13)
-        </li>
-        <li>[ _IND ]<br>
-            | Inductive Sensor | (probe used on X3/S2 models)
-        </li>
-        <li>[ _BMP ]<br>
-            | BIQU MicroProbe V2.0 | (alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>-<b>Touch</b>)
-            <br><sup>Use <b>ONLY</b> if you <b>DO</b> have this probe</sup>
-        </li>
-        <br>
-            <strong>Options</strong>
-        <li>[ -IS ]<br>
-            | Input Shaping | (similar to Linear Advance)
-        </li>
-        <li>[ -MPC ]<br>
-            | MPC Autotune | (replaces <b>PID</b> for hotend)
-        </li>
-        <li>[ -PLR ]<br>
-            | Power-Loss Recovery | (resumes where a print job left off when there is a <i>power outage</i>)
-        </li>
+        <li><b>[ _Default-NP ]</b>: Use if you have a near stock machine</li><sup>Default No Probe</sup>
+        <li><b>[ _MM ]</b>: Create a bed mesh without an auto bed probe</li><sup><a
+                href="https://marlinfw.org/docs/gcode/G029-mbl.html" rel="nofollow">Manual Mesh Bed Leveling</a></sup>
+        <li><b>[ _BLT ]</b>: Use if you have a CR/3D/BL-Touch level sensor installed.</li><sup><a
+                href="https://marlinfw.org/docs/features/auto_bed_leveling.html" rel="nofollow">Bilinear Auto Bed
+                Leveling</a></sup>
+        <li><b>[ _UBL ]</b>: Similar to both MM and BLT - with more options. Recommended over BLT</li><sup><a
+                href="https://marlinfw.org/docs/features/unified_bed_leveling.html" rel="nofollow">Unified Bed
+                Leveling</a></sup>
     </ul>
+    <h3>Special Versions</h3>
+    <dl>
+        <dt><sup>(List of file prefixes and suffixes)</sup></dt>
+    </dl>
+    <ul>
+        <li>[ -ProUI-EX ]<br> | ProUI Extra Features | <dt>Toolbar, change bed physical dimensions, and other special
+                features and options</dt>
+        </li>
+        <p></p>
+        <dd><ins><b>LCD Displays</b></ins></dd>
+        <li>[ DWIN ]<br> | Stock DWIN LCD | (No actual prefix)</li>
+        <li>[ TJC- ]<br> | Creality TJC LCD | (As aftermarket or sometimes used in stock Creality machines)</li>
+        <li>[ C2- ]<br> | Monochrome 128x64 LCD | (Used in Aquila C2 and original Ender-3/CR-10)</li>
+        <sup>This has <b>NO</b> ProUI capabilities</sup>
+        <p></p>
+        <dd><ins><b>Features</b></ins></dd>
+        <li>[ _SPRT13 ]<br> | Sprite Extruder | (Uses thermistor # 13)</li>
+        <li>[ _IND ]<br> | Inductive Sensor | (Probe used on X3/S2 models)</li>
+        <li>[ _BMP ]<br> | BIQU MicroProbe V2.0 | (Alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>Touch</b>)</li>
+        <sup>Use <b>ONLY</b> this firmware with <i>_BMP</i> if you <b>DO</b> have this probe</sup>
+        <p></p>
+        <dd><ins><b>Options</b></ins></dd>
+        <li>[ -IS ]<br> | Input Shaping | (Similar to <b>Linear Advance</b>)</li>
+        <sup>Use <b>ONLY</b> if you mean to do the initial calibration✶</sup>
+        <li>[ -MPC ]<br> | MPC Autotune | (Replaces <b>PID</b> for hotend)</li>
+        <li>[ -PLR ]<br> | Power-Loss Recovery | (Resumes where a print job left off when there is a <i>power
+                outage</i>)</li>
+    </ul>
+    <sup>✶Reminder: Do not use `Input Shaping` (file suffix <i>-IS</i>) <b>unless</b> you do the necessary
+        calibration.<br>
+        Prints will be effected regardless. May require a special breakout board or test prints to calibrate.
+    </sup>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const selectMonth = document.getElementById('month-select');
