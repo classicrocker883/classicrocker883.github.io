@@ -16,21 +16,21 @@ timezone: America/New_York
 
 title: MRiscoCProUI # the main title
 
-tagline: by ClassicRocker883 # it will display as the sub-title
+tagline: by ClassicRocker883 # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   Firmware for Voxelab Aquila & Ender3 V2/S1 3D printers.
 
 # Fill in the protocol & hostname for your site.
-# e.g. 'https://username.github.io', note that it does not end with a '/'.
+# E.g. 'https://username.github.io', note that it does not end with a '/'.
 url: "https://classicrocker883.github.io"
 
 github:
-  username: classicrocker883 # change to your github username
+  username: classicrocker883 # change to your GitHub username
   token: "{{ site.github.MYTOKEN }}"
 
 twitter:
-  username: twitter_username # change to your twitter username
+  username: andrewleduc88 # change to your Twitter username
 
 social:
   # Change to your full name.
@@ -39,7 +39,7 @@ social:
   email: andrewleduc88@yahoo.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://github.com/classicrocker883 # change to your github homepage
+    - https://github.com/classicrocker883 # change to your GitHub homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
@@ -71,7 +71,7 @@ analytics:
   cloudflare:
     id: # fill in your Cloudflare Web Analytics token
 
-# Pageviews settings
+# Page views settings
 pageviews:
   provider: # now only supports 'goatcounter'
 
@@ -83,8 +83,8 @@ pageviews:
 #
 # Available options:
 #
-#     light  - Use the light color scheme
-#     dark   - Use the dark color scheme
+#     light — Use the light color scheme
+#     dark — Use the dark color scheme
 #
 theme_mode: dark # [light | dark]
 
@@ -106,7 +106,7 @@ social_preview_image: # string, local or CORS resources
 toc: true
 
 comments:
-  # Global switch for the post comment system. Keeping it empty means disabled.
+  # Global switch for the post-comment system. Keeping it empty means disabled.
   provider: # [disqus | utterances | giscus]
   # The provider options are as follows:
   disqus:
@@ -136,9 +136,9 @@ assets:
     env: # [development | production]
 
 pwa:
-  enabled: true # the option for PWA feature (installable)
+  enabled: true # The option for PWA feature (installable)
   cache:
-    enabled: true # the option for PWA offline cache
+    enabled: true # The option for PWA offline cache
     # Paths defined here will be excluded from the PWA cache.
     # Usually its value is the `baseurl` of another website that
     # shares the same domain name as the current website.
