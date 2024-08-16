@@ -4,7 +4,7 @@ description: >-
     Firmware Selection.
 author: ClassicRocker883
 permalink: /firmware
-date: 2024-06-23 00:00:00 -0400
+date: 2024-08-16 00:00:00 -0400
 categories: [Firmware, Tutorial]
 tags: [firmware]
 pin: true
@@ -54,7 +54,9 @@ image:
             width: 110%;
         }
         .candidates-container {
-            display: flex; justify-content: center; align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .button-container {
             display: flex;
@@ -128,18 +130,21 @@ image:
             align-items: center;
         }
         .center {
-          display: block;
-          text-align: center;
-          margin: 0 auto;
+            display: block;
+            text-align: center;
+            margin: 0 auto;
         }
     </style>
     <h1 class="center"><i class="fas fa-code-compare"></i> Firmware Selector</h1>
     <p class="center" style=""><a href="#versions">Version information below</a></p>
-    <img alt="Firmware Selector Logo" src="https://classicrocker883.github.io/assets/img/firmware-selector.png" width="200" height="200" class="center">
+    <img alt="Firmware Selector Logo" src="https://classicrocker883.github.io/assets/img/firmware-selector.png"
+        width="200" height="200" class="center">
     <hr>
 </head>
 <body>
-    <label for="month-select"><h3><i class="icon fas fa-list-check"></i> Select a Release:</h3></label>
+    <label for="month-select">
+        <h3><i class="icon fas fa-list-check"></i> Select a Release:</h3>
+    </label>
     <select id="month-select">
         <option value="latest" title="The most recent release version">Latest Release</option>
         <option>Loading...</option>
@@ -151,7 +156,7 @@ image:
     </div>
     <br>
     <div>
-    <br>
+        <br>
         <strong>Selected Release Tag:</strong>
         <div id="selected-release-tag">latest</div>
         <div id="total-downloads"></div>
@@ -164,7 +169,7 @@ image:
             <select id="model" onchange="updateModelSelections()">
                 <option value="" title="No specific model">--Optional--</option>
                 <option value="Aquila" title="Aquila OG/X2">Aquila</option>
-                <option value="Aquila X3" title="Aquila X3">Aquila X3</option>
+                <option value="Aquila X3" title="Aquila X3/S3 Induction Probe">Aquila X3/S3</option>
                 <option value="HC32" title="H32">HC32</option>
                 <option value="Ender" title="Ender-3V2/S1">Ender-3V2/S1</option>
             </select>
@@ -204,9 +209,12 @@ image:
                 <option value="_GD32" title="_GD32">GD32</option>
                 <option value="_N32" title="_N32">N32</option>
                 <option value="HC32" title="HC32">HC32</option>
-                <option value="_427" title="_427">427</option>
-                <option value="_422" title="_422">422</option>
-                <option value="_SKR-Mini-E3-" title="_SKR-Mini-E3-">SKR</option>
+                <option value="_427" title="_427">Creality 4.2.7</option>
+                <option value="_422" title="_422">Creality 4.2.2</option>
+                <option value="_E3-Free-runs" title="_E3-Free-runs">Creality E3 Free-runs</option>
+                <option value="-S1-F1" title="-S1-F1">Ender-3 S1 F103</option>
+                <option value="-S1-F4" title="-S1-F4">Ender-3 S1 F401</option>
+                <option value="_SKR-Mini-E3-" title="_SKR-Mini-E3-">BTT SKR Mini E3</option>
             </select>
         </div>
     </div>
@@ -325,6 +333,12 @@ image:
         <li>[ -ProUI-EX ]<br> | ProUI Extra Features | <dt>Toolbar, change bed physical dimensions, and other special
                 features and options</dt>
         </li>
+        <li>[ _E3-Free-runs ]<br> | Creality E3 Free-runs | (Creality board - TMC2209 drivers)
+        </li>
+        <li>[ -S1-&lt;F1/F4&gt ]<br> | Creality Ender-3 S1 | (Check to see whether you have <b>F1</b> or <b>F4</b>)
+            <dt><i>-S1-F1</i>: <code>STM32F103RC</code> chip and <code>CREALITY_V24S1_301</code> board</dt>
+            <dt><i>-S1-F4</i>: <code>STM32F401RC</code> chip and <code>CREALITY_V24S1_301F4</code> board</dt>
+        </li>
         <p></p>
         <dd><ins><b>LCD Displays</b></ins></dd>
         <li>[ DWIN ]<br> | Stock DWIN LCD | (No actual prefix)</li>
@@ -334,7 +348,8 @@ image:
         <p></p>
         <dd><ins><b>Features</b></ins></dd>
         <li>[ _SPRT13 ]<br> | Sprite Extruder | (Uses thermistor # 13)</li>
-        <li>[ _IND ]<br> | Inductive Sensor | (Probe used on X3/S2 models)</li>
+        <li>[ _IND ]<br> | Inductive Sensor | (Probe used on <b>X3</b>/<b>S3</b> models)<br>
+            <b>CAUTION</b>: You may need to adjust the <ins>Probe Y Offset</ins> to <b>-20</b> or <b>-25</b> on an <b>S3</b></li>
         <li>[ _BMP ]<br> | BIQU MicroProbe V2.0 | (Alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>Touch</b>)</li>
         <sup>Use <b>ONLY</b> this firmware with <i>_BMP</i> if you <b>DO</b> have this probe</sup>
         <p></p>
@@ -552,7 +567,10 @@ image:
                     if (type !== "HC32" && name.includes("HC32")) return false;
                     if (type !== "_427" && name.includes("_427")) return false;
                     if (type !== "_422" && name.includes("_422")) return false;
+                    if (type !== "-S1-F1" && name.includes("-S1-F1")) return false;
+                    if (type !== "-S1-F4" && name.includes("-S1-F4")) return false;
                     if (type !== "_SKR-Mini-E3-" && name.includes("_SKR-Mini-E3-")) return false;
+                    if (type !== "_E3-Free-runs" && name.includes("_E3-Free-runs")) return false;
                     if (features === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13"))) return false;
                     if (features === "_SPRT13" && secondaryFeatures === "" && name.includes("_BMP")) return false;
                     if (features === "_BMP" && secondaryFeatures === "" && name.includes("_SPRT13")) return false;
