@@ -236,6 +236,7 @@ permalink: /firmware-selector
                 <select id="secondaryFeatures" onchange="updateCandidates()">
                     <option value="" title="No specific secondary features">--Select--</option>
                     <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
+                    <option value="_IND" title="_IND">Induction Probe</option>
                     <option value="_SPRT13" title="_SPRT13">Creality Sprite</option>
                 </select>
             </div>
@@ -278,6 +279,7 @@ permalink: /firmware-selector
                     <option value="" title="No specific secondary options">--Select--</option>
                     <option value="-MPC" title="-MPC">MPC</option>
                     <option value="-IS" title="-IS">Input Shaping</option>
+                    <option value="-PLR" title="-PLR">Power-loss Recovery</option>
                 </select>
             </div>
         </div>
@@ -514,19 +516,27 @@ permalink: /firmware-selector
                 const secondaryOptions = document.getElementById("secondaryOptions").value;
                 const secondaryOptionsDiv = document.getElementById("secondaryOptionsDiv");
                 const secondaryOptionsSelect = document.getElementById("secondaryOptions");
-                secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_BMP") ? "block" : "none";
-                secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS") ? "block" : "none";
+                secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_BMP" || features === "_IND") ? "block" : "none";
+                secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS" || options === "-PLR") ? "block" : "none";
                 secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
                 if (features === "_SPRT13") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
                 } else if (features === "_BMP") {
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
+                } else if (features === "_IND") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
                 }
                 secondaryFeaturesSelect.value = secondaryFeatures;
                 secondaryOptionsSelect.innerHTML = '<option value="" title="No specific secondary option">--Select--</option>';
-                if (options === "-IS") {
+                if (options === "-MPC") {
+                    secondaryOptionsSelect.innerHTML += '<option value="-IS" title="-IS">Input Shaping</option>';
+                    secondaryOptionsSelect.innerHTML += '<option value="-PLR" title="-PLR">Power-loss Recovery</option>';
+                } else if (options === "-IS") {
                     secondaryOptionsSelect.innerHTML += '<option value="-MPC" title="-MPC">MPC</option>';
-                } else if (options === "-MPC") {
+                    secondaryOptionsSelect.innerHTML += '<option value="-PLR" title="-PLR">Power-loss Recovery</option>';
+                } else if (options === "-PLR") {
+                    secondaryOptionsSelect.innerHTML += '<option value="-MPC" title="-MPC">MPC</option>';
                     secondaryOptionsSelect.innerHTML += '<option value="-IS" title="-IS">Input Shaping</option>';
                 }
                 secondaryOptionsSelect.value = secondaryOptions;
@@ -567,15 +577,17 @@ permalink: /firmware-selector
                     if (type !== "_SKR-Mini-E3-" && name.includes("_SKR-Mini-E3-")) return false;
                     if (type !== "_E3-Free-runs" && name.includes("_E3-Free-runs")) return false;
                     if (features === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13"))) return false;
-                    if (features === "_SPRT13" && secondaryFeatures === "" && name.includes("_BMP")) return false;
-                    if (features === "_BMP" && secondaryFeatures === "" && name.includes("_SPRT13")) return false;
+                    if (features === "_SPRT13" && secondaryFeatures === "" && (name.includes("_BMP") || name.includes("_IND"))) return false;
+                    if (features === "_BMP" && secondaryFeatures === "" && (name.includes("_IND") || name.includes("_SPRT13"))) return false;
+                    if (features === "_IND" && secondaryFeatures === "" && (name.includes("_BMP") || name.includes("_SPRT13"))) return false;
                     if (leveling !== "_UBL" && name.includes("_UBL")) return false;
                     if (leveling !== "_BLT" && name.includes("_BLT")) return false;
                     if (leveling !== "_MM" && name.includes("_MM")) return false;
                     if (leveling !== "_Default" && name.includes("_Default")) return false;
                     if (options === "" && (name.includes("-MPC") || name.includes("-IS") || name.includes("-PLR"))) return false;
-                    if (options === "-MPC" && secondaryOptions === "" && name.includes("-IS")) return false;
-                    if (options === "-IS" && secondaryOptions === "" && name.includes("-MPC")) return false;
+                    if (options === "-MPC" && secondaryOptions === "" && (name.includes("-IS") || name.includes("-PLR"))) return false;
+                    if (options === "-IS" && secondaryOptions === "" && (name.includes("-MPC") || name.includes("-PLR"))) return false;
+                    if (options === "-PLR" && secondaryOptions === "" && (name.includes("-MPC") || name.includes("-IS"))) return false;
                     if (proUIExtraFeatures === "" && name.includes("-ProUI")) return false;
                     return (
                         name.startsWith(linkPrefix) &&
@@ -622,6 +634,7 @@ permalink: /firmware-selector
             function clearSelections() {
                 document.querySelectorAll('#proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(selection => selection.selectedIndex = 0);
                 document.getElementById("secondaryFeaturesDiv").style.display = "none";
+                document.getElementById("secondaryOptionsDiv").style.display = "none";
             }
             function resetSelections() {
                 document.getElementById("model").selectedIndex = 0;
