@@ -399,7 +399,7 @@ permalink: /firmware-selector
                 return url.split('/').pop();
             }
             function splitTag(tag) {
-                const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(HC32|ender3))?(?:-(-?\d+[a-z]))?$/;
+                const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(HC32|ender3))?(?:-(-?\d+[a-z]*))?$/;
                 const match = tag.match(regex);
                 return {
                     version: match ? match[1] : '',
