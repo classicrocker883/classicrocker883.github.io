@@ -553,24 +553,17 @@ permalink: /firmware-selector
                     document.getElementById("proUIExtraFeatures").value = proUIExtraFeatures;
                 }
                 let linkPrefix = "";
+                const screenMap = {
+                    "HC32": { "C2-": "C2-HC32", "TJC-": "TJC-HC32", "default": "HC32" },
+                    "Ender": { "TJC-": "TJC-Ender", "default": "Ender" },
+                    "default": { "C2-": "C2-Aquila", "TJC-": "TJC-Aquila", "default": "Aquila" }
+                };
                 if (model === "HC32" || type === "HC32") {
-                    if (screen === "C2-") {
-                        linkPrefix = "C2-HC32";
-                    } else if (screen === "TJC-") {
-                        linkPrefix = "TJC-HC32";
-                    } else {
-                        linkPrefix = "HC32";
-                    }
+                    linkPrefix = screenMap["HC32"][screen] || screenMap["HC32"]["default"];
                 } else if (model === "Ender") {
-                    linkPrefix = (screen === "TJC-") ? "TJC-Ender" : "Ender";
+                    linkPrefix = screenMap["Ender"][screen] || screenMap["Ender"]["default"];
                 } else {
-                    if (screen === "C2-") {
-                        linkPrefix = "C2-Aquila";
-                    } else if (screen === "TJC-") {
-                        linkPrefix = "TJC-Aquila";
-                    } else {
-                        linkPrefix = "Aquila";
-                    }
+                    linkPrefix = screenMap["default"][screen] || screenMap["default"]["default"];
                 }
                 const assets = await fetchReleaseData(model);
                 const candidates = assets.filter(asset => {
