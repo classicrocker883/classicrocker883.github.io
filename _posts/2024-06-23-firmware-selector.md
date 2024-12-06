@@ -4,7 +4,7 @@ description: >-
     Firmware Selection.
 author: ClassicRocker883
 permalink: /firmware
-date: 2024-09-11 00:00:00 -0400
+date: 2024-12-06 00:00:00 -0400
 categories: [Firmware, Tutorial]
 tags: [firmware]
 pin: true
@@ -167,10 +167,10 @@ image:
         </div>
         <div class="select-container">
             <select id="model" onchange="updateModelSelections()">
-                <option value="" title="No specific model">--Optional--</option>
+                <option value="" title="May help to choose a model first">--Select Model--</option>
                 <option value="Aquila" title="Aquila OG/X2">Aquila</option>
                 <option value="Aquila X3" title="Aquila X3/S3 Induction Probe">Aquila X3/S3</option>
-                <option value="HC32" title="H32">HC32</option>
+                <option value="HC32" title="H32 Chipset">HC32</option>
                 <option value="Ender" title="Ender-3V2/S1">Ender-3V2/S1</option>
             </select>
         </div>
@@ -229,6 +229,7 @@ image:
                 <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
                 <option value="_IND" title="_IND">Induction Probe</option>
                 <option value="_SPRT13" title="_SPRT13">Creality Sprite</option>
+                <option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>
             </select>
         </div>
     </div>
@@ -243,6 +244,7 @@ image:
                     <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
                     <option value="_IND" title="_IND">Induction Probe</option>
                     <option value="_SPRT13" title="_SPRT13">Creality Sprite</option>
+                    <option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>
                 </select>
             </div>
         </div>
@@ -350,6 +352,7 @@ image:
         <p></p>
         <dd><ins><b>Features</b></ins></dd>
         <li>[ _SPRT13 ]<br> | Sprite Extruder | (Uses thermistor # 13)</li>
+        <li>[ _SPDY5 ]<br> | Spider Speedy Hotend | (Uses thermistor # 5)</li>
         <li>[ _IND ]<br> | Inductive Sensor | (Probe used on <b>X3</b>/<b>S3</b> models)<br>
             <b>CAUTION</b>: You may need to adjust the <ins>Probe Y Offset</ins> to <b>-20</b> or <b>-25</b> on an <b>S3</b></li>
         <li>[ _BMP ]<br> | BIQU MicroProbe V2.0 | (Alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>Touch</b>)</li>
@@ -401,7 +404,7 @@ image:
                 return url.split('/').pop();
             }
             function splitTag(tag) {
-                const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(HC32|ender3))?(?:-(-?\d+))?$/;
+                const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(HC32|ender3))?(?:-(-?\d+[a-z]*))?$/;
                 const match = tag.match(regex);
                 return {
                     version: match ? match[1] : '',
@@ -521,16 +524,21 @@ image:
                 const secondaryOptions = document.getElementById("secondaryOptions").value;
                 const secondaryOptionsDiv = document.getElementById("secondaryOptionsDiv");
                 const secondaryOptionsSelect = document.getElementById("secondaryOptions");
-                secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_BMP" || features === "_IND") ? "block" : "none";
+                secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_SPDY5" || features === "_BMP" || features === "_IND") ? "block" : "none";
                 secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS" || options === "-PLR") ? "block" : "none";
                 secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
                 if (features === "_SPRT13") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
+                } else if (features === "_SPDY5") {
+                    secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
                 } else if (features === "_BMP") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
                 } else if (features === "_IND") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
                 }
                 secondaryFeaturesSelect.value = secondaryFeatures;
                 secondaryOptionsSelect.innerHTML = '<option value="" title="No specific secondary option">--Select--</option>';
@@ -550,24 +558,17 @@ image:
                     document.getElementById("proUIExtraFeatures").value = proUIExtraFeatures;
                 }
                 let linkPrefix = "";
+                const screenMap = {
+                    "HC32": { "C2-": "C2-HC32", "TJC-": "TJC-HC32", "default": "HC32" },
+                    "Ender": { "TJC-": "TJC-Ender", "default": "Ender" },
+                    "default": { "C2-": "C2-Aquila", "TJC-": "TJC-Aquila", "default": "Aquila" }
+                };
                 if (model === "HC32" || type === "HC32") {
-                    if (screen === "C2-") {
-                        linkPrefix = "C2-HC32";
-                    } else if (screen === "TJC-") {
-                        linkPrefix = "TJC-HC32";
-                    } else {
-                        linkPrefix = "HC32";
-                    }
+                    linkPrefix = screenMap["HC32"][screen] || screenMap["HC32"]["default"];
                 } else if (model === "Ender") {
-                    linkPrefix = (screen === "TJC-") ? "TJC-Ender" : "Ender";
+                    linkPrefix = screenMap["Ender"][screen] || screenMap["Ender"]["default"];
                 } else {
-                    if (screen === "C2-") {
-                        linkPrefix = "C2-Aquila";
-                    } else if (screen === "TJC-") {
-                        linkPrefix = "TJC-Aquila";
-                    } else {
-                        linkPrefix = "Aquila";
-                    }
+                    linkPrefix = screenMap["default"][screen] || screenMap["default"]["default"];
                 }
                 const assets = await fetchReleaseData(model);
                 const candidates = assets.filter(asset => {
@@ -581,10 +582,11 @@ image:
                     if (type !== "-S1-F4" && name.includes("-S1-F4")) return false;
                     if (type !== "_SKR-Mini-E3-" && name.includes("_SKR-Mini-E3-")) return false;
                     if (type !== "_E3-Free-runs" && name.includes("_E3-Free-runs")) return false;
-                    if (features === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13"))) return false;
-                    if (features === "_SPRT13" && secondaryFeatures === "" && (name.includes("_BMP") || name.includes("_IND"))) return false;
-                    if (features === "_BMP" && secondaryFeatures === "" && (name.includes("_IND") || name.includes("_SPRT13"))) return false;
-                    if (features === "_IND" && secondaryFeatures === "" && (name.includes("_BMP") || name.includes("_SPRT13"))) return false;
+                    if (features === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13") || name.includes("_SPDY5"))) return false;
+                    if (features === "_SPRT13" && secondaryFeatures === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPDY5"))) return false;
+                    if (features === "_SPDY5" && secondaryFeatures === "" && (name.includes("_BMP") || name.includes("_IND") || name.includes("_SPRT13"))) return false;
+                    if (features === "_BMP" && secondaryFeatures === "" && (name.includes("_IND") || name.includes("_SPRT13") || name.includes("_SPDY5"))) return false;
+                    if (features === "_IND" && secondaryFeatures === "" && (name.includes("_BMP") || name.includes("_SPRT13") || name.includes("_SPDY5"))) return false;
                     if (leveling !== "_UBL" && name.includes("_UBL")) return false;
                     if (leveling !== "_BLT" && name.includes("_BLT")) return false;
                     if (leveling !== "_MM" && name.includes("_MM")) return false;
