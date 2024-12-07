@@ -4,7 +4,7 @@ description: >-
     Firmware Selection.
 author: ClassicRocker883
 permalink: /firmware
-date: 2024-12-06 00:00:00 -0400
+date: 2024-12-07 00:00:00 -0400
 categories: [Firmware, Tutorial]
 tags: [firmware]
 pin: true
@@ -211,9 +211,9 @@ image:
                 <option value="HC32" title="HC32">HC32</option>
                 <option value="_427" title="_427">Creality 4.2.7</option>
                 <option value="_422" title="_422">Creality 4.2.2</option>
-                <option value="_E3-Free-runs" title="_E3-Free-runs">Creality E3 Free-runs</option>
                 <option value="-S1-F1" title="-S1-F1">Ender-3 S1 F103</option>
                 <option value="-S1-F4" title="-S1-F4">Ender-3 S1 F401</option>
+                <option value="_E3-Free-runs" title="_E3-Free-runs">Creality E3 Free-runs</option>
                 <option value="_SKR-Mini-E3-" title="_SKR-Mini-E3-">BTT SKR Mini E3</option>
             </select>
         </div>
@@ -319,15 +319,14 @@ image:
     </dl>
     <h3>Bed Leveling Options</h3>
     <ul>
-        <li><b>[ _Default-NP ]</b>: Use if you have a near stock machine</li><sup>Default No Probe</sup>
-        <li><b>[ _MM ]</b>: Create a bed mesh without an auto bed probe</li><sup><a
-                href="https://marlinfw.org/docs/gcode/G029-mbl.html" rel="nofollow">Manual Mesh Bed Leveling</a></sup>
-        <li><b>[ _BLT ]</b>: Use if you have a CR/3D/BL-Touch level sensor installed.</li><sup><a
-                href="https://marlinfw.org/docs/features/auto_bed_leveling.html" rel="nofollow">Bilinear Auto Bed
-                Leveling</a></sup>
-        <li><b>[ _UBL ]</b>: Similar to both MM and BLT - with more options. Recommended over BLT</li><sup><a
-                href="https://marlinfw.org/docs/features/unified_bed_leveling.html" rel="nofollow">Unified Bed
-                Leveling</a></sup>
+        <li><b>[ _Default-NP ]</b>: Use if you have a near stock machine
+        <br><sup>Default No Probe</sup></li>
+        <li><b>[ _MM ]</b>: Create a bed mesh without an auto bed probe
+        <br><sup><a href="https://marlinfw.org/docs/gcode/G029-mbl.html" rel="nofollow">Manual Mesh Bed Leveling</a></sup></li>
+        <li><b>[ _BLT ]</b>: Use if you have a CR/3D/BL-Touch level sensor installed.
+        <br><sup><a href="https://marlinfw.org/docs/features/auto_bed_leveling.html" rel="nofollow">Bilinear Auto Bed Leveling</a></sup></li>
+        <li><b>[ _UBL ]</b>: Similar to both MM and BLT - with more options. Recommended over BLT
+        <br><sup><a href="https://marlinfw.org/docs/features/unified_bed_leveling.html" rel="nofollow">Unified Bed Leveling</a></sup></li>
     </ul>
     <h3>Special Versions</h3>
     <dl>
