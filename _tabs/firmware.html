@@ -131,7 +131,7 @@ permalink: /firmware-selector
         }
     </style>
     <h1 class="center"><i class="fas fa-code-compare"></i> Firmware Selector</h1>
-    <p class="center" style=""><a href="#versions">Version information below</a></p>
+    <h3 class="center" style=""><a href="#versions">Version information below</a></h3>
     <img alt="Firmware Selector Logo" src="https://classicrocker883.github.io/assets/img/firmware-selector.png"
         width="200" height="200" class="center">
     <hr>
@@ -306,57 +306,86 @@ permalink: /firmware-selector
     </div>
     <h3 id="versions">📚 Versions</h3>
     <hr>
-    <p>Some versions <i>do</i> have options like Power-loss Recovery despite not having it in the file name.<br>
+    <p>Some versions <i>do</i> have options like <code>POWER_LOSS_RECOVERY</code> despite not having it in the file
+        name.<br>
         Board types <b>422</b>/<b>427</b>, and leveling options <b>Default</b>/<b>Manual Mesh</b> should have this
         and other options enabled which may not be available in base <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions.</p>
+    <p>There are no real differences regarding firmware compatiblity between models; such as a Creality 4.2.7 board for
+        an Aquila will work on an Ender-3V2/S1. The differences are simply the color scheme and where it would say
+        whether it is a <b>Creality Ender</b> or <b>Voxelab Aquila</b>.</p>
+    <p>Boards like <i>Creality E3 Free-runs</i>, and <i>Ender-3 S1 F103</i> / <i>Ender-3 S1 F401</i>, are currently only
+        offered chosing <b>Ender-3V2/S1</b> Model; just as <i>BTT SKR Mini E3</i> is currently only offered for the
+        <b>Aquila</b> Model, but will work the same.
+    </p>
     <dl>
         <dt>These are the configurations offered:</dt>
     </dl>
     <h3>Bed Leveling Options</h3>
     <ul>
         <li><b>[ _Default-NP ]</b>: Use if you have a near stock machine
-        <br><sup>Default No Probe</sup></li>
+            <br><sup>Default No Probe</sup>
+        </li>
         <li><b>[ _MM ]</b>: Create a bed mesh without an auto bed probe
-        <br><sup><a href="https://marlinfw.org/docs/gcode/G029-mbl.html" rel="nofollow">Manual Mesh Bed Leveling</a></sup></li>
+            <br><sup><a href="https://marlinfw.org/docs/gcode/G029-mbl.html" rel="nofollow">Manual Mesh Bed
+                    Leveling</a></sup>
+        </li>
         <li><b>[ _BLT ]</b>: Use if you have a CR/3D/BL-Touch level sensor installed.
-        <br><sup><a href="https://marlinfw.org/docs/features/auto_bed_leveling.html" rel="nofollow">Bilinear Auto Bed Leveling</a></sup></li>
+            <br><sup><a href="https://marlinfw.org/docs/features/auto_bed_leveling.html" rel="nofollow">Bilinear Auto
+                    Bed Leveling</a></sup>
+        </li>
         <li><b>[ _UBL ]</b>: Similar to both MM and BLT - with more options. Recommended over BLT
-        <br><sup><a href="https://marlinfw.org/docs/features/unified_bed_leveling.html" rel="nofollow">Unified Bed Leveling</a></sup></li>
+            <br><sup><a href="https://marlinfw.org/docs/features/unified_bed_leveling.html" rel="nofollow">Unified Bed
+                    Leveling</a></sup>
+        </li>
     </ul>
     <h3>Special Versions</h3>
     <dl>
         <dt><sup>(List of file prefixes and suffixes)</sup></dt>
     </dl>
     <ul>
-        <li>[ -ProUI-EX ]<br> | ProUI Extra Features | <dl><dt>Toolbar, change bed physical dimensions, and other special
-                features and options</dt></dl>
+        <dd><ins><b>ProUI Extra Features</b></ins></dd>
+        <li><b>[ -ProUI-EX ]</b><br> | Toolbar, change bed physical dimensions | (Change other special
+            features and options without having to reflash)
         </li>
-        <li>[ _E3-Free-runs ]<br> | Creality E3 Free-runs | (Creality board - TMC2209 drivers)
+        <p></p>
+        <dd><ins><b>Creality Ender-3V2/S1 Options</b></ins></dd>
+        <li><b>[ _E3-Free-runs ]</b><br> | Creality E3 Free-runs | (Creality board - TMC2209 drivers)
         </li>
-        <li>[ -S1-&lt;F1/F4&gt; ]<br> | Creality Ender-3 S1 | (Check to see whether you have <b>F1</b> or <b>F4</b>)
-            <dt><i>-S1-F1</i>: <code>STM32F103RC</code> chip and <code>CREALITY_V24S1_301</code> board</dt>
-            <dt><i>-S1-F4</i>: <code>STM32F401RC</code> chip and <code>CREALITY_V24S1_301F4</code> board</dt>
+        <li><b>[ -S1-&lt;F1/F4&gt; ]</b><br> | Creality Ender-3 S1 | (Check to see whether you have <b>F1</b> or
+            <b>F4</b>)
+            <dd>
+                <i>-S1-F1</i>: <code>STM32F103RC</code> chip and <code>CREALITY_V24S1_301</code> board
+                <br><i>-S1-F4</i>: <code>STM32F401RC</code> chip and <code>CREALITY_V24S1_301F4</code> board
+            </dd>
+        </li>
+        <p></p>
+        <dd><ins><b>Voxelab Aquila Options</b></ins></dd>
+        <li><b>[ _SKR-Mini-E3- ]</b><br> | BTT SKR Mini E3 | (V2.0, V3.0, V3.0.1)
         </li>
         <p></p>
         <dd><ins><b>LCD Displays</b></ins></dd>
-        <li>[ DWIN ]<br> | Stock DWIN LCD | (No actual prefix)</li>
-        <li>[ TJC- ]<br> | Creality TJC LCD | (As aftermarket or sometimes used in stock Creality machines)</li>
-        <li>[ C2- ]<br> | Monochrome 128x64 LCD | (Used in Aquila C2 and original Ender-3/CR-10)
-        <p><sup>This has <b>NO</b> ProUI capabilities</sup></p></li>
+        <li><b>[ DWIN ]</b><br> | Stock DWIN LCD | (No actual prefix)</li>
+        <li><b>[ TJC- ]</b><br> | Creality TJC LCD | (As aftermarket or sometimes used in stock Creality machines)</li>
+        <li><b>[ C2- ]</b><br> | Monochrome 128x64 LCD | (Used in Aquila C2 and original Ender-3/CR-10)
+            <p><sup>This has <b>NO</b> ProUI capabilities</sup></p>
+        </li>
         <p></p>
         <dd><ins><b>Features</b></ins></dd>
-        <li>[ _SPRT13 ]<br> | Sprite Extruder | (Uses thermistor # 13)</li>
-        <li>[ _SPDY5 ]<br> | Spider Speedy Hotend | (Uses thermistor # 5)</li>
-        <li>[ _IND ]<br> | Inductive Sensor | (Probe used on <b>X3</b>/<b>S3</b> models)<br>
-            <b>CAUTION</b>: You may need to adjust the <ins>Probe Y Offset</ins> to <b>-20</b> or <b>-25</b> on an <b>S3</b></li>
-        <li>[ _BMP ]<br> | BIQU MicroProbe V2.0 | (Alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>Touch</b>)</li>
+        <li><b>[ _SPRT13 ]</b><br> | Sprite Extruder | (Uses thermistor # 13)</li>
+        <li><b>[ _SPDY5 ]</b><br> | Spider Speedy Hotend | (Uses thermistor # 5)</li>
+        <li><b>[ _IND ]</b><br> | Inductive Sensor | (Probe used on <b>X3</b>/<b>S3</b> models)<br>
+            <b>CAUTION</b>: You may need to adjust the <ins>Probe Y Offset</ins> to <b>-20</b> or <b>-25</b> on an
+            <b>S3</b>
+        </li>
+        <li><b>[ _BMP ]</b><br> | BIQU MicroProbe V2.0 | (Alternative to <b>CR</b>/<b>3D</b>/<b>BL</b>/-<b>Touch</b>)
+        </li>
         <sup>Use <b>ONLY</b> this firmware with <i>_BMP</i> if you <b>DO</b> have this probe</sup>
         <p></p>
         <dd><ins><b>Options</b></ins></dd>
-        <li>[ -IS ]<br> | Input Shaping | (Similar to <b>Linear Advance</b>)</li>
+        <li><b>[ -IS ]</b><br> | Input Shaping | (Similar to <b>Linear Advance</b>)</li>
         <sup>Use <b>ONLY</b> if you mean to do the initial calibration✶</sup>
-        <li>[ -MPC ]<br> | MPC Autotune | (Replaces <b>PID</b> for hotend)</li>
-        <li>[ -PLR ]<br> | Power-Loss Recovery | (Resumes where a print job left off when there is a <i>power
+        <li><b>[ -MPC ]</b><br> | MPC Autotune | (Replaces <b>PID</b> for hotend)</li>
+        <li><b>[ -PLR ]</b><br> | Power-Loss Recovery | (Resumes where a print job left off when there is a <i>power
                 outage</i>)</li>
     </ul>
     <sup>✶Reminder: Do not use `Input Shaping` (file suffix <i>-IS</i>) <b>unless</b> you do the necessary
