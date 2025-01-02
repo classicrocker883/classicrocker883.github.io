@@ -365,8 +365,12 @@ image:
         </li>
         <p></p>
         <dd><ins><b>Voxelab Aquila Options</b></ins></dd>
-        <li><b>[ _SKR-Mini-E3- ]</b><br> | BTT SKR Mini E3 | (V2.0, V3.0, V3.0.1)
-        </li>
+        <li><b>[ _SKR-Mini-E3- ]</b><br> | BTT SKR Mini E3 | (V2.0, V3.0, V3.0.1)</li>
+        <dd>
+            <i>V2</i>: <code>STM32F103RC</code> chip<br>
+            <i>V3</i>: <code>STM32G0B1RE</code> chip<br>
+            <i>V3_0_1</i>: <code>STM32F401RC</code> chip
+        </dd>
         <p></p>
         <dd><ins><b>LCD Displays</b></ins></dd>
         <li><b>[ DWIN ]</b><br> | Stock DWIN LCD | (No actual prefix)</li>
