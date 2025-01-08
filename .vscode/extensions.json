@@ -1,5 +1,3 @@
 {
-  "recommendations": [
-
-  ]
+  "recommendations": ["ms-vscode-remote.remote-containers"]
 }
