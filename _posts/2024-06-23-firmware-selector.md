@@ -309,6 +309,43 @@ image:
             </thead>
         </table>
     </div>
+    <hr>
+    <h3>🖥️ Display Assets</h3>
+    <div>
+      <ul>
+        <li>
+          <b>For TJC screen units:</b><br>
+          <a href="https://github.com/classicrocker883/MRiscoCProUI/blob/HEAD/display%20assets/tjc_update.zip?raw=true" rel="nofollow">Click to Download <code>tjc_update.zip</code> (for TJC screen update if you haven't already)</a>
+        </li>
+        <br>
+        <li>
+          <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Aquila%20Display%20Firmware/Firmware%20Sets" rel="nofollow">
+            Aquila LCD Display Assets<br>
+            <img src="https://github.com/classicrocker883/MRiscoCProUI/assets/18502096/30ed1822-e5d5-4be5-9283-636390933178" style="width: 150px; height: auto;" />
+            <p></p>
+          </a>
+        </li>
+        <br>
+        <li>
+          Creality LCD Display Assets<br>
+          <img src="https://raw.githubusercontent.com/mriscoc/Ender3V2S1/Ender3V2S1-Released/screenshots/main.jpg" style="width: 150px; height: auto;" />
+          <p>
+            <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/DWIN_SET" rel="nofollow">Click to Download DWIN_SET (for DWIN screen units)</a><br>
+            <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/private" rel="nofollow">Click to Download private (for DACAI screen units)</a>
+          </p>
+        </li>
+        <br>
+        <li>
+          Giadej LCD Display Assets<br>
+          <img src="https://github.com/classicrocker883/MRiscoCProUI/raw/2025-January/display%20assets/Giadej%20compilation/preview1.jpg" style="width: 150px; height: auto;" />
+          <p>
+            <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/DWIN_SET" rel="nofollow">Click to Download DWIN_SET (for DWIN screen units)</a><br>
+            <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/private" rel="nofollow">Click to Download private (for DACAI screen units)</a>
+          </p>
+        </li>
+      </ul>
+    </div>
+    <br>
     <h3 id="versions">📚 Versions</h3>
     <hr>
     <p>Some versions <i>do</i> have options like <code>POWER_LOSS_RECOVERY</code> despite not having it in the file
