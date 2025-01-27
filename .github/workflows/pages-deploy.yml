@@ -40,7 +40,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1.176.0
+        uses: ruby/setup-ruby@v1.214.0
         with:
           ruby-version: 3.3
           bundler-cache: true
