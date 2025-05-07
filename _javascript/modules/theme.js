@@ -42,7 +42,7 @@ class Theme {
     return (
       sessionStorage.getItem(this.#modeKey) ||
       document.documentElement.getAttribute(this.#modeAttr)
-    );
+    )
   }
 
   static get #isDarkMode() {
