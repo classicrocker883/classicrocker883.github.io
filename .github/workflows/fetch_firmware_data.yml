@@ -38,7 +38,11 @@ jobs:
 
             async function fetchPage(url) {
                 return new Promise((resolve, reject) => {
-                    https.get(url, (res) => {
+                    https.get(url, {
+                        headers: {
+                            "User-Agent": "classicrocker883-firmware-selector"
+                        }
+                    }, (res) => {
                         let data = "";
                         res.on("data", (chunk) => { data += chunk; });
                         res.on("end", () => {
@@ -59,6 +63,8 @@ jobs:
                 console.log(`Fetching page ${page} from: ${currentPageUrl}`);
                 const data = await fetchPage(currentPageUrl);
 
+                data.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
                 if (data.length === 0) {
                     return releases;
                 }
@@ -69,6 +75,9 @@ jobs:
               const repoApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases";
               try {
                 const allReleases = await fetchAllReleases(repoApiUrl);
+                if (!fs.existsSync("assets/data")) {
+                    fs.mkdirSync("assets/data", { recursive: true });
+                }
                 fs.writeFileSync("assets/data/releases.json", JSON.stringify(allReleases, null, 2));
                 console.log("Successfully fetched and saved releases.json");
               } catch (error) {
