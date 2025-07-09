@@ -25,9 +25,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Fetch and save releases data
         run: |
           mkdir -p assets/data
@@ -58,28 +55,69 @@ jobs:
                 });
             }
 
-            async function fetchAllReleases(url, page = 1, releases = []) {
-                const currentPageUrl = `${url}?page=${page}&per_page=100`;
+            async function fetchAllReleases(url, page = 1, releases = [], sinceDate = null) {
+                let currentPageUrl = `${url}?page=${page}&per_page=100`;
+                if (sinceDate) {
+                    currentPageUrl += `&since=${sinceDate.toISOString()}`;
+                }
                 console.log(`Fetching page ${page} from: ${currentPageUrl}`);
                 const data = await fetchPage(currentPageUrl);
-
-                data.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
 
                 if (data.length === 0) {
                     return releases;
                 }
-                return fetchAllReleases(url, page + 1, releases.concat(data));
+                return fetchAllReleases(url, page + 1, releases.concat(data), sinceDate);
             }
 
             async function main() {
               const repoApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases";
+              const filePath = "assets/data/releases.json";
+              let existingReleases = [];
+
+              if (fs.existsSync(filePath)) {
+                  try {
+                      existingReleases = JSON.parse(fs.readFileSync(filePath, "utf8"));
+                      console.log(`Loaded ${existingReleases.length} existing releases from ${filePath}.`);
+                  } catch (parseError) {
+                      console.warn(`Could not parse existing releases.json (${parseError.message}), starting with an empty set for existing data.`);
+                      existingReleases = [];
+                  }
+              } else {
+                  console.log("No existing releases.json found.");
+              }
+
               try {
-                const allReleases = await fetchAllReleases(repoApiUrl);
+                const fetchSinceDays = 30;
+                const fetchSinceDate = new Date();
+                fetchSinceDate.setDate(fetchSinceDate.getDate() - fetchSinceDays);
+                console.log(`Will fetch releases published since: ${fetchSinceDate.toISOString()} (last ${fetchSinceDays} days).`);
+
+                const recentlyPublishedReleases = await fetchAllReleases(repoApiUrl, 1, [], fetchSinceDate);
+                console.log(`Fetched ${recentlyPublishedReleases.length} releases published in the last ${fetchSinceDays} days.`);
+
+                const allReleasesMap = new Map();
+                existingReleases.forEach(release => allReleasesMap.set(release.id, release));
+                recentlyPublishedReleases.forEach(release => allReleasesMap.set(release.id, release));
+
+                let combinedReleases = Array.from(allReleasesMap.values());
+                console.log(`Total releases after merging: ${combinedReleases.length}.`);
+
+                const historicalWindowYears = 1;
+                const pruneDate = new Date();
+                pruneDate.setFullYear(pruneDate.getFullYear() - historicalWindowYears);
+
+                combinedReleases = combinedReleases.filter(release =>
+                    new Date(release.published_at) >= pruneDate
+                );
+                console.log(`Pruned releases older than ${pruneDate.toISOString()}. Remaining: ${combinedReleases.length} releases in the file.`);
+
+                combinedReleases.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
                 if (!fs.existsSync("assets/data")) {
                     fs.mkdirSync("assets/data", { recursive: true });
                 }
-                fs.writeFileSync("assets/data/releases.json", JSON.stringify(allReleases, null, 2));
-                console.log("Successfully fetched and saved releases.json");
+                fs.writeFileSync(filePath, JSON.stringify(combinedReleases, null, 2));
+                console.log("Successfully updated and saved releases.json.");
               } catch (error) {
                 console.error("Failed to fetch or save releases:", error.message);
                 process.exit(1);
@@ -93,7 +131,7 @@ jobs:
           git config user.name "Andrew"
           git config user.email "andrewleduc88@yahoo.com"
           git add assets/data/releases.json
-          git diff --cached --exit-code || git commit -m "Automated: Update firmware release data"
+          git diff --cached --exit-code assets/data/releases.json || git commit -m "automated: Update firmware release data"
           git push
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
