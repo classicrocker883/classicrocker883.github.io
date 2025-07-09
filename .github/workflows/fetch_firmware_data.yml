@@ -1,0 +1,91 @@
+name: Fetch Firmware Release Data
+
+on:
+  schedule:
+    - cron: '22 12  1 * *'
+    - cron: '22 12  8 * *'
+    - cron: '22 12 18 * *'
+    - cron: '22 12 28 * *'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch_data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Fetch and save releases data
+        run: |
+          mkdir -p assets/data
+
+          node -e '
+            const fs = require("fs");
+            const https = require("https");
+
+            async function fetchPage(url) {
+                return new Promise((resolve, reject) => {
+                    https.get(url, (res) => {
+                        let data = "";
+                        res.on("data", (chunk) => { data += chunk; });
+                        res.on("end", () => {
+                            if (res.statusCode >= 200 && res.statusCode < 300) {
+                                resolve(JSON.parse(data));
+                            } else {
+                                reject(new Error(`Failed to fetch ${url}, Status: ${res.statusCode}, Message: ${data}`));
+                            }
+                        });
+                    }).on("error", (err) => {
+                        reject(err);
+                    });
+                });
+            }
+
+            async function fetchAllReleases(url, page = 1, releases = []) {
+                const currentPageUrl = `${url}?page=${page}&per_page=100`;
+                console.log(`Fetching page ${page} from: ${currentPageUrl}`);
+                const data = await fetchPage(currentPageUrl);
+
+                if (data.length === 0) {
+                    return releases;
+                }
+                return fetchAllReleases(url, page + 1, releases.concat(data));
+            }
+
+            async function main() {
+              const repoApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases";
+              try {
+                const allReleases = await fetchAllReleases(repoApiUrl);
+                fs.writeFileSync("assets/data/releases.json", JSON.stringify(allReleases, null, 2));
+                console.log("Successfully fetched and saved releases.json");
+              } catch (error) {
+                console.error("Failed to fetch or save releases:", error.message);
+                process.exit(1);
+              }
+            }
+            main();
+          '
+
+      - name: Commit and push if changes
+        run: |
+          git config user.name "Andrew"
+          git config user.email "andrewleduc88@yahoo.com"
+          git add assets/data/releases.json
+          git diff --cached --exit-code || git commit -m "Automated: Update firmware release data"
+          git push
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
