@@ -220,7 +220,7 @@ permalink: /firmware-selector
         <div class="select-container">
             <select id="features" onchange="updateCandidates()">
                 <option value="" title="No specific features">--Select--</option>
-                <option value="">CR/3D/BL-Touch</option>
+                <option value="" title="Bed Probe Only">CR/3D/BL-Touch Only</option>
                 <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
                 <option value="_IND" title="_IND">Induction Probe</option>
                 <option value="_SPRT13" title="_SPRT13">Creality Sprite</option>
@@ -593,9 +593,11 @@ permalink: /firmware-selector
                 if (features === "_SPRT13") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
                 } else if (features === "_SPDY5") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
                 } else if (features === "_BMP") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
