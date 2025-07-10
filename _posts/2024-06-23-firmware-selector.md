@@ -225,7 +225,7 @@ image:
         <div class="select-container">
             <select id="features" onchange="updateCandidates()">
                 <option value="" title="No specific features">--Select--</option>
-                <option value="">CR/3D/BL-Touch</option>
+                <option value="" title="Bed Probe Only">CR/3D/BL-Touch Only</option>
                 <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
                 <option value="_IND" title="_IND">Induction Probe</option>
                 <option value="_SPRT13" title="_SPRT13">Creality Sprite</option>
@@ -544,6 +544,8 @@ image:
                         console.warn('No release data loaded. Dropdown may not populate fully.');
                         selectMonth.innerHTML = '<option value="latest">Error Loading Releases</option>';
                     }
+                    updateSelectedReleaseTag();
+                    updateCandidates();
                 } catch (error) {
                     console.error('Error initializing dropdowns:', error);
                 }
@@ -552,7 +554,7 @@ image:
                 const currentReleaseTag = releaseTag.replace("tags/", "");
                 const selectedRelease = allReleasesData.find(release =>
                     release.tag_name === currentReleaseTag ||
-                    (currentReleaseTag === 'latest' && release.tag_name === (allReleasesData.length > 0 ? allReleasesData[0].tag_name : null))
+                    (currentReleaseTag === 'latest' && allReleasesData.length > 0 && release.tag_name === allReleasesData[0].tag_name)
                 );
                 if (!selectedRelease) {
                     console.error('Selected release not found in local data:', currentReleaseTag);
@@ -598,13 +600,12 @@ image:
                 if (features === "_SPRT13") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
+                    secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
                 } else if (features === "_SPDY5") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
-                } else if (features === "_BMP") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
-                    secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
-                } else if (features === "_IND") {
+                } else if (features === "_BMP" || features === "_IND") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
                 }
@@ -749,8 +750,6 @@ image:
             document.getElementById("model").addEventListener('change', updateModelSelections);
             document.querySelectorAll('#proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(input => input.addEventListener('change', updateCandidates));
             initializeDropdowns();
-            updateCandidates();
-            updateSelectedReleaseTag();
         });
     </script>
 </body>
