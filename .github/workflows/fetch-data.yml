@@ -44,7 +44,11 @@ jobs:
                         res.on("data", (chunk) => { data += chunk; });
                         res.on("end", () => {
                             if (res.statusCode >= 200 && res.statusCode < 300) {
-                                resolve(JSON.parse(data));
+                                try {
+                                    resolve(JSON.parse(data));
+                                } catch (e) {
+                                    reject(new Error(`Failed to parse JSON from ${url}: ${e.message}`));
+                                }
                             } else {
                                 reject(new Error(`Failed to fetch ${url}, Status: ${res.statusCode}, Message: ${data}`));
                             }
@@ -57,59 +61,73 @@ jobs:
 
             async function fetchAllReleases(url, page = 1, releases = [], sinceDate = null) {
                 let currentPageUrl = `${url}?page=${page}&per_page=100`;
-                if (sinceDate) {
-                    currentPageUrl += `&since=${sinceDate.toISOString()}`;
-                }
                 console.log(`Fetching page ${page} from: ${currentPageUrl}`);
                 const data = await fetchPage(currentPageUrl);
 
                 if (data.length === 0) {
                     return releases;
                 }
-                return fetchAllReleases(url, page + 1, releases.concat(data), sinceDate);
+
+                const newReleases = [];
+                let reachedOlderReleases = false;
+
+                for (const release of data) {
+                    if (sinceDate && new Date(release.published_at) <= sinceDate) {
+                        reachedOlderReleases = true;
+                        break;
+                    }
+                    newReleases.push(release);
+                }
+
+                const allReleases = releases.concat(newReleases);
+
+                if (reachedOlderReleases || data.length < 100) {
+                  return allReleases;
+                } else {
+                  return fetchAllReleases(url, page + 1, allReleases, sinceDate);
+                }
             }
 
             async function main() {
               const repoApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases";
               const filePath = "assets/data/releases.json";
               let existingReleases = [];
+              let lastFetchDate = null;
 
               if (fs.existsSync(filePath)) {
                   try {
-                      existingReleases = JSON.parse(fs.readFileSync(filePath, "utf8"));
-                      console.log(`Loaded ${existingReleases.length} existing releases from ${filePath}.`);
+                      const fileContent = fs.readFileSync(filePath, "utf8");
+                      if(fileContent) {
+                        existingReleases = JSON.parse(fileContent);
+                        console.log(`Loaded ${existingReleases.length} existing releases from ${filePath}.`);
+                      }
+                      if (existingReleases.length > 0) {
+                          lastFetchDate = new Date(existingReleases[0].published_at);
+                          console.log(`Will only fetch releases published after: ${lastFetchDate.toISOString()}`);
+                      }
                   } catch (parseError) {
-                      console.warn(`Could not parse existing releases.json (${parseError.message}), starting with an empty set for existing data.`);
+                      console.warn(`Could not parse existing releases.json (${parseError.message}), starting fresh.`);
                       existingReleases = [];
                   }
               } else {
-                  console.log("No existing releases.json found.");
+                  console.log("No existing releases.json found. Fetching all releases.");
               }
 
               try {
-                const fetchSinceDays = 30;
-                const fetchSinceDate = new Date();
-                fetchSinceDate.setDate(fetchSinceDate.getDate() - fetchSinceDays);
-                console.log(`Will fetch releases published since: ${fetchSinceDate.toISOString()} (last ${fetchSinceDays} days).`);
+                const newReleases = await fetchAllReleases(repoApiUrl, 1, [], lastFetchDate);
+                console.log(`Fetched ${newReleases.length} new release(s).`);
 
-                const recentlyPublishedReleases = await fetchAllReleases(repoApiUrl, 1, [], fetchSinceDate);
-                console.log(`Fetched ${recentlyPublishedReleases.length} releases published in the last ${fetchSinceDays} days.`);
+                if (newReleases.length === 0) {
+                    console.log("No new releases found. The file is already up to date.");
+                    return;
+                }
 
                 const allReleasesMap = new Map();
+                newReleases.forEach(release => allReleasesMap.set(release.id, release));
                 existingReleases.forEach(release => allReleasesMap.set(release.id, release));
-                recentlyPublishedReleases.forEach(release => allReleasesMap.set(release.id, release));
 
                 let combinedReleases = Array.from(allReleasesMap.values());
                 console.log(`Total releases after merging: ${combinedReleases.length}.`);
-
-                const historicalWindowYears = 1;
-                const pruneDate = new Date();
-                pruneDate.setFullYear(pruneDate.getFullYear() - historicalWindowYears);
-
-                combinedReleases = combinedReleases.filter(release =>
-                    new Date(release.published_at) >= pruneDate
-                );
-                console.log(`Pruned releases older than ${pruneDate.toISOString()}. Remaining: ${combinedReleases.length} releases in the file.`);
 
                 combinedReleases.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
 
@@ -117,7 +135,7 @@ jobs:
                     fs.mkdirSync("assets/data", { recursive: true });
                 }
                 fs.writeFileSync(filePath, JSON.stringify(combinedReleases, null, 2));
-                console.log("Successfully updated and saved releases.json.");
+                console.log("Successfully updated and saved releases.json with all new and existing releases.");
               } catch (error) {
                 console.error("Failed to fetch or save releases:", error.message);
                 process.exit(1);
