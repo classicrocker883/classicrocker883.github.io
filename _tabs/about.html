@@ -11,154 +11,432 @@ redirect_from:
   - /posts/
 ---
 
-<h1>3D Printer Resources</h1>
-
-<h2>Latest Firmware & Files</h2>
-
-<p>Below, you can select and download the latest firmware and related files for your 3D printer from our GitHub
-    repository.</p>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Printer Downloads</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
         }
-
         .container {
-            margin: 20px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            margin-top: 50px;
         }
-
-        .dropdown {
+        h1, h2 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        p {
+            color: #555;
+            line-height: 1.6;
             margin-bottom: 20px;
         }
-
+        .dropdown label, .checkbox-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            font-size: 1rem;
+            color: #333;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em 1.5em;
+        }
+        select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
         .debug-info {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #1a202c;
+            color: #e2e8f0;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        .debug-info h3 {
+            color: #90cdf4;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .debug-info p {
+            margin-bottom: 5px;
+            color: #e2e8f0;
+        }
+        .debug-info strong {
+            color: #a78bfa;
+        }
+        #download-link {
             margin-top: 20px;
-            padding: 10px;
+            text-align: center;
+        }
+        #download-link a {
+            display: inline-block;
+            background-color: #4f46e5;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        #download-link a:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
+        }
+        .checkbox-group {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #f7fafc;
+        }
+        .checkbox-group .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
             border: 1px solid #ccc;
-            background-color: #000;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .checkbox-group input[type="checkbox"]:checked {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+        .checkbox-group input[type="checkbox"]:checked::after {
+            content: '✔';
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+        }
+        .checkbox-group label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: normal;
+            color: #333;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>Select and Download Latest Files</h2>
-        <div class="dropdown">
-            <label for="models">Choose a model:</label>
+        <h1 class="text-3xl">3D Printer Resources</h1>
+
+        <h2 class="text-2xl">Latest Firmware & Files</h2>
+
+        <p>Below, you can select and download the latest firmware and related files for your 3D printer from our GitHub
+            repository.</p>
+
+        <div class="dropdown mb-4">
+            <label for="releaseMonths" class="text-lg">Select a Month:</label>
+            <select id="releaseMonths">
+            </select>
+        </div>
+
+        <div id="releaseCheckboxes" class="checkbox-group hidden">
+            <p class="text-gray-700 mb-3">Select a specific release:</p>
+        </div>
+
+        <div class="dropdown mb-4">
+            <label for="models" class="text-lg">Filter by Model:</label>
             <select id="models">
-                <option value="" disabled selected>Select a model</option>
-                <option value="">Aquila</option>
+                <option value="" selected>Aquila</option>
+                <option value="C2">C2</option>
                 <option value="HC32">HC32</option>
                 <option value="Ender">Ender</option>
             </select>
         </div>
-        <div class="dropdown">
-            <label for="files">Choose a file:</label>
+
+        <div class="dropdown mb-4">
+            <label for="files" class="text-lg">Choose a file:</label>
             <select id="files">
                 <option value="" disabled selected>Loading files...</option>
             </select>
         </div>
+
         <div id="download-link"></div>
+
         <div class="debug-info" id="debug-info">
             <h3>Debug Info</h3>
-            <p><strong>releaseTag:</strong> <span id="releaseTag"></span></p>
-            <p><strong>split.version:</strong> <span id="splitVersion"></span></p>
-            <p><strong>split.month:</strong> <span id="splitMonth"></span></p>
-            <p><strong>split.model:</strong> <span id="splitModel"></span></p>
-            <p><strong>split.revision:</strong> <span id="splitRevision"></span></p>
-            <p><strong>tag:</strong> <span id="constructedTag"></span></p>
-            <p><strong>apiUrl:</strong> <span id="apiUrl"></span></p>
+            <p><strong>Release Tag:</strong> <span id="releaseTag"></span></p>
+            <p><strong>API URL:</strong> <span id="apiUrl"></span></p>
+            <p><strong>Selected File Download Count:</strong> <span id="downloadCount"></span></p>
         </div>
     </div>
 
     <script>
-        async function fetchReleaseHTML(url) {
+        let allReleases = [];
+        let currentAssets = [];
+        let selectedReleaseTag = 'latest';
+
+        async function fetchLatestReleaseTag() {
             try {
-                const response = await fetch(url);
+                const response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest');
                 const data = await response.json();
-                if (data.html_url) {
-                    document.getElementById('releaseTag').textContent = data.html_url;
-                    return data.html_url;
+                if (data.tag_name) {
+                    return data.tag_name;
                 }
             } catch (error) {
-                console.error('Error fetching release HTML URL:', error);
+                console.error('Error fetching latest release tag:', error);
+            }
+            return null;
+        }
+
+        async function fetchAllReleasesAndPopulateMonths() {
+            try {
+                const response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases');
+                allReleases = await response.json();
+
+                const monthSelect = document.getElementById('releaseMonths');
+                monthSelect.innerHTML = '';
+
+                const latestOption = document.createElement('option');
+                latestOption.value = 'latest';
+                latestOption.textContent = 'Latest Releases';
+                monthSelect.appendChild(latestOption);
+                monthSelect.value = 'latest';
+
+                const uniqueMonths = new Set();
+                allReleases.forEach(release => {
+                    const releaseDate = new Date(release.published_at);
+                    const monthYear = releaseDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+                    const latestReleaseDate = allReleases[0] ? new Date(allReleases[0].published_at) : null;
+                    const latestMonthYear = latestReleaseDate ? latestReleaseDate.toLocaleString('en-US', { month: 'long', year: 'numeric' }) : '';
+
+                    if (!uniqueMonths.has(monthYear) && monthYear !== latestMonthYear) {
+                        uniqueMonths.add(monthYear);
+                        const option = document.createElement('option');
+                        option.value = monthYear;
+                        option.textContent = monthYear;
+                        monthSelect.appendChild(option);
+                    }
+                });
+
+                const modelsSelect = document.getElementById('models');
+                modelsSelect.value = "";
+
+                await fetchAndDisplayReleaseInfo(selectedReleaseTag, modelsSelect.value);
+
+            } catch (error) {
+                console.error('Error fetching all releases or populating months:', error);
             }
         }
 
-        function extractTagName(url) {
-            const parts = url.split('/');
-            const tag = parts[parts.length - 1];
-            document.getElementById('releaseTag').textContent = tag;
-            return tag;
-        }
-
         function splitTag(tag) {
-            const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(HC32|ender3))?(?:-(-?\d+))?$/;
+            const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(C2|HC32|ender3))?(?:-(-?\d+))?$/;
             const match = tag.match(regex);
-            const split = {
+            return {
                 version: match ? match[1] : '',
                 month: match ? match[2] : '',
                 model: match ? match[3] : '',
                 revision: match ? match[4] : ''
             };
-            document.getElementById('splitVersion').textContent = split.version;
-            document.getElementById('splitMonth').textContent = split.month;
-            document.getElementById('splitModel').textContent = split.model;
-            document.getElementById('splitRevision').textContent = split.revision;
-            return split;
         }
 
-        async function fetchLatestReleaseAssets(model) {
-            const releaseHTML = await fetchReleaseHTML('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest');
-            const releaseTag = extractTagName(releaseHTML);
-            const split = splitTag(releaseTag);
+        async function fetchAndDisplayReleaseInfo(tag, modelFilter) {
+            let finalTag = tag;
 
-            if (model === "HC32") {
-                split.model = "HC32";
-            } else if (model === "Ender") {
-                split.model = "ender3";
+            if (tag === 'latest') {
+                const latest = await fetchLatestReleaseTag();
+                if (latest) {
+                    finalTag = latest;
+                } else {
+                    console.error("Could not determine latest release tag.");
+                    document.getElementById('releaseTag').textContent = 'Error';
+                    document.getElementById('apiUrl').textContent = 'N/A';
+                    document.getElementById('downloadCount').textContent = 'N/A';
+                    document.getElementById('files').innerHTML = '<option value="" disabled selected>Error loading files</option>';
+                    document.getElementById('download-link').innerHTML = '';
+                    return;
+                }
             }
 
-            const tag = `${split.version}${split.month ? '-' + split.month : ''}${split.model ? '-' + split.model : ''}${split.revision ? '-' + split.revision : ''}`;
-            document.getElementById('constructedTag').textContent = tag;
+            const split = splitTag(finalTag);
+            if (modelFilter === "C2") {
+                split.model = "C2";
+            } else if (modelFilter === "HC32") {
+                split.model = "HC32";
+            } else if (modelFilter === "Ender") {
+                split.model = "ender3";
+            }
+            finalTag = `${split.version}${split.month ? '-' + split.month : ''}${split.model ? '-' + split.model : ''}${split.revision ? '-' + split.revision : ''}`;
 
-            const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${tag}`;
+            document.getElementById('releaseTag').textContent = finalTag;
+
+            const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${finalTag}`;
             document.getElementById('apiUrl').textContent = apiUrl;
 
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
-                console.log('Release Assets:', data.assets);
-                return data.assets;
+
+                if (response.ok && data.assets) {
+                    currentAssets = data.assets;
+                } else {
+                    console.error('Error fetching release assets:', data.message || 'Unknown error');
+                    currentAssets = [];
+                }
+
+                const select = document.getElementById('files');
+                select.innerHTML = '';
+                document.getElementById('downloadCount').textContent = 'N/A';
+                document.getElementById('download-link').innerHTML = '';
+
+                if (currentAssets.length > 0) {
+                    currentAssets.forEach(asset => {
+                        const option = document.createElement('option');
+                        option.value = asset.browser_download_url;
+                        option.textContent = asset.name;
+                        select.appendChild(option);
+                    });
+                    document.getElementById('downloadCount').textContent = currentAssets[0].download_count;
+
+                    document.getElementById('download-link').innerHTML =
+                        `<a href="${currentAssets[0].browser_download_url}" download>Download ${currentAssets[0].name}</a>`;
+
+                } else {
+                    const option = document.createElement('option');
+                    option.value = "";
+                    option.textContent = "No files available for this selection";
+                    option.disabled = true;
+                    select.appendChild(option);
+                }
             } catch (error) {
                 console.error('Error fetching release assets:', error);
+                document.getElementById('apiUrl').textContent = `Error: ${error.message}`;
+                document.getElementById('downloadCount').textContent = 'Error';
+                document.getElementById('files').innerHTML = '<option value="" disabled selected>Error loading files</option>';
+                document.getElementById('download-link').innerHTML = '';
             }
         }
 
+        function populateReleaseCheckboxes(monthYear) {
+            const checkboxContainer = document.getElementById('releaseCheckboxes');
+            checkboxContainer.innerHTML = '';
+
+            if (monthYear === 'latest') {
+                checkboxContainer.classList.add('hidden');
+                fetchAndDisplayReleaseInfo('latest', document.getElementById('models').value);
+                return;
+            }
+
+            checkboxContainer.classList.remove('hidden');
+            const filteredReleases = allReleases.filter(release => {
+                const releaseDate = new Date(release.published_at);
+                const releaseMonthYear = releaseDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+                return releaseMonthYear === monthYear;
+            });
+
+            if (filteredReleases.length > 0) {
+                filteredReleases.forEach(release => {
+                    const checkboxItem = document.createElement('div');
+                    checkboxItem.className = 'checkbox-item';
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `release-${release.tag_name}`;
+                    checkbox.value = release.tag_name;
+                    checkbox.name = 'selectedRelease';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `release-${release.tag_name}`;
+                    label.textContent = release.name || release.tag_name;
+
+                    checkboxItem.appendChild(checkbox);
+                    checkboxItem.appendChild(label);
+                    checkboxContainer.appendChild(checkboxItem);
+
+                    checkbox.addEventListener('change', async function () {
+                        document.querySelectorAll('input[name="selectedRelease"]').forEach(cb => {
+                            if (cb !== this) {
+                                cb.checked = false;
+                            }
+                        });
+
+                        if (this.checked) {
+                            selectedReleaseTag = this.value;
+                            await fetchAndDisplayReleaseInfo(selectedReleaseTag, document.getElementById('models').value);
+                        } else {
+                            selectedReleaseTag = 'latest';
+                            document.getElementById('releaseMonths').value = 'latest';
+                            populateReleaseCheckboxes('latest');
+                        }
+                    });
+                });
+            } else {
+                checkboxContainer.innerHTML = '<p class="text-gray-600">No specific releases found for this month.</p>';
+            }
+        }
+
+
         document.getElementById('models').addEventListener('change', async function () {
             const model = this.value;
-            const assets = await fetchLatestReleaseAssets(model);
-            const select = document.getElementById('files');
-            select.innerHTML = '';
-
-            assets.forEach(asset => {
-                const option = document.createElement('option');
-                option.value = asset.browser_download_url;
-                option.textContent = asset.name;
-                select.appendChild(option);
-            });
-
-            select.addEventListener('change', function () {
-                const downloadLink = document.getElementById('download-link');
-                const selectedFileUrl = select.value;
-                downloadLink.innerHTML = `<a href="${selectedFileUrl}" download>Download ${select.options[select.selectedIndex].text}</a>`;
-            });
+            await fetchAndDisplayReleaseInfo(selectedReleaseTag, model);
         });
+
+        document.getElementById('releaseMonths').addEventListener('change', function () {
+            const monthYear = this.value;
+            populateReleaseCheckboxes(monthYear);
+            if (monthYear !== 'latest') {
+                selectedReleaseTag = null;
+            }
+        });
+
+        document.getElementById('files').addEventListener('change', function () {
+            const downloadLink = document.getElementById('download-link');
+            const selectedFileUrl = this.value;
+            downloadLink.innerHTML = `<a href="${selectedFileUrl}" download>Download ${this.options[this.selectedIndex].text}</a>`;
+
+            const selectedAsset = currentAssets.find(asset => asset.browser_download_url === selectedFileUrl);
+            if (selectedAsset) {
+                document.getElementById('downloadCount').textContent = selectedAsset.download_count;
+            }
+        });
+
+        window.onload = fetchAllReleasesAndPopulateMonths;
     </script>
 </body>
-
 </html>
