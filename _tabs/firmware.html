@@ -7,7 +7,6 @@ icon: fas fa-code-compare
 order: 1
 permalink: /firmware-selector
 ---
-
 <html lang="en">
 <head>
     <style>
@@ -528,14 +527,49 @@ permalink: /firmware-selector
                 label.append(checkbox, release.name);
                 releaseList.appendChild(label);
             }
-            function updateSelectedReleaseTag() {
-                let displayTag = releaseTag.replace("tags/", "");
-                selectedReleaseTagDiv.textContent = displayTag || 'latest';
-                if (displayTag === 'latest') {
-                    totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
-                } else {
-                    totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${displayTag}/total'> - Total</label>`;
+            async function updateSelectedReleaseTag() {
+                let currentBaseTag = releaseTag.replace("tags/", "");
+                const selectedModelDropdownValue = document.getElementById("model").value;
+                const selectedScreenDropdownValue = document.getElementById("screen").value;
+                let actualBaseTagName = currentBaseTag;
+                if (currentBaseTag === 'latest') {
+                    const latestRelease = await fetchLatestReleaseDetails();
+                    if (latestRelease) {
+                        actualBaseTagName = latestRelease.tag_name;
+                    } else {
+                        console.error('Could not determine actual latest release tag.');
+                        selectedReleaseTagDiv.textContent = 'Error loading tag';
+                        totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
+                        return;
+                    }
                 }
+                let splitParts = splitTag(actualBaseTagName);
+                let modelSuffixToApply = '';
+                if (selectedModelDropdownValue === "C2" || selectedScreenDropdownValue === "C2") {
+                    modelSuffixToApply = "C2";
+                } else if (selectedModelDropdownValue === "HC32") {
+                    modelSuffixToApply = "HC32";
+                } else if (selectedModelDropdownValue === "Ender") {
+                    modelSuffixToApply = "ender3";
+                }
+                if (modelSuffixToApply) {
+                    splitParts.model = modelSuffixToApply;
+                } else {
+                    splitParts.model = '';
+                }
+                let displayTag = splitParts.version;
+                if (splitParts.month) {
+                    displayTag += `-${splitParts.month}`;
+                }
+                if (splitParts.model) {
+                    displayTag += `-${splitParts.model}`;
+                }
+                if (splitParts.revision) {
+                    displayTag += `-${splitParts.revision}`;
+                }
+                selectedReleaseTagDiv.textContent = displayTag;
+                const badgeTag = currentBaseTag === 'latest' ? 'latest' : actualBaseTagName;
+                totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${badgeTag}/total'> - Total</label>`;
             }
             function fetchReleasesByMonth(month, releases) {
                 const filteredReleases = releases.filter(release => formatMonthYear(release.published_at) === month);
@@ -580,46 +614,24 @@ permalink: /firmware-selector
                 let targetApiUrl;
                 let actualTagName = '';
                 if (releaseTag === 'latest') {
-                    const latestRelease = await fetchLatestReleaseDetails();
-                    if (latestRelease) {
-                        assets = latestRelease.assets;
-                        actualTagName = latestRelease.tag_name;
-                    } else {
-                        console.error('Failed to fetch latest release details.');
-                        return [];
-                    }
+                    targetApiUrl = 'https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest';
                 } else {
                     const currentReleaseTagName = releaseTag.replace("tags/", "");
-                    const selectedRelease = allReleasesData.find(release => release.tag_name === currentReleaseTagName);
-                    if (selectedRelease) {
-                        const split = splitTag(selectedRelease.tag_name);
-                        if (model === "C2" || document.getElementById("screen").value === "C2") {
-                            split.model = "C2";
-                        } else if (model === "HC32") {
-                            split.model = "HC32";
-                        } else if (model === "Ender") {
-                            split.model = "ender3";
-                        }
-                        const formattedTag = `${split.version}${split.month ? '-' + split.month : ''}${split.model ? '-' + split.model : ''}${split.revision ? '-' + split.revision : ''}`;
-                        targetApiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${formattedTag}`;
-                        try {
-                            const response = await fetch(targetApiUrl);
-                            const data = await response.json();
-                            if (response.ok && data.assets) {
-                                assets = data.assets;
-                                actualTagName = data.tag_name;
-                            } else {
-                                console.error('Error fetching specific release assets:', data.message || 'Unknown error');
-                                assets = [];
-                            }
-                        } catch (error) {
-                            console.error('Error fetching specific release assets:', error);
-                            assets = [];
-                        }
+                    targetApiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${currentReleaseTagName}`;
+                }
+                try {
+                    const response = await fetch(targetApiUrl);
+                    const data = await response.json();
+                    if (response.ok && data.assets) {
+                        assets = data.assets;
+                        actualTagName = data.tag_name;
                     } else {
-                        console.error('Selected release not found in local data:', currentReleaseTagName);
-                        return [];
+                        console.error('Error fetching release assets:', data.message || 'Unknown error');
+                        assets = [];
                     }
+                } catch (error) {
+                    console.error('Error fetching release assets:', error);
+                    assets = [];
                 }
                 if (actualTagName) {
                     totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${actualTagName}/total'> - Total</label>`;
@@ -821,6 +833,7 @@ permalink: /firmware-selector
                     screenSelect.disabled = false;
                 }
                 updateCandidates();
+                updateSelectedReleaseTag();
             }
             function clearSelections() {
                 document.querySelectorAll('#proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(selection => selection.selectedIndex = 0);

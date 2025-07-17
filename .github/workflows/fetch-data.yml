@@ -90,6 +90,7 @@ jobs:
 
             async function main() {
               const repoApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases";
+              const latestReleaseApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest";
               const filePath = "assets/data/releases.json";
               let existingReleases = [];
               let lastFetchDate = null;
@@ -103,7 +104,7 @@ jobs:
                       }
                       if (existingReleases.length > 0) {
                           lastFetchDate = new Date(existingReleases[0].published_at);
-                          console.log(`Will only fetch releases published after: ${lastFetchDate.toISOString()}`);
+                          console.log(`Optimizing paginated fetch for releases published after: ${lastFetchDate.toISOString()}`);
                       }
                   } catch (parseError) {
                       console.warn(`Could not parse existing releases.json (${parseError.message}), starting fresh.`);
@@ -114,28 +115,58 @@ jobs:
               }
 
               try {
-                const newReleases = await fetchAllReleases(repoApiUrl, 1, [], lastFetchDate);
-                console.log(`Fetched ${newReleases.length} new release(s).`);
-
-                if (newReleases.length === 0) {
-                    console.log("No new releases found. The file is already up to date.");
-                    return;
+                let absoluteLatestRelease = null;
+                try {
+                    absoluteLatestRelease = await fetchPage(latestReleaseApiUrl);
+                    console.log(`Fetched absolute latest release: ${absoluteLatestRelease.tag_name}`);
+                } catch (latestError) {
+                    console.warn(`Could not fetch latest release from ${latestReleaseApiUrl}: ${latestError.message}. Proceeding without it.`);
                 }
+
+                const allPaginatedReleases = await fetchAllReleases(repoApiUrl, 1, [], lastFetchDate);
+                console.log(`Fetched ${allPaginatedReleases.length} paginated release(s).`);
 
                 const allReleasesMap = new Map();
-                newReleases.forEach(release => allReleasesMap.set(release.id, release));
+
                 existingReleases.forEach(release => allReleasesMap.set(release.id, release));
 
-                let combinedReleases = Array.from(allReleasesMap.values());
-                console.log(`Total releases after merging: ${combinedReleases.length}.`);
+                allPaginatedReleases.forEach(release => allReleasesMap.set(release.id, release));
 
-                combinedReleases.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-
-                if (!fs.existsSync("assets/data")) {
-                    fs.mkdirSync("assets/data", { recursive: true });
+                if (absoluteLatestRelease) {
+                    allReleasesMap.set(absoluteLatestRelease.id, absoluteLatestRelease);
                 }
-                fs.writeFileSync(filePath, JSON.stringify(combinedReleases, null, 2));
-                console.log("Successfully updated and saved releases.json with all new and existing releases.");
+
+                let combinedReleases = Array.from(allReleasesMap.values());
+                console.log(`Total unique releases after merging: ${combinedReleases.length}.`);
+
+                let finalSortedReleases;
+                if (absoluteLatestRelease) {
+                    const releasesToSort = combinedReleases.filter(r => r.id !== absoluteLatestRelease.id);
+                    releasesToSort.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                    finalSortedReleases = [absoluteLatestRelease, ...releasesToSort];
+                } else {
+                    combinedReleases.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                    finalSortedReleases = combinedReleases;
+                }
+
+                let hasChanges = true;
+                if (fs.existsSync(filePath)) {
+                    const currentFileContent = fs.readFileSync(filePath, "utf8");
+                    if (currentFileContent === JSON.stringify(finalSortedReleases, null, 2)) {
+                        hasChanges = false;
+                        console.log("No changes detected. The file is already up to date.");
+                    }
+                }
+
+                if (hasChanges) {
+                    if (!fs.existsSync("assets/data")) {
+                        fs.mkdirSync("assets/data", { recursive: true });
+                    }
+                    fs.writeFileSync(filePath, JSON.stringify(finalSortedReleases, null, 2));
+                    console.log("Successfully updated and saved releases.json.");
+                } else {
+                    console.log("No new data to commit.");
+                }
               } catch (error) {
                 console.error("Failed to fetch or save releases:", error.message);
                 process.exit(1);
@@ -149,7 +180,12 @@ jobs:
           git config user.name "Andrew"
           git config user.email "andrewleduc88@yahoo.com"
           git add assets/data/releases.json
-          git diff --cached --exit-code assets/data/releases.json || git commit -m "automated: Update firmware release data"
-          git push
+          if git diff --cached --exit-code assets/data/releases.json; then
+            echo "No changes to commit."
+          else
+            git commit -m "automated: Update firmware release data"
+            git push
+            echo "Changes committed and pushed."
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

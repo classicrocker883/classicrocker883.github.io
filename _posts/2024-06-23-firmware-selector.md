@@ -478,6 +478,19 @@ image:
                     return [];
                 }
             }
+            async function fetchLatestReleaseDetails() {
+                try {
+                    const response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching latest release from GitHub API:', error);
+                    return null;
+                }
+            }
             function formatMonthYear(date) {
                 return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
             }
@@ -485,12 +498,6 @@ image:
                 const months = new Set();
                 releases.forEach(release => months.add(formatMonthYear(release.published_at)));
                 return Array.from(months).sort((a, b) => new Date(b) - new Date(a));
-            }
-            function extractTagName(urlOrTag) {
-                if (urlOrTag.includes('/')) {
-                    return urlOrTag.split('/').pop();
-                }
-                return urlOrTag;
             }
             function splitTag(tag) {
                 const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(C2|HC32|ender3))?(?:-(-?\d+[a-z]*))?$/;
@@ -515,7 +522,10 @@ image:
                             if (otherCheckbox !== event.target) otherCheckbox.checked = false;
                         });
                     } else {
-                        releaseTag = 'latest';
+                        if (document.querySelectorAll('input[name="release"]:checked').length === 0) {
+                             releaseTag = 'latest';
+                             selectMonth.value = 'latest';
+                        }
                     }
                     updateSelectedReleaseTag();
                     updateCandidates();
@@ -523,10 +533,49 @@ image:
                 label.append(checkbox, release.name);
                 releaseList.appendChild(label);
             }
-            function updateSelectedReleaseTag() {
-                let releaseTagName = releaseTag.replace("tags/", "");
-                selectedReleaseTagDiv.textContent = releaseTagName || 'latest';
-                totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${releaseTagName}/total'> - Total</label>`
+            async function updateSelectedReleaseTag() {
+                let currentBaseTag = releaseTag.replace("tags/", "");
+                const selectedModelDropdownValue = document.getElementById("model").value;
+                const selectedScreenDropdownValue = document.getElementById("screen").value;
+                let actualBaseTagName = currentBaseTag;
+                if (currentBaseTag === 'latest') {
+                    const latestRelease = await fetchLatestReleaseDetails();
+                    if (latestRelease) {
+                        actualBaseTagName = latestRelease.tag_name;
+                    } else {
+                        console.error('Could not determine actual latest release tag.');
+                        selectedReleaseTagDiv.textContent = 'Error loading tag';
+                        totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
+                        return;
+                    }
+                }
+                let splitParts = splitTag(actualBaseTagName);
+                let modelSuffixToApply = '';
+                if (selectedModelDropdownValue === "C2" || selectedScreenDropdownValue === "C2") {
+                    modelSuffixToApply = "C2";
+                } else if (selectedModelDropdownValue === "HC32") {
+                    modelSuffixToApply = "HC32";
+                } else if (selectedModelDropdownValue === "Ender") {
+                    modelSuffixToApply = "ender3";
+                }
+                if (modelSuffixToApply) {
+                    splitParts.model = modelSuffixToApply;
+                } else {
+                    splitParts.model = '';
+                }
+                let displayTag = splitParts.version;
+                if (splitParts.month) {
+                    displayTag += `-${splitParts.month}`;
+                }
+                if (splitParts.model) {
+                    displayTag += `-${splitParts.model}`;
+                }
+                if (splitParts.revision) {
+                    displayTag += `-${splitParts.revision}`;
+                }
+                selectedReleaseTagDiv.textContent = displayTag;
+                const badgeTag = currentBaseTag === 'latest' ? 'latest' : actualBaseTagName;
+                totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${badgeTag}/total'> - Total</label>`;
             }
             function fetchReleasesByMonth(month, releases) {
                 const filteredReleases = releases.filter(release => formatMonthYear(release.published_at) === month);
@@ -552,52 +601,50 @@ image:
                 try {
                     allReleasesData = await fetchAllReleases(repoUrl);
                     if (allReleasesData.length > 0) {
-                        const newestReleaseTag = allReleasesData[0].tag_name;
-                        releaseTag = `tags/${newestReleaseTag}`;
                         const releaseMonths = getReleaseMonths(allReleasesData);
                         populateMonthOptions(releaseMonths);
                     } else {
-                        console.warn('No release data loaded. Dropdown may not populate fully.');
+                        console.warn('No local release data loaded. Month dropdown may not populate fully.');
                         selectMonth.innerHTML = '<option value="latest">Error Loading Releases</option>';
                     }
+                    selectMonth.value = 'latest';
+                    releaseTag = 'latest';
+                    await updateCandidates();
                     updateSelectedReleaseTag();
-                    updateCandidates();
                 } catch (error) {
                     console.error('Error initializing dropdowns:', error);
                 }
             }
             async function fetchReleaseData(model) {
-                const currentReleaseTag = releaseTag.replace("tags/", "");
-                const selectedRelease = allReleasesData.find(release =>
-                    release.tag_name === currentReleaseTag ||
-                    (currentReleaseTag === 'latest' && allReleasesData.length > 0 && release.tag_name === allReleasesData[0].tag_name)
-                );
-                if (!selectedRelease) {
-                    console.error('Selected release not found in local data:', currentReleaseTag);
-                    return [];
+                let assets = [];
+                let targetApiUrl;
+                let actualTagName = '';
+                if (releaseTag === 'latest') {
+                    targetApiUrl = 'https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest';
+                } else {
+                    const currentReleaseTagName = releaseTag.replace("tags/", "");
+                    targetApiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${currentReleaseTagName}`;
                 }
-                const extractedTag = selectedRelease.tag_name;
-                const split = splitTag(extractedTag);
-                const type = document.getElementById("type").value;
-                const screen = document.getElementById("screen").value;
-                if (model === "C2" || screen === "C2") {
-                    split.model = "C2";
-                } else if (model === "HC32") {
-                    split.model = "HC32";
-                } else if (model === "Ender") {
-                    split.model = "ender3";
-                }
-                const tag = `${split.version}${split.month ? '-' + split.month : ''}${split.model ? '-' + split.model : ''}${split.revision ? '-' + split.revision : ''}`;
-                const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${tag}`;
                 try {
-                    const response = await fetch(apiUrl);
+                    const response = await fetch(targetApiUrl);
                     const data = await response.json();
-                    return data.assets || [];
+                    if (response.ok && data.assets) {
+                        assets = data.assets;
+                        actualTagName = data.tag_name;
+                    } else {
+                        console.error('Error fetching release assets:', data.message || 'Unknown error');
+                        assets = [];
+                    }
                 } catch (error) {
                     console.error('Error fetching release assets:', error);
-                    return [];
+                    assets = [];
                 }
-                return selectedRelease.assets || [];
+                if (actualTagName) {
+                    totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${actualTagName}/total'> - Total</label>`;
+                } else {
+                     totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
+                }
+                return assets;
             }
             async function updateCandidates() {
                 let model = document.getElementById("model").value;
@@ -792,6 +839,7 @@ image:
                     screenSelect.disabled = false;
                 }
                 updateCandidates();
+                updateSelectedReleaseTag();
             }
             function clearSelections() {
                 document.querySelectorAll('#proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(selection => selection.selectedIndex = 0);
@@ -803,6 +851,10 @@ image:
                 clearSelections();
                 document.getElementById("broadenSearch").value = "No";
                 document.getElementById("screen").disabled = false;
+                selectMonth.value = 'latest';
+                releaseTag = 'latest';
+                releaseContainer.style.display = 'none';
+                updateSelectedReleaseTag();
                 updateCandidates();
             }
             document.getElementById("features").addEventListener("change", () => {
@@ -813,16 +865,17 @@ image:
                 document.getElementById("secondaryOptions").value = "";
                 updateCandidates();
             });
-            selectMonth.addEventListener('change', (event) => {
+            selectMonth.addEventListener('change', async (event) => {
                 const selectedMonth = event.target.value;
                 if (selectedMonth === 'latest') {
                     releaseTag = 'latest';
-                    updateSelectedReleaseTag();
-                    updateCandidates();
                     releaseContainer.style.display = 'none';
                 } else {
+                    releaseTag = '';
                     fetchReleasesByMonth(selectedMonth, allReleasesData);
                 }
+                updateSelectedReleaseTag();
+                await updateCandidates();
             });
             resetButton.addEventListener('mousedown', () => resetButton.style.animationPlayState = 'running');
             resetButton.addEventListener('mouseup', () => resetButton.style.animationPlayState = 'paused');
