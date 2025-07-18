@@ -171,8 +171,8 @@ image:
         </div>
         <div class="select-container">
             <select id="broadenSearch" onchange="updateCandidates()">
-                <option value="No" title="Use strict filtering">No</option>
                 <option value="Yes" title="Use broader filtering">Yes</option>
+                <option value="No" title="Use strict filtering">No</option>
             </select>
         </div>
     </div>
@@ -224,7 +224,7 @@ image:
                 <option value="" title="No specific board type">--Select--</option>
                 <option value="_GD32" title="_GD32">GD32</option>
                 <option value="_N32" title="_N32">N32</option>
-                <option value="HC32" title="HC32">HC32</option>
+                <option value="_HC32" title="HC32">HC32</option>
                 <option value="_427" title="_427">Creality 4.2.7</option>
                 <option value="_422" title="_422">Creality 4.2.2</option>
                 <option value="-S1-F1" title="-S1-F1">Ender-3 S1 F103</option>
@@ -616,35 +616,36 @@ image:
                 }
             }
             async function fetchReleaseData(model) {
-                let assets = [];
-                let targetApiUrl;
-                let actualTagName = '';
-                if (releaseTag === 'latest') {
-                    targetApiUrl = 'https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest';
-                } else {
-                    const currentReleaseTagName = releaseTag.replace("tags/", "");
-                    targetApiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${currentReleaseTagName}`;
+                const currentReleaseTag = releaseTag.replace("tags/", "");
+                const selectedRelease = allReleasesData.find(release =>
+                    release.tag_name === currentReleaseTag ||
+                    (currentReleaseTag === 'latest' && release.tag_name === (allReleasesData.length > 0 ? allReleasesData[0].tag_name : null))
+                );
+                if (!selectedRelease) {
+                    console.error('Selected release not found in local data:', currentReleaseTag);
+                    return [];
                 }
+                const extractedTag = selectedRelease.tag_name;
+                const split = splitTag(extractedTag);
+                const type = document.getElementById("type").value;
+                if (model === "HC32" || type === "HC32") {
+                    split.model = "HC32";
+                } else if (model === "Ender") {
+                    split.model = "ender3";
+                } else if (model === "C2") {
+                    split.model = "C2";
+                }
+                const tag = `${split.version}${split.month ? '-' + split.month : ''}${split.model ? '-' + split.model : ''}${split.revision ? '-' + split.revision : ''}`;
+                const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${tag}`;
                 try {
-                    const response = await fetch(targetApiUrl);
+                    const response = await fetch(apiUrl);
                     const data = await response.json();
-                    if (response.ok && data.assets) {
-                        assets = data.assets;
-                        actualTagName = data.tag_name;
-                    } else {
-                        console.error('Error fetching release assets:', data.message || 'Unknown error');
-                        assets = [];
-                    }
+                    return data.assets || [];
                 } catch (error) {
                     console.error('Error fetching release assets:', error);
-                    assets = [];
+                    return [];
                 }
-                if (actualTagName) {
-                    totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${actualTagName}/total'> - Total</label>`;
-                } else {
-                     totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
-                }
-                return assets;
+                return selectedRelease.assets || [];
             }
             async function updateCandidates() {
                 let model = document.getElementById("model").value;
@@ -815,6 +816,7 @@ image:
                 const model = document.getElementById("model").value;
                 const screenSelect = document.getElementById("screen");
                 const modelSelect = document.getElementById("model");
+                const typeSelect = document.getElementById("type");
                 const currentBroadenSearchValue = document.getElementById("broadenSearch").value;
                 clearSelections();
                 document.getElementById("broadenSearch").value = currentBroadenSearchValue;
@@ -823,7 +825,7 @@ image:
                     "Aquila X3": { type: "_N32", features: "_IND", leveling: "_UBL", screen: "DWIN" },
                     "HC32": { type: "HC32", screen: "DWIN" },
                     "Ender": { type: "_422", screen: "DWIN" },
-                    "C2": { screen: "C2" }
+                    "C2": { type: "_HC32", screen: "C2" }
                 };
                 const preset = modelPresets[model];
                 if (preset) {
@@ -837,6 +839,16 @@ image:
                     screenSelect.disabled = true;
                 } else {
                     screenSelect.disabled = false;
+                }
+                if (model === "HC32") {
+                    typeSelect.value = 'HC32';
+                    typeSelect.disabled = true;
+                    const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
+                    if (c2ScreenOption) c2ScreenOption.disabled = true;
+                } else {
+                    const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
+                    if (c2ScreenOption) c2ScreenOption.disabled = false;
+                    typeSelect.disabled = false;
                 }
                 updateCandidates();
                 updateSelectedReleaseTag();
