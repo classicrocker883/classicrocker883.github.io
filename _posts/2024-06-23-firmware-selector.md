@@ -465,6 +465,7 @@ image:
             let releaseTag = 'latest';
             const repoUrl = '/assets/data/releases.json';
             let allReleasesData = [];
+            let proUIExtraFeaturesWasForcedToNo = false;
             async function fetchAllReleases(url) {
                 try {
                     const response = await fetch(url);
@@ -649,7 +650,6 @@ image:
             }
             async function updateCandidates() {
                 let model = document.getElementById("model").value;
-                let proUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
                 const screen = document.getElementById("screen").value;
                 const type = document.getElementById("type").value;
                 const features = document.getElementById("features").value;
@@ -664,6 +664,7 @@ image:
                 const broadenSearch = document.getElementById("broadenSearch").value;
                 const modelSelect = document.getElementById("model");
                 const screenSelect = document.getElementById("screen");
+                const proUIEXSelect = document.getElementById("proUIExtraFeatures");
                 secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_SPDY5" || features === "_BMP" || features === "_IND") ? "block" : "none";
                 secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS" || options === "-PLR") ? "block" : "none";
                 secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
@@ -693,8 +694,15 @@ image:
                 }
                 secondaryOptionsSelect.value = secondaryOptions;
                 if (model === "C2" || screen === "C2" || leveling === "_Default") {
-                    proUIExtraFeatures = "";
-                    document.getElementById("proUIExtraFeatures").value = proUIExtraFeatures;
+                    proUIEXSelect.value = "";
+                    proUIEXSelect.disabled = true;
+                    proUIExtraFeaturesWasForcedToNo = true;
+                } else {
+                    proUIEXSelect.disabled = false;
+                    if (proUIExtraFeaturesWasForcedToNo) {
+                        proUIEXSelect.value = "-ProUI";
+                        proUIExtraFeaturesWasForcedToNo = false;
+                    }
                 }
                 if (screen === 'C2') {
                     modelSelect.value = 'C2';
@@ -723,6 +731,7 @@ image:
                 }
                 const assets = await fetchReleaseData(model);
                 let filteredCandidates = [];
+                const currentProUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
                 const broadenFilterLogic = (assetName) => {
                     if (!assetName.startsWith(linkPrefix)) return false;
                     if (type && !assetName.includes(type)) return false;
@@ -731,10 +740,10 @@ image:
                     if (leveling && !assetName.includes(leveling)) return false;
                     if (options && !assetName.includes(options)) return false;
                     if (secondaryOptions && !assetName.includes(secondaryOptions)) return false;
-                    if (proUIExtraFeatures === "" && assetName.includes("-ProUI")) {
+                    if (currentProUIExtraFeatures === "" && assetName.includes("-ProUI")) {
                         return false;
                     }
-                    if (proUIExtraFeatures === "-ProUI" && !assetName.includes("-ProUI")) {
+                    if (currentProUIExtraFeatures === "-ProUI" && !assetName.includes("-ProUI")) {
                         return false;
                     }
                     return true;
@@ -787,10 +796,10 @@ image:
                             if (assetName.includes("-MPC") || assetName.includes("-IS")) return false;
                         }
                     }
-                    if (proUIExtraFeatures === "" && assetName.includes("-ProUI")) {
+                    if (currentProUIExtraFeatures === "" && assetName.includes("-ProUI")) {
                         return false;
                     }
-                    if (proUIExtraFeatures === "-ProUI" && !assetName.includes("-ProUI")) {
+                    if (currentProUIExtraFeatures === "-ProUI" && !assetName.includes("-ProUI")) {
                         return false;
                     }
                     return true;
@@ -815,8 +824,8 @@ image:
             function updateModelSelections() {
                 const model = document.getElementById("model").value;
                 const screenSelect = document.getElementById("screen");
-                const modelSelect = document.getElementById("model");
                 const typeSelect = document.getElementById("type");
+                const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
                 const currentBroadenSearchValue = document.getElementById("broadenSearch").value;
                 clearSelections();
                 document.getElementById("broadenSearch").value = currentBroadenSearchValue;
@@ -866,6 +875,7 @@ image:
                 selectMonth.value = 'latest';
                 releaseTag = 'latest';
                 releaseContainer.style.display = 'none';
+                proUIExtraFeaturesWasForcedToNo = false;
                 updateSelectedReleaseTag();
                 updateCandidates();
             }
