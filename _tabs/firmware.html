@@ -234,7 +234,7 @@ permalink: /firmware-selector
         </div>
         <div class="select-container">
             <select id="features" onchange="updateCandidates()">
-                <option value="" title="No specific features">--Select--</option>
+                <option value="temp" title="No specific features">--Select--</option>
                 <option value="" title="Bed Probe Only">CR/3D/BL-Touch Only</option>
                 <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
                 <option value="_IND" title="_IND">Induction Probe</option>
@@ -659,18 +659,22 @@ permalink: /firmware-selector
                 const modelSelect = document.getElementById("model");
                 const screenSelect = document.getElementById("screen");
                 const proUIEXSelect = document.getElementById("proUIExtraFeatures");
-                secondaryFeaturesDiv.style.display = (features === "_SPRT13" || features === "_SPDY5" || features === "_BMP" || features === "_IND") ? "block" : "none";
+                let effectiveFeaturesForDisplay = features;
+                if (features === "temp" && broadenSearch === "Yes") {
+                    effectiveFeaturesForDisplay = "";
+                }
+                secondaryFeaturesDiv.style.display = (effectiveFeaturesForDisplay === "_SPRT13" || effectiveFeaturesForDisplay === "_SPDY5" || effectiveFeaturesForDisplay === "_BMP" || effectiveFeaturesForDisplay === "_IND") ? "block" : "none";
                 secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS" || options === "-PLR") ? "block" : "none";
                 secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
-                if (features === "_SPRT13") {
+                if (effectiveFeaturesForDisplay === "_SPRT13") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
-                } else if (features === "_SPDY5") {
+                } else if (effectiveFeaturesForDisplay === "_SPDY5") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
-                } else if (features === "_BMP" || features === "_IND") {
+                } else if (effectiveFeaturesForDisplay === "_BMP" || effectiveFeaturesForDisplay === "_IND") {
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
                     secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
                 }
@@ -729,7 +733,32 @@ permalink: /firmware-selector
                 const broadenFilterLogic = (assetName) => {
                     if (!assetName.startsWith(linkPrefix)) return false;
                     if (type && !assetName.includes(type)) return false;
-                    if (features && !assetName.includes(features)) return false;
+                    if (broadenSearch === "Yes") {
+                        if (features === "temp") {
+                        } else if (features === "") {
+                            const forbiddenSuffixes = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
+                            for (const suffix of forbiddenSuffixes) {
+                                if (assetName.includes(suffix)) {
+                                    return false;
+                                }
+                            }
+                        } else {
+                            if (!assetName.includes(features)) {
+                                return false;
+                            }
+                        }
+                    } else {
+                        const allFeaturesSuffixes = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
+                        if (features === "temp" || features === "") {
+                            for (const suffix of allFeaturesSuffixes) {
+                                if (assetName.includes(suffix)) {
+                                    return false;
+                                }
+                            }
+                        } else if (!assetName.includes(features)) {
+                            return false;
+                        }
+                    }
                     if (secondaryFeatures && !assetName.includes(secondaryFeatures)) return false;
                     if (leveling && !assetName.includes(leveling)) return false;
                     if (options && !assetName.includes(options)) return false;
@@ -745,30 +774,30 @@ permalink: /firmware-selector
                 const specificFilterLogic = (assetName) => {
                     if (!assetName.startsWith(linkPrefix)) return false;
                     if (type && !assetName.includes(type)) return false;
-                    if (features && !assetName.includes(features)) return false;
                     if (secondaryFeatures && !assetName.includes(secondaryFeatures)) return false;
                     if (leveling && !assetName.includes(leveling)) return false;
                     if (options && !assetName.includes(options)) return false;
                     if (secondaryOptions && !assetName.includes(secondaryOptions)) return false;
+                    const allFeatures = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
+                    if (features === "temp" || features === "") {
+                        for (const f of allFeatures) {
+                            if (assetName.includes(f)) return false;
+                        }
+                    } else if (!assetName.includes(features)) {
+                        return false;
+                    }
                     const allTypes = ["_GD32", "_N32", "HC32", "_427", "_422", "-S1-F1", "-S1-F4", "_SKR-Mini-E3-", "_E3-Free-runs"];
                     for (const t of allTypes) {
                         if (type !== t && assetName.includes(t)) return false;
                     }
-                    const allFeatures = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
-                    if (features === "") {
-                        for (const f of allFeatures) {
-                            if (assetName.includes(f)) return false;
-                        }
-                    } else {
-                        if (features === "_SPRT13" && secondaryFeatures === "") {
-                            if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPDY5")) return false;
-                        }
-                        if (features === "_SPDY5" && secondaryFeatures === "") {
-                            if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPRT13")) return false;
-                        }
-                        if ((features === "_BMP" || features === "_IND") && secondaryFeatures === "") {
-                            if (assetName.includes("_SPRT13") || assetName.includes("_SPDY5")) return false;
-                        }
+                    if (features === "_SPRT13" && secondaryFeatures === "") {
+                        if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPDY5")) return false;
+                    }
+                    if (features === "_SPDY5" && secondaryFeatures === "") {
+                        if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPRT13")) return false;
+                    }
+                    if ((features === "_BMP" || features === "_IND") && secondaryFeatures === "") {
+                        if (assetName.includes("_SPRT13") || assetName.includes("_SPDY5")) return false;
                     }
                     const allLeveling = ["_UBL", "_BLT", "_MM", "_Default"];
                     for (const l of allLeveling) {
