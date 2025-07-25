@@ -57,10 +57,18 @@ image:
             border: 2px solid #333;
             width: 110%;
         }
-        .candidates-container {
+        .candidates-list-container {
             display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .candidates-header-text {
             justify-content: center;
             align-items: center;
+            text-align: center;
+            display: flex;
+            font-size: 20px;
         }
         .button-container {
             display: flex;
@@ -182,7 +190,7 @@ image:
         </div>
         <div class="select-container">
             <select id="model" onchange="updateModelSelections()">
-                <option value="" title="May help to choose a model first">--Select Model--</option>
+                <option value="none" title="May help to choose a model first">--Select Model--</option>
                 <option value="Aquila" title="Aquila OG/X2">Aquila</option>
                 <option value="Aquila X3" title="Aquila X3/S3 Induction Probe">Aquila X3/S3</option>
                 <option value="C2" title="Monochrome LCD Display">Aquila C2</option>
@@ -240,7 +248,7 @@ image:
         </div>
         <div class="select-container">
             <select id="features" onchange="updateCandidates()">
-                <option value="temp" title="No specific features">--Select--</option>
+                <option value="none" title="No specific features">--Select--</option>
                 <option value="" title="Bed Probe Only">CR/3D/BL-Touch Only</option>
                 <option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>
                 <option value="_IND" title="_IND">Induction Probe</option>
@@ -316,7 +324,11 @@ image:
         </button>
     </div>
     <hr>
-    <div class="candidates-container">
+    <div class="candidates-header-text">
+        <a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>&nbsp;Candidates:</strong><br>
+    </div>
+    <br>
+    <div class="candidates-list-container">
         <table id="versionsTable">
             <thead>
                 <tr>
@@ -554,10 +566,12 @@ image:
                 let modelSuffixToApply = '';
                 if (selectedModelDropdownValue === "C2" || selectedScreenDropdownValue === "C2") {
                     modelSuffixToApply = "C2";
-                } else if (selectedModelDropdownValue === "HC32") {
-                    modelSuffixToApply = "HC32";
                 } else if (selectedModelDropdownValue === "Ender") {
                     modelSuffixToApply = "ender3";
+                } else if (selectedModelDropdownValue === "Aquila X3" || selectedModelDropdownValue === "Aquila") {
+                    modelSuffixToApply = '';
+                } else if (selectedModelDropdownValue) {
+                    modelSuffixToApply = selectedModelDropdownValue;
                 }
                 if (modelSuffixToApply) {
                     splitParts.model = modelSuffixToApply;
@@ -629,12 +643,14 @@ image:
                 const extractedTag = selectedRelease.tag_name;
                 const split = splitTag(extractedTag);
                 const type = document.getElementById("type").value;
-                if (model === "HC32" || type === "HC32") {
+                if (model === "HC32") {
                     split.model = "HC32";
                 } else if (model === "Ender") {
                     split.model = "ender3";
                 } else if (model === "C2") {
                     split.model = "C2";
+                } else if (model === "Aquila X3" || model === "Aquila") {
+                    split.model = "";
                 }
                 const tag = `${split.version}${split.month ? '-' + split.month : ''}${split.model ? '-' + split.model : ''}${split.revision ? '-' + split.revision : ''}`;
                 const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${tag}`;
@@ -649,7 +665,7 @@ image:
                 return selectedRelease.assets || [];
             }
             async function updateCandidates() {
-                let model = document.getElementById("model").value;
+                const model = document.getElementById("model").value;
                 const screen = document.getElementById("screen").value;
                 const type = document.getElementById("type").value;
                 const features = document.getElementById("features").value;
@@ -665,8 +681,12 @@ image:
                 const modelSelect = document.getElementById("model");
                 const screenSelect = document.getElementById("screen");
                 const proUIEXSelect = document.getElementById("proUIExtraFeatures");
+                let effectiveModel = model;
+                if (model === "Aquila X3") {
+                    effectiveModel = "Aquila";
+                }
                 let effectiveFeaturesForDisplay = features;
-                if (features === "temp" && broadenSearch === "Yes") {
+                if (features === "none" && broadenSearch === "Yes") {
                     effectiveFeaturesForDisplay = "";
                 }
                 secondaryFeaturesDiv.style.display = (effectiveFeaturesForDisplay === "_SPRT13" || effectiveFeaturesForDisplay === "_SPDY5" || effectiveFeaturesForDisplay === "_BMP" || effectiveFeaturesForDisplay === "_IND") ? "block" : "none";
@@ -724,14 +744,16 @@ image:
                     "Ender": { "TJC-": "TJC-Ender", "default": "Ender" },
                     "default": { "TJC-": "TJC-Aquila", "default": "Aquila" }
                 };
-                if (model === "C2" || screen === "C2") {
+                if (effectiveModel === "C2" || screen === "C2") {
                     linkPrefix = screenMap["C2"][screen] || screenMap["C2"]["default"];
-                } else if (model === "HC32") {
+                } else if (effectiveModel === "HC32") {
                     linkPrefix = screenMap["HC32"][screen] || screenMap["HC32"]["default"];
-                } else if (model === "Ender") {
+                } else if (effectiveModel === "Ender") {
                     linkPrefix = screenMap["Ender"][screen] || screenMap["Ender"]["default"];
-                } else {
+                } else if (effectiveModel === "Aquila") {
                     linkPrefix = screenMap["default"][screen] || screenMap["default"]["default"];
+                } else {
+                    linkPrefix = null;
                 }
                 const assets = await fetchReleaseData(model);
                 let filteredCandidates = [];
@@ -740,7 +762,7 @@ image:
                     if (!assetName.startsWith(linkPrefix)) return false;
                     if (type && !assetName.includes(type)) return false;
                     if (broadenSearch === "Yes") {
-                        if (features === "temp") {
+                        if (features === "none") {
                         } else if (features === "") {
                             const forbiddenSuffixes = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
                             for (const suffix of forbiddenSuffixes) {
@@ -755,7 +777,7 @@ image:
                         }
                     } else {
                         const allFeaturesSuffixes = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
-                        if (features === "temp" || features === "") {
+                        if (features === "none" || features === "") {
                             for (const suffix of allFeaturesSuffixes) {
                                 if (assetName.includes(suffix)) {
                                     return false;
@@ -785,7 +807,7 @@ image:
                     if (options && !assetName.includes(options)) return false;
                     if (secondaryOptions && !assetName.includes(secondaryOptions)) return false;
                     const allFeatures = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
-                    if (features === "temp" || features === "") {
+                    if (features === "none" || features === "") {
                         for (const f of allFeatures) {
                             if (assetName.includes(f)) return false;
                         }
@@ -839,7 +861,7 @@ image:
                     filteredCandidates = assets.filter(asset => specificFilterLogic(asset.name));
                 }
                 const candidatesList = document.getElementById("candidates");
-                candidatesList.innerHTML = '<div class="candidates-container"><a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>&nbsp;Candidates:</strong><br></div><br>';
+                candidatesList.innerHTML = '';
                 if (filteredCandidates.length > 0) {
                     filteredCandidates.forEach(candidate => {
                         const url = candidate.browser_download_url;
@@ -847,7 +869,7 @@ image:
                         candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style='color: brown'>${filename}</span><a style='margin-left: auto; margin-right: 2%; font-size: 20px;' href='${url}' class='fas fa-download'></a></span></div>`;
                     });
                 } else {
-                    candidatesList.textContent = "No candidates found.";
+                    candidatesList.innerHTML = "No candidates found.";
                 }
             }
             function updateModelSelections() {

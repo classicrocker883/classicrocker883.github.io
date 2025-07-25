@@ -51,10 +51,18 @@ permalink: /firmware-selector
             border: 2px solid #333;
             width: 110%;
         }
-        .candidates-container {
+        .candidates-list-container {
             display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .candidates-header-text {
             justify-content: center;
             align-items: center;
+            text-align: center;
+            display: flex;
+            font-size: 20px;
         }
         .button-container {
             display: flex;
@@ -310,7 +318,11 @@ permalink: /firmware-selector
         </button>
     </div>
     <hr>
-    <div class="candidates-container">
+    <div class="candidates-header-text">
+        <a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>&nbsp;Candidates:</strong><br>
+    </div>
+    <br>
+    <div class="candidates-list-container">
         <table id="versionsTable">
             <thead>
                 <tr>
@@ -843,7 +855,7 @@ permalink: /firmware-selector
                     filteredCandidates = assets.filter(asset => specificFilterLogic(asset.name));
                 }
                 const candidatesList = document.getElementById("candidates");
-                candidatesList.innerHTML = '<div class="candidates-container"><a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>&nbsp;Candidates:</strong><br></div><br>';
+                candidatesList.innerHTML = '';
                 if (filteredCandidates.length > 0) {
                     filteredCandidates.forEach(candidate => {
                         const url = candidate.browser_download_url;
@@ -851,7 +863,7 @@ permalink: /firmware-selector
                         candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style='color: brown'>${filename}</span><a style='margin-left: auto; margin-right: 2%; font-size: 20px;' href='${url}' class='fas fa-download'></a></span></div>`;
                     });
                 } else {
-                    candidatesList.textContent = "No candidates found.";
+                    candidatesList.innerHTML = "No candidates found.";
                 }
             }
             function updateModelSelections() {
