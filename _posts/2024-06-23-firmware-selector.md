@@ -467,14 +467,14 @@ image:
         Prints will be effected regardless. May require a special breakout board or test prints to calibrate.
     </sup>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const selectMonth = document.getElementById('month-select');
-            const releaseContainer = document.getElementById('releases-container');
-            const releaseList = document.getElementById('release-list');
-            const selectedReleaseTagDiv = document.getElementById('selected-release-tag');
-            const resetButton = document.getElementById('resetButton');
-            const totalDownloads = document.getElementById('total-downloads');
-            let releaseTag = 'latest';
+        document.addEventListener("DOMContentLoaded", () => {
+            const selectMonth = document.getElementById("month-select");
+            const releaseContainer = document.getElementById("releases-container");
+            const releaseList = document.getElementById("release-list");
+            const selectedReleaseTagDiv = document.getElementById("selected-release-tag");
+            const resetButton = document.getElementById("resetButton");
+            const totalDownloads = document.getElementById("total-downloads");
+            let releaseTag = "latest";
             const repoUrl = '/assets/data/releases.json';
             let allReleasesData = [];
             let proUIExtraFeaturesWasForcedToNo = false;
@@ -487,7 +487,7 @@ image:
                     const data = await response.json();
                     return data;
                 } catch (error) {
-                    console.error('Error fetching local releases data:', error);
+                    console.error("Error fetching local releases data:", error);
                     return [];
                 }
             }
@@ -500,12 +500,12 @@ image:
                     const data = await response.json();
                     return data;
                 } catch (error) {
-                    console.error('Error fetching latest release from GitHub API:', error);
+                    console.error("Error fetching latest release from GitHub API:", error);
                     return null;
                 }
             }
             function formatMonthYear(date) {
-                return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+                return new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short" });
             }
             function getReleaseMonths(releases) {
                 const months = new Set();
@@ -516,19 +516,19 @@ image:
                 const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(C2|HC32|ender3))?(?:-(-?\d+[a-z]*))?$/;
                 const match = tag.match(regex);
                 return {
-                    version: match ? match[1] : '',
-                    month: match ? match[2] : '',
-                    model: match ? match[3] : '',
-                    revision: match ? match[4] : ''
+                    version: match ? match[1] : "",
+                    month: match ? match[2] : "",
+                    model: match ? match[3] : "",
+                    revision: match ? match[4] : ""
                 };
             }
             function createCheckbox(release) {
-                const label = document.createElement('label');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
+                const label = document.createElement("label");
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
                 checkbox.value = release.tag_name;
-                checkbox.name = 'release';
-                checkbox.addEventListener('change', (event) => {
+                checkbox.name = "release";
+                checkbox.addEventListener("change", (event) => {
                     if (event.target.checked) {
                         releaseTag = `tags/${event.target.value}`;
                         document.querySelectorAll('input[name="release"]').forEach(otherCheckbox => {
@@ -536,8 +536,8 @@ image:
                         });
                     } else {
                         if (document.querySelectorAll('input[name="release"]:checked').length === 0) {
-                             releaseTag = 'latest';
-                             selectMonth.value = 'latest';
+                             releaseTag = "latest";
+                             selectMonth.value = "latest";
                         }
                     }
                     updateSelectedReleaseTag();
@@ -551,32 +551,32 @@ image:
                 const selectedModelDropdownValue = document.getElementById("model").value;
                 const selectedScreenDropdownValue = document.getElementById("screen").value;
                 let actualBaseTagName = currentBaseTag;
-                if (currentBaseTag === 'latest') {
+                if (currentBaseTag === "latest") {
                     const latestRelease = await fetchLatestReleaseDetails();
                     if (latestRelease) {
                         actualBaseTagName = latestRelease.tag_name;
                     } else {
-                        console.error('Could not determine actual latest release tag.');
-                        selectedReleaseTagDiv.textContent = 'Error loading tag';
+                        console.error("Could not determine actual latest release tag.");
+                        selectedReleaseTagDiv.textContent = "Error loading tag";
                         totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
                         return;
                     }
                 }
                 let splitParts = splitTag(actualBaseTagName);
-                let modelSuffixToApply = '';
+                let modelSuffixToApply = "";
                 if (selectedModelDropdownValue === "C2" || selectedScreenDropdownValue === "C2") {
                     modelSuffixToApply = "C2";
                 } else if (selectedModelDropdownValue === "Ender") {
                     modelSuffixToApply = "ender3";
                 } else if (selectedModelDropdownValue === "Aquila X3" || selectedModelDropdownValue === "Aquila") {
-                    modelSuffixToApply = '';
+                    modelSuffixToApply = "";
                 } else if (selectedModelDropdownValue) {
                     modelSuffixToApply = selectedModelDropdownValue;
                 }
                 if (modelSuffixToApply) {
                     splitParts.model = modelSuffixToApply;
                 } else {
-                    splitParts.model = '';
+                    splitParts.model = "";
                 }
                 let displayTag = splitParts.version;
                 if (splitParts.month) {
@@ -589,24 +589,24 @@ image:
                     displayTag += `-${splitParts.revision}`;
                 }
                 selectedReleaseTagDiv.textContent = displayTag;
-                const badgeTag = currentBaseTag === 'latest' ? 'latest' : actualBaseTagName;
+                const badgeTag = currentBaseTag === "latest" ? "latest" : actualBaseTagName;
                 totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${badgeTag}/total'> - Total</label>`;
             }
             function fetchReleasesByMonth(month, releases) {
                 const filteredReleases = releases.filter(release => formatMonthYear(release.published_at) === month);
-                releaseList.innerHTML = '';
+                releaseList.innerHTML = "";
                 if (filteredReleases.length > 0) {
                     filteredReleases.forEach(createCheckbox);
-                    releaseContainer.style.display = 'block';
+                    releaseContainer.style.display = "block";
                 } else {
-                    releaseList.textContent = 'No releases found for this month.';
-                    releaseContainer.style.display = 'none';
+                    releaseList.textContent = "No releases found for this month.";
+                    releaseContainer.style.display = "none";
                 }
             }
             function populateMonthOptions(releaseMonths) {
                 selectMonth.innerHTML = '<option value="latest" title="The most recent release version">Latest Release</option>';
                 releaseMonths.forEach(month => {
-                    const option = document.createElement('option');
+                    const option = document.createElement("option");
                     option.value = month;
                     option.textContent = month;
                     selectMonth.appendChild(option);
@@ -619,25 +619,25 @@ image:
                         const releaseMonths = getReleaseMonths(allReleasesData);
                         populateMonthOptions(releaseMonths);
                     } else {
-                        console.warn('No local release data loaded. Month dropdown may not populate fully.');
+                        console.warn("No local release data loaded. Month dropdown may not populate fully.");
                         selectMonth.innerHTML = '<option value="latest">Error Loading Releases</option>';
                     }
-                    selectMonth.value = 'latest';
-                    releaseTag = 'latest';
+                    selectMonth.value = "latest";
+                    releaseTag = "latest";
                     await updateCandidates();
                     updateSelectedReleaseTag();
                 } catch (error) {
-                    console.error('Error initializing dropdowns:', error);
+                    console.error("Error initializing dropdowns:", error);
                 }
             }
             async function fetchReleaseData(model) {
                 const currentReleaseTag = releaseTag.replace("tags/", "");
                 const selectedRelease = allReleasesData.find(release =>
                     release.tag_name === currentReleaseTag ||
-                    (currentReleaseTag === 'latest' && release.tag_name === (allReleasesData.length > 0 ? allReleasesData[0].tag_name : null))
+                    (currentReleaseTag === "latest" && release.tag_name === (allReleasesData.length > 0 ? allReleasesData[0].tag_name : null))
                 );
                 if (!selectedRelease) {
-                    console.error('Selected release not found in local data:', currentReleaseTag);
+                    console.error("Selected release not found in local data:", currentReleaseTag);
                     return [];
                 }
                 const extractedTag = selectedRelease.tag_name;
@@ -659,7 +659,7 @@ image:
                     const data = await response.json();
                     return data.assets || [];
                 } catch (error) {
-                    console.error('Error fetching release assets:', error);
+                    console.error("Error fetching release assets:", error);
                     return [];
                 }
                 return selectedRelease.assets || [];
@@ -728,11 +728,11 @@ image:
                         proUIExtraFeaturesWasForcedToNo = false;
                     }
                 }
-                if (screen === 'C2') {
-                    modelSelect.value = 'C2';
+                if (screen === "C2") {
+                    modelSelect.value = "C2";
                     screenSelect.disabled = true;
-                } else if (model === 'C2') {
-                    screenSelect.value = 'C2';
+                } else if (model === "C2") {
+                    screenSelect.value = "C2";
                     screenSelect.disabled = true;
                 } else {
                     screenSelect.disabled = false;
@@ -861,7 +861,7 @@ image:
                     filteredCandidates = assets.filter(asset => specificFilterLogic(asset.name));
                 }
                 const candidatesList = document.getElementById("candidates");
-                candidatesList.innerHTML = '';
+                candidatesList.innerHTML = "";
                 if (filteredCandidates.length > 0) {
                     filteredCandidates.forEach(candidate => {
                         const url = candidate.browser_download_url;
@@ -875,8 +875,9 @@ image:
             function updateModelSelections() {
                 const model = document.getElementById("model").value;
                 const screenSelect = document.getElementById("screen");
-                const typeSelect = document.getElementById("type");
                 const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
+                const typeSelect = document.getElementById("type");
+                const hc32TypeOption = typeSelect.querySelector('option[value="_HC32"]');
                 const currentBroadenSearchValue = document.getElementById("broadenSearch").value;
                 clearSelections();
                 document.getElementById("broadenSearch").value = currentBroadenSearchValue;
@@ -895,20 +896,23 @@ image:
                     if (preset.leveling) document.getElementById("leveling").value = preset.leveling;
                 }
                 if (model === "C2") {
-                    screenSelect.value = 'C2';
+                    screenSelect.value = "C2";
                     screenSelect.disabled = true;
                 } else {
                     screenSelect.disabled = false;
                 }
                 if (model === "HC32") {
-                    typeSelect.value = 'HC32';
+                    typeSelect.value = "HC32";
                     typeSelect.disabled = true;
-                    const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
-                    if (c2ScreenOption) c2ScreenOption.disabled = true;
+                    c2ScreenOption.disabled = true;
                 } else {
-                    const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
-                    if (c2ScreenOption) c2ScreenOption.disabled = false;
+                    c2ScreenOption.disabled = false;
                     typeSelect.disabled = false;
+                }
+                if (model === "Aquila" || model === "Aquila X3") {
+                    hc32TypeOption.disabled = true;
+                } else {
+                    hc32TypeOption.disabled = false;
                 }
                 updateCandidates();
                 updateSelectedReleaseTag();
@@ -923,9 +927,9 @@ image:
                 clearSelections();
                 document.getElementById("broadenSearch").value = "No";
                 document.getElementById("screen").disabled = false;
-                selectMonth.value = 'latest';
-                releaseTag = 'latest';
-                releaseContainer.style.display = 'none';
+                selectMonth.value = "latest";
+                releaseTag = "latest";
+                releaseContainer.style.display = "none";
                 proUIExtraFeaturesWasForcedToNo = false;
                 updateSelectedReleaseTag();
                 updateCandidates();
@@ -938,23 +942,23 @@ image:
                 document.getElementById("secondaryOptions").value = "";
                 updateCandidates();
             });
-            selectMonth.addEventListener('change', async (event) => {
+            selectMonth.addEventListener("change", async (event) => {
                 const selectedMonth = event.target.value;
-                if (selectedMonth === 'latest') {
-                    releaseTag = 'latest';
-                    releaseContainer.style.display = 'none';
+                if (selectedMonth === "latest") {
+                    releaseTag = "latest";
+                    releaseContainer.style.display = "none";
                 } else {
-                    releaseTag = '';
+                    releaseTag = "";
                     fetchReleasesByMonth(selectedMonth, allReleasesData);
                 }
                 updateSelectedReleaseTag();
                 await updateCandidates();
             });
-            resetButton.addEventListener('mousedown', () => resetButton.style.animationPlayState = 'running');
-            resetButton.addEventListener('mouseup', () => resetButton.style.animationPlayState = 'paused');
-            resetButton.addEventListener('click', resetSelections);
-            document.getElementById("model").addEventListener('change', updateModelSelections);
-            document.querySelectorAll('#broadenSearch, #proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(input => input.addEventListener('change', updateCandidates));
+            resetButton.addEventListener("mousedown", () => resetButton.style.animationPlayState = "running");
+            resetButton.addEventListener("mouseup", () => resetButton.style.animationPlayState = "paused");
+            resetButton.addEventListener("click", resetSelections);
+            document.getElementById("model").addEventListener("change", updateModelSelections);
+            document.querySelectorAll('#broadenSearch, #proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(input => input.addEventListener("change", updateCandidates));
             initializeDropdowns();
         });
     </script>
