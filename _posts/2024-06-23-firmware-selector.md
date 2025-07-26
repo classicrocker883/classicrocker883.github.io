@@ -325,7 +325,7 @@ image:
     </div>
     <hr>
     <div class="candidates-header-text">
-        <a style="font-size: 26px;"class="icon fas fa-rectangle-list"></a><strong>&nbsp;Candidates:</strong><br>
+        <a href="#" style="font-size: 26px;" class="icon fas fa-rectangle-list"></a><strong>&nbsp;Candidates:</strong><br>
     </div>
     <br>
     <div class="candidates-list-container">
