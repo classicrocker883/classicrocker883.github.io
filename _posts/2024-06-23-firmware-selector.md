@@ -38,7 +38,8 @@ image:
             margin-right: 50%;
         }
         select {
-            width: 10em;
+            text-align: center;
+            width: 11em;
             padding: 2px;
             border: 1px solid #ccc;
             border-radius: 2px;
@@ -58,7 +59,7 @@ image:
             width: 110%;
         }
         .candidates-list-container {
-            display: flex;
+            display: flex 0 0;
             justify-content: flex-start;
             flex-direction: column;
             align-items: flex-start;
