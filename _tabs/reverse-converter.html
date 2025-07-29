@@ -1,0 +1,352 @@
+---
+# the default layout is 'page'
+title: Reverse Bitmap Converter
+show_title: false
+icon: fas fa-qrcode
+order: 7
+permalink: /reverse-converter
+---
+<html lang="en">
+<head>
+  <title>Reverse Bitmap Converter</title>
+  <style>
+    body {
+      padding: 1em;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-family: monospace;
+      border-radius: 0.5rem;
+      border: 1px solid #cbd5e1;
+      padding: 0.75rem;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .canvas-wrapper {
+      border: 1px solid #ccc;
+      margin-top: 1em;
+      background-color: #ffffff;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: inline-block;
+      max-width: 100%;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+
+    }
+    .controls {
+      margin-top: 1em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .drag-area {
+      margin-top: 1em;
+      padding: 1.5em;
+      border: 2px dashed #94a3b8;
+      text-align: center;
+      color: #475569;
+      border-radius: 0.75rem;
+      background-color: #e2e8f0;
+      transition: background-color 0.3s ease;
+    }
+    .drag-area.hover {
+      background-color: #d1d5db;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      background-color: #3b82f6;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+    input[type="number"] {
+      border-radius: 0.5rem;
+      border: 1px solid #cbd5e1;
+      width: auto;
+      text-align: center;
+    }
+
+    .message-box-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .message-box-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .message-box-content {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 90%;
+      width: 400px;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+    }
+    .message-box-overlay.show .message-box-content {
+      transform: translateY(0);
+    }
+    .message-box-content h3 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #1e293b;
+    }
+    .message-box-content p {
+      margin-bottom: 1.5rem;
+      color: #475569;
+    }
+    .message-box-content button {
+      background-color: #3b82f6;
+      padding: 0.6rem 1.2rem;
+    }
+  </style>
+</head>
+<body class="p-4 bg-gray-100 min-h-screen flex flex-col items-center">
+  <div class="max-w-4xl w-full bg-white p-6 rounded-lg shadow-xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Binary/Hex to Image Converter</h1>
+    <p class="text-gray-600 mb-4">Convert binary/hex code into images, useful for Marlin Boot Screens and Status Screen Logos for Graphical Displays.</p>
+    <div class="drag-area" id="dropzone">Drop a .txt, .bin, or .hex file here to load bitmap data</div>
+    <p class="text-gray-600 mt-4 mb-2">Or paste binary/hex code below (formats: <code class="bg-gray-200 p-1 rounded">0xFF</code>, <code class="bg-gray-200 p-1 rounded">B11110000</code>, <code class="bg-gray-200 p-1 rounded">11001100</code>):</p>
+    <textarea id="bitmap-data" placeholder="0xFF, 0x0F, ..." class="mb-4"></textarea>
+    <div class="controls">
+      <div class="flex items-center gap-2">
+        <label for="width" class="text-gray-700 font-medium">Image width (bits):</label>
+        <input type="number" id="width" value="128" step="8" min="8" max="1024" class="w-24" />
+      </div>
+      <div class="flex items-center gap-2">
+        <label for="scale" class="text-gray-700 font-medium">Preview Scale:</label>
+        <input type="number" id="scale" value="3" min="1" max="10" step="1" class="w-20" />
+      </div>
+      <button onclick="renderImage()">Render Image</button>
+      <button onclick="downloadImage()">Download PNG</button>
+      <button onclick="autoSuggestWidth()">Suggest Width</button>
+    </div>
+    <!-- New wrapper div for the canvas -->
+    <div class="canvas-wrapper mt-6">
+      <canvas id="image-preview"></canvas>
+    </div>
+  </div>
+  <!-- Custom Message Box HTML -->
+  <div id="messageBoxOverlay" class="message-box-overlay">
+    <div class="message-box-content">
+      <h3 id="messageBoxTitle"></h3>
+      <p id="messageBoxMessage"></p>
+      <button onclick="hideMessageBox()">OK</button>
+    </div>
+  </div>
+  <script>
+    function showMessageBox(title, message) {
+      document.getElementById('messageBoxTitle').textContent = title;
+      document.getElementById('messageBoxMessage').textContent = message;
+      document.getElementById('messageBoxOverlay').classList.add('show');
+    }
+    function hideMessageBox() {
+      document.getElementById('messageBoxOverlay').classList.remove('show');
+    }
+    function parseBinaryData(input) {
+      const lines = input.trim().split(/\n|\r/);
+      const data = [];
+      for (const line of lines) {
+        if (line.trim() === '') continue;
+        const matches = [...line.matchAll(/0x[0-9A-Fa-f]+|B[01]{8}|[01]{8}/g)];
+        if (matches.length === 0 && line.trim() !== '') {
+            console.warn(`Skipping line due to no valid matches or invalid format: "${line.trim()}"`);
+            continue;
+        }
+        for (const match of matches) {
+          const str = match[0];
+          if (str.startsWith("0x") || str.startsWith("0X")) {
+            data.push(parseInt(str, 16));
+          } else if (str.startsWith("B")) {
+            data.push(parseInt(str.slice(1), 2));
+          } else {
+            if (str.length === 8 && /^[01]+$/.test(str)) {
+                data.push(parseInt(str, 2));
+            } else {
+                console.warn(`Skipping invalid binary string: "${str}"`);
+            }
+          }
+        }
+      }
+      if (data.length === 0 && input.trim() !== '') {
+          throw new Error("No valid binary or hex data found in the input.");
+      }
+      return data;
+    }
+    function suggestBestWidth(data) {
+      const totalBits = data.length * 8;
+      if (totalBits === 0) return null;
+      const candidates = [];
+      for (let width = 8; width <= 1024; width += 8) {
+        if (totalBits % width === 0) {
+          const height = totalBits / width;
+          const ratio = Math.max(width / height, height / width);
+          candidates.push({ width, ratio });
+        }
+      }
+      candidates.sort((a, b) => {
+        if (a.ratio !== b.ratio) {
+          return a.ratio - b.ratio;
+        }
+        return a.width - b.width;
+      });
+      return candidates.length > 0 ? candidates[0].width : null;
+    }
+    function renderBitmap(data, widthBits = 128, scaleFactor = 1) {
+      if (widthBits % 8 !== 0) {
+          throw new Error("Image width must be a multiple of 8 bits.");
+      }
+      if (data.length === 0) {
+          const canvas = document.getElementById("image-preview");
+          const ctx = canvas.getContext("2d");
+          canvas.width = 0;
+          canvas.height = 0;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          return;
+      }
+      const byteWidth = widthBits / 8;
+      if (data.length % byteWidth !== 0) {
+          throw new Error(`Data length (${data.length} bytes) does not match the image width (${widthBits} bits). Expected data length to be a multiple of ${byteWidth}.`);
+      }
+      const height = data.length / byteWidth;
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = widthBits;
+      tempCanvas.height = height;
+      const tempCtx = tempCanvas.getContext('2d');
+      const imgData = tempCtx.createImageData(widthBits, height);
+      const pixels = imgData.data;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < widthBits; x++) {
+          const byteIndex = y * byteWidth + Math.floor(x / 8);
+          if (byteIndex >= data.length) {
+              console.warn(`Byte index out of bounds: ${byteIndex} at (x=${x}, y=${y}). Data length: ${data.length}`);
+              continue;
+          }
+          const byte = data[byteIndex];
+          const bit = (byte >> (7 - (x % 8))) & 1;
+          const i = (y * widthBits + x) * 4;
+          const color = bit === 0 ? 255 : 0;
+          pixels[i] = pixels[i + 1] = pixels[i + 2] = color;
+          pixels[i + 3] = 255;
+        }
+      }
+      tempCtx.putImageData(imgData, 0, 0);
+      const mainCanvas = document.getElementById("image-preview");
+      mainCanvas.width = widthBits * scaleFactor;
+      mainCanvas.height = height * scaleFactor;
+      const mainCtx = mainCanvas.getContext("2d");
+      mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+      mainCtx.imageSmoothingEnabled = false;
+      mainCtx.drawImage(tempCanvas, 0, 0, mainCanvas.width, mainCanvas.height);
+    }
+    function renderImage() {
+      try {
+        const input = document.getElementById("bitmap-data").value;
+        const width = parseInt(document.getElementById("width").value);
+        const scale = parseInt(document.getElementById("scale").value);
+        if (isNaN(width) || width <= 0) {
+            showMessageBox("Input Error", "Please enter a valid positive number for image width.");
+            return;
+        }
+        if (isNaN(scale) || scale <= 0) {
+            showMessageBox("Input Error", "Please enter a valid positive number for preview scale.");
+            return;
+        }
+        const data = parseBinaryData(input);
+        renderBitmap(data, width, scale);
+      } catch (err) {
+        showMessageBox("Error Rendering Image", err.message);
+      }
+    }
+    function autoSuggestWidth() {
+      try {
+        const input = document.getElementById("bitmap-data").value;
+        const data = parseBinaryData(input);
+        const suggested = suggestBestWidth(data);
+        if (suggested) {
+          document.getElementById("width").value = suggested;
+          showMessageBox("Suggestion", `Suggested width: ${suggested} bits.`);
+        } else {
+          showMessageBox("Suggestion", "No valid width suggestion found. Please ensure you have valid data.");
+        }
+      } catch (e) {
+        showMessageBox("Error Suggesting Width", e.message);
+      }
+    }
+    function downloadImage() {
+      const canvas = document.getElementById("image-preview");
+      if (canvas.width === 0 || canvas.height === 0) {
+          showMessageBox("Download Error", "No image to download. Please render an image first.");
+          return;
+      }
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL("image/png");
+      link.download = "bitmap.png";
+      link.click();
+    }
+    const dropzone = document.getElementById("dropzone");
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+      dropzone.classList.add('hover');
+    });
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove('hover');
+    });
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('hover');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const fileName = file.name.toLowerCase();
+        if (fileName.endsWith(".txt") || fileName.endsWith(".bin") || fileName.endsWith(".hex")) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            document.getElementById("bitmap-data").value = event.target.result;
+            showMessageBox("File Loaded", `File "${file.name}" loaded successfully.`);
+          };
+          reader.onerror = () => {
+            showMessageBox("File Error", `Failed to read file "${file.name}".`);
+          };
+          reader.readAsText(file);
+        } else {
+          showMessageBox("Invalid File Type", "Only .txt, .bin, or .hex files are supported.");
+        }
+      }
+    });
+  </script>
+</body>
+</html>
