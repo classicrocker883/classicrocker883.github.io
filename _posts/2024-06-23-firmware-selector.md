@@ -12,7 +12,6 @@ image:
   path: /assets/img/firmware-selector.gif
   alt: Firmware Selector
 ---
-
 <html lang="en">
 <head>
     <style>
@@ -150,8 +149,9 @@ image:
     </style>
     <h1 class="center"><i class="fas fa-code-compare"></i> Firmware Selector</h1>
     <h3 class="center" style=""><a href="#versions">Version information below</a></h3>
-    <img alt="Firmware Selector Logo" src="https://classicrocker883.github.io/assets/img/firmware-selector.png"
-        width="200" height="200" class="center">
+    <div style="display: flex; justify-content: center;"><img alt="Firmware Selector Logo"
+            src="https://classicrocker883.github.io/assets/img/firmware-selector.png" width="200" height="200">
+    </div>
     <hr>
 </head>
 <body>
@@ -339,57 +339,72 @@ image:
         </table>
     </div>
     <hr>
-    <h3>🖥️ Display Assets</h3>
+    <br>
+    <h2>🖥️ Display Assets</h2>
+    <hr>
     <div>
-      <ul>
-        <li>
-          <b>For TJC screen units:</b><br>
-          <a href="https://github.com/classicrocker883/MRiscoCProUI/blob/HEAD/display%20assets/tjc_update.zip?raw=true" rel="nofollow">Click to Download <code>tjc_update.zip</code> (for TJC screen update if you haven't already)</a>
-        </li>
-        <br>
-        <li>
-          <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Aquila%20Display%20Firmware/Firmware%20Sets" rel="nofollow">
-            Aquila LCD Display Assets<br>
-            <img src="https://github.com/classicrocker883/MRiscoCProUI/assets/18502096/30ed1822-e5d5-4be5-9283-636390933178" style="width: 150px; height: auto;" alt="Aquila LCD Display Assets" />
-            <p></p>
-          </a>
-        </li>
-        <br>
-        <li>
-          Creality LCD Display Assets<br>
-          <img src="https://raw.githubusercontent.com/mriscoc/Ender3V2S1/Ender3V2S1-Released/screenshots/main.jpg" style="width: 150px; height: auto;" alt="Creality LCD Display Assets" />
-          <p>
-            <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/DWIN_SET" rel="nofollow">Click to Download DWIN_SET (for DWIN screen units)</a><br>
-            <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/private" rel="nofollow">Click to Download private (for DACAI screen units)</a>
-          </p>
-        </li>
-        <br>
-        <li>
-          Giadej LCD Display Assets<br>
-          <img src="https://github.com/classicrocker883/MRiscoCProUI/raw/2025-January/display%20assets/Giadej%20compilation/preview1.jpg" style="width: 150px; height: auto;" alt="Giadej LCD Display Assets" />
-          <p>
-            <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/DWIN_SET" rel="nofollow">Click to Download DWIN_SET (for DWIN screen units)</a><br>
-            <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/private" rel="nofollow">Click to Download private (for DACAI screen units)</a>
-          </p>
-        </li>
-      </ul>
+        <ul>
+            <li>
+                <b>TJC Screen Assets</b> <img src="https://cdn-icons-png.flaticon.com/128/4298/4298296.png" alt="touchscreen" style="width: 20px; height: auto; vertical-align: top;"><br>
+                <a href="https://github.com/classicrocker883/MRiscoCProUI/blob/HEAD/display%20assets/tjc_update.zip?raw=true" rel="nofollow">📲Click to Download <code>tjc_update.zip</code><br>
+                </a>
+                (for TJC screen update if you haven't already)
+                <p></p>
+            </li>
+            <br>
+            <li>
+                <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Aquila%20Display%20Firmware/Firmware%20Sets" rel="nofollow">
+                    <b>Aquila LCD Display Assets</b> 🗂️<br>
+                    <img src="https://github.com/classicrocker883/MRiscoCProUI/assets/18502096/30ed1822-e5d5-4be5-9283-636390933178" style="width: 150px; height: auto;" alt="Aquila LCD Display Assets" />
+                </a>
+                <p></p>
+            </li>
+            <br>
+            <li>
+                <b>Creality LCD Display Assets</b><br>
+                <img src="https://raw.githubusercontent.com/mriscoc/Ender3V2S1/Ender3V2S1-Released/screenshots/main.jpg" style="width: 150px; height: auto;" alt="Creality LCD Display Assets" />
+                <p>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/DWIN_SET" rel="nofollow">🗂️Click to Download DWIN_SET (for DWIN screen units)</a><br>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/private" rel="nofollow">📲Click to Download private (for DACAI screen units)</a>
+                <p></p>
+                </p>
+            </li>
+            <br>
+            <li>
+                <b>Giadej LCD Display Assets</b><br>
+                <img src="https://github.com/classicrocker883/MRiscoCProUI/raw/2025-January/display%20assets/Giadej%20compilation/preview1.jpg" style="width: 150px; height: auto;" alt="Giadej LCD Display Assets" />
+                <p>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/DWIN_SET" rel="nofollow">🗂️Click to Download DWIN_SET (for DWIN screen units)</a><br>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/private" rel="nofollow">📲Click to Download private (for DACAI screen units)</a>
+                    <p></p>
+                </p>
+            </li>
+        </ul>
     </div>
     <br>
-    <h3 id="versions">📚 Versions</h3>
+    <h2 id="versions">📚 Versions</h2>
     <hr>
-    <p>Some versions <i>do</i> have options like <code>POWER_LOSS_RECOVERY</code> despite not having it in the file
-        name.<br>
-        Board types <b>422</b>/<b>427</b>, and leveling options <b>Default</b>/<b>Manual Mesh</b> should have this
-        and other options enabled which may not be available in base <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions.</p>
-    <p>There are no real differences regarding firmware compatiblity between models; such as a Creality 4.2.7 board for
-        an Aquila will work on an Ender-3 V2/S1. The differences are simply the color scheme and where it would say
-        whether it is a <b>Creality Ender</b> or <b>Voxelab Aquila</b>.</p>
-    <p>Boards like <i>Creality E3 Free-runs</i>, and <i>Ender-3 S1 F103</i> / <i>Ender-3 S1 F401</i>, are currently only
-        offered chosing <b>Ender-3 V2/S1</b> Model; just as <i>BTT SKR Mini E3</i> is currently only offered under the
-        <b>Aquila</b> Model, but will work regardless whatever Model you have. Essentially, if you are looking for <i>Creality E3 Free-runs</i> for your <b>Aquila</b>, you must choose <b>Ender-3 V2/S1</b>.
+    <p>Most versions <i>now</i> include options like <code>POWER_LOSS_RECOVERY</code>, even if it's not listed in the filename.<br>
+        This remains selectable for older firmware only.<br>
+        Board types <b>422</b>/<b>427</b> and leveling options <b>Default</b>/<b>Manual Mesh</b> should have additional features enabled,
+        which may not be available in base <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions due to memory space limitations.
+    </p>
+    <p>There are no significant differences in firmware compatibility between models. For example, a Creality 4.2.7
+        board for an Aquila will work on an Ender-3 V2/S1.<br>
+        The differences are mainly in color schemes and naming — whether it's a <b>Creality Ender</b> or <b>Voxelab Aquila</b>.
+    </p>
+    <p>Boards like <i>Creality E3 Free-runs</i> and <i>Ender-3 S1 F103</i> / <i>Ender-3 S1 F401</i> are currently only selectable under the
+        <b>Ender-3 V2/S1</b> model.<br>
+        The <i>BTT SKR Mini E3</i> is available under both models and will work in either case.
+    </p>
+    <p>If you are using a 12864 Monochrome Display, it is only listed under Model <b>C2</b>.<br>
+        This is because the <b>Voxelab Aquila C2</b> exclusively uses <i>only</i> this type of LCD.<br>
+        While the firmware can be used on an <b>Ender-3</b>/<b>Pro</b>, it is recommended to use official or alternative firmware.
     </p>
     <dl>
-        <dt>These are the configurations offered:</dt>
+        <dt>
+            <h2>Here are the current configurations offered:</h2>
+        </dt>
     </dl>
     <h3>Bed Leveling Options</h3>
     <ul>
@@ -419,29 +434,29 @@ image:
             features and options without having to reflash)
         </li>
         <p></p>
-        <dd><ins><b>Creality Ender-3 V2/S1 Options</b></ins></dd>
+        <dd><ins><b>Creality Ender-3 V2/S1 Only Options</b></ins></dd>
         <li><b>[ _E3-Free-runs ]</b><br> | Creality E3 Free-runs | (Creality board - TMC2209 drivers)
         </li>
         <li><b>[ -S1-&lt;F1/F4&gt; ]</b><br> | Creality Ender-3 S1 | (Check to see whether you have <b>F1</b> or
             <b>F4</b>)
             <dd>
-                <i>-S1-F1</i>: <code>STM32F103RC</code> chip and <code>CREALITY_V24S1_301</code> board
-                <br><i>-S1-F4</i>: <code>STM32F401RC</code> chip and <code>CREALITY_V24S1_301F4</code> board
+                <i>-S1-F1</i>: &ensp;<code>STM32F103RC</code> chip and <code>CREALITY_V24S1_301</code> board
+                <br><i>-S1-F4</i>: &ensp;<code>STM32F401RC</code> chip and <code>CREALITY_V24S1_301F4</code> board
             </dd>
         </li>
         <p></p>
-        <dd><ins><b>Voxelab Aquila Options</b></ins></dd>
+        <dd><ins><b>BTT SKR Mini E3 Options</b></ins></dd>
         <li><b>[ _SKR-Mini-E3- ]</b><br> | BTT SKR Mini E3 | (V2.0, V3.0, V3.0.1)</li>
         <dd>
-            <i>V2</i>: <code>STM32F103RC</code> chip<br>
-            <i>V3</i>: <code>STM32G0B1RE</code> chip<br>
-            <i>V3_0_1</i>: <code>STM32F401RC</code> chip
+            <i>V2</i>: &ensp;<code>STM32F103RC</code> chip<br>
+            <i>V3</i>: &ensp;<code>STM32G0B1RE</code> chip<br>
+            <i>V3_0_1</i>: &ensp;<code>STM32F401RC</code> chip
         </dd>
         <p></p>
         <dd><ins><b>LCD Displays</b></ins></dd>
         <li><b>[ DWIN ]</b><br> | Stock DWIN LCD | (No actual prefix)</li>
         <li><b>[ TJC- ]</b><br> | Creality TJC LCD | (As aftermarket or sometimes used in stock Creality machines)</li>
-        <li><b>[ C2_ ]</b><br> | Monochrome 128x64 LCD | (Used in Aquila C2 and original Ender-3/CR-10)
+        <li><b>[ C2_ ]</b><br> | Monochrome 128x64 LCD | (Model: <b>C2</b> only! Used in Aquila C2 and original Ender-3/CR-10)
             <p><sup>This has <b>NO</b> ProUI capabilities</sup></p>
         </li>
         <p></p>
@@ -537,8 +552,8 @@ image:
                         });
                     } else {
                         if (document.querySelectorAll('input[name="release"]:checked').length === 0) {
-                             releaseTag = "latest";
-                             selectMonth.value = "latest";
+                            releaseTag = "latest";
+                            selectMonth.value = "latest";
                         }
                     }
                     updateSelectedReleaseTag();
