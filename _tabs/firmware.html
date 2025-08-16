@@ -141,11 +141,56 @@ permalink: /firmware-selector
             text-align: center;
             margin: 0 auto;
         }
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: #333;
+            color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            width: 90%;
+            border: 2px solid #0073e6;
+        }
+        .popup-content h3 {
+            margin-top: 0;
+            color: #ffcc00;
+        }
+        .popup-content p {
+            font-size: 16px;
+        }
+        .popup-content button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .popup-content button:hover {
+            background-color: #1e7e34;
+        }
     </style>
     <h1 class="center"><i class="fas fa-code-compare"></i> Firmware Selector</h1>
     <h3 class="center" style=""><a href="#versions">Version information below</a></h3>
     <div style="display: flex; justify-content: center;"><img alt="Firmware Selector Logo"
-            src="https://classicrocker883.github.io/assets/img/firmware-selector.png" width="200" height="200">
+        src="https://classicrocker883.github.io/assets/img/firmware-selector.png" width="200" height="200">
     </div>
     <hr>
 </head>
@@ -288,11 +333,11 @@ permalink: /firmware-selector
             <label for="options"><i class="icon fas fa-gears"></i> Options:</label>
         </div>
         <div class="select-container">
-            <select id="options" onchange="updateCandidates()">
+            <select id="options" onchange="updateCandidates(); handleOptionsChange();">
                 <option value="" title="No specific options">--Select--</option>
                 <option value="-MPC" title="-MPC">MPC</option>
                 <option value="-IS" title="-IS">Input Shaping</option>
-                <option value="-PLR" title="-PLR">Power-loss Recovery</option>
+                <option value="-PLR" title="(DEPRECIATED) -PLR">Power-loss Recovery</option>
             </select>
         </div>
     </div>
@@ -302,13 +347,22 @@ permalink: /firmware-selector
                 <label for="secondaryOptions"><i class="icon fas fa-gear"></i> Secondary Options:</label>
             </div>
             <div class="select-container">
-                <select id="secondaryOptions" onchange="updateCandidates()">
+                <select id="secondaryOptions" onchange="updateCandidates(); handleOptionsChange();">
                     <option value="" title="No specific secondary options">--Select--</option>
                     <option value="-MPC" title="-MPC">MPC</option>
                     <option value="-IS" title="-IS">Input Shaping</option>
-                    <option value="-PLR" title="-PLR">Power-loss Recovery</option>
+                    <option value="-PLR" title="(DEPRECIATED) -PLR">Power-loss Recovery</option>
                 </select>
             </div>
+        </div>
+    </div>
+    <div id="deprecatedPopup" class="popup-overlay">
+        <div class="popup-content">
+            <h3>Depreciated!</h3>
+            <p>Power-loss Recovery option for this firmware is deprecated. <br>
+                It is only here for older releases. <br>
+                Most recent ones now have this enabled.</p>
+            <button id="okButton">OK</button>
         </div>
     </div>
     <br>
@@ -341,8 +395,7 @@ permalink: /firmware-selector
         <ul>
             <li>
                 <b>TJC Screen Assets</b> <img src="https://cdn-icons-png.flaticon.com/128/4298/4298296.png" alt="touchscreen" style="width: 20px; height: auto; vertical-align: top;"><br>
-                <a href="https://github.com/classicrocker883/MRiscoCProUI/blob/HEAD/display%20assets/tjc_update.zip?raw=true" rel="nofollow">📲Click to Download <code>tjc_update.zip</code><br>
-                </a>
+                <a href="https://github.com/classicrocker883/MRiscoCProUI/blob/HEAD/display%20assets/tjc_update.zip?raw=true" rel="nofollow">📲Click to Download <code>tjc_update.zip</code></a><br>
                 (for TJC screen update if you haven't already)
                 <p></p>
             </li>
@@ -485,6 +538,10 @@ permalink: /firmware-selector
             const selectedReleaseTagDiv = document.getElementById("selected-release-tag");
             const resetButton = document.getElementById("resetButton");
             const totalDownloads = document.getElementById("total-downloads");
+            const optionsSelect = document.getElementById("options");
+            const secondaryOptionsSelect = document.getElementById("secondaryOptions");
+            const deprecatedPopup = document.getElementById("deprecatedPopup");
+            const okButton = document.getElementById("okButton");
             let releaseTag = "latest";
             const repoUrl = '/assets/data/releases.json';
             let allReleasesData = [];
@@ -565,8 +622,8 @@ permalink: /firmware-selector
                     badgeTag = exactTagNameFound;
                 } else {
                     let currentBaseTag = releaseTag.replace("tags/", "");
-                    const selectedModelDropdownValue = document.getElementById("model").value;
-                    const selectedScreenDropdownValue = document.getElementById("screen").value;
+                    const selectedModel = document.getElementById("model").value;
+                    const selectedScreen = document.getElementById("screen").value;
                     let actualBaseTagName = currentBaseTag;
                     if (currentBaseTag === "latest") {
                         const latestRelease = await fetchLatestReleaseDetails();
@@ -581,14 +638,14 @@ permalink: /firmware-selector
                     }
                     let splitParts = splitTag(actualBaseTagName);
                     let modelSuffixToApply = "";
-                    if (selectedModelDropdownValue === "C2" || selectedScreenDropdownValue === "C2") {
+                    if (selectedModel === "C2" || selectedScreen === "C2") {
                         modelSuffixToApply = "C2";
-                    } else if (selectedModelDropdownValue === "Ender") {
+                    } else if (selectedModel === "Ender") {
                         modelSuffixToApply = "ender3";
-                    } else if (selectedModelDropdownValue === "Aquila X3" || selectedModelDropdownValue === "Aquila") {
+                    } else if (selectedModel === "Aquila X3" || selectedModel === "Aquila") {
                         modelSuffixToApply = "";
-                    } else if (selectedModelDropdownValue) {
-                        modelSuffixToApply = selectedModelDropdownValue;
+                    } else if (selectedModel) {
+                        modelSuffixToApply = selectedModel;
                     }
                     if (modelSuffixToApply) {
                         splitParts.model = modelSuffixToApply;
@@ -648,7 +705,7 @@ permalink: /firmware-selector
                     console.error("Error initializing dropdowns:", error);
                 }
             }
-            async function fetchReleaseData(selectedModelDropdownValue) {
+            async function fetchReleaseData(selectedModel) {
                 const currentReleaseTag = releaseTag.replace("tags/", "");
                 let actualBaseTagName;
                 if (currentReleaseTag !== "latest") {
@@ -674,11 +731,11 @@ permalink: /firmware-selector
                 const baseVersionAndMonth = `${splitOriginalBaseTag.version}${splitOriginalBaseTag.month ? '-' + splitOriginalBaseTag.month : ''}`;
                 let potentialApiTags = [];
                 let modelSuffixToAdd = "";
-                if (selectedModelDropdownValue === "C2") {
+                if (selectedModel === "C2") {
                     modelSuffixToAdd = "C2";
-                } else if (selectedModelDropdownValue === "HC32") {
+                } else if (selectedModel === "HC32") {
                     modelSuffixToAdd = "HC32";
-                } else if (selectedModelDropdownValue === "Ender") {
+                } else if (selectedModel === "Ender") {
                     modelSuffixToAdd = "ender3";
                 }
                 if (modelSuffixToAdd) {
@@ -929,6 +986,8 @@ permalink: /firmware-selector
                 const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
                 const typeSelect = document.getElementById("type");
                 const hc32TypeOption = typeSelect.querySelector('option[value="_HC32"]');
+                const gd32TypeOption = typeSelect.querySelector('option[value="_GD32"]');
+                const n32TypeOption = typeSelect.querySelector('option[value="_N32"]');
                 const currentBroadenSearchValue = document.getElementById("broadenSearch").value;
                 clearSelections();
                 document.getElementById("broadenSearch").value = currentBroadenSearchValue;
@@ -965,6 +1024,15 @@ permalink: /firmware-selector
                 } else {
                     hc32TypeOption.disabled = false;
                 }
+                if (model === "Ender") {
+                    hc32TypeOption.disabled = true;
+                    gd32TypeOption.disabled = true;
+                    n32TypeOption.disabled = true;
+                } else {
+                    hc32TypeOption.disabled = false;
+                    gd32TypeOption.disabled = false;
+                    n32TypeOption.disabled = false;
+                }
                 updateCandidates();
                 updateSelectedReleaseTag();
             }
@@ -985,13 +1053,26 @@ permalink: /firmware-selector
                 updateSelectedReleaseTag();
                 updateCandidates();
             }
+            function handleOptionsChange() {
+                if (optionsSelect.value === "-PLR" || secondaryOptionsSelect.value === "-PLR") {
+                    deprecatedPopup.style.display = "flex";
+                } else {
+                    deprecatedPopup.style.display = "none";
+                }
+            }
             document.getElementById("features").addEventListener("change", () => {
                 document.getElementById("secondaryFeatures").value = "";
-                updateCandidates();
             });
             document.getElementById("options").addEventListener("change", () => {
                 document.getElementById("secondaryOptions").value = "";
-                updateCandidates();
+                if (releaseTag === "latest") {
+                    handleOptionsChange();
+                }
+            });
+            document.getElementById("secondaryOptions").addEventListener("change", () => {
+                if (releaseTag === "latest") {
+                    handleOptionsChange();
+                }
             });
             selectMonth.addEventListener("change", async (event) => {
                 const selectedMonth = event.target.value;
@@ -1014,6 +1095,9 @@ permalink: /firmware-selector
             resetButton.addEventListener("click", resetSelections);
             document.getElementById("model").addEventListener("change", updateModelSelections);
             document.querySelectorAll('#broadenSearch, #proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(input => input.addEventListener("change", updateCandidates));
+            okButton.addEventListener("click", () => {
+                deprecatedPopup.style.display = "none";
+            });
             initializeDropdowns();
         });
     </script>
