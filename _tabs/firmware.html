@@ -557,50 +557,57 @@ permalink: /firmware-selector
                 label.append(checkbox, release.name);
                 releaseList.appendChild(label);
             }
-            async function updateSelectedReleaseTag() {
-                let currentBaseTag = releaseTag.replace("tags/", "");
-                const selectedModelDropdownValue = document.getElementById("model").value;
-                const selectedScreenDropdownValue = document.getElementById("screen").value;
-                let actualBaseTagName = currentBaseTag;
-                if (currentBaseTag === "latest") {
-                    const latestRelease = await fetchLatestReleaseDetails();
-                    if (latestRelease) {
-                        actualBaseTagName = latestRelease.tag_name;
-                    } else {
-                        console.error("Could not determine actual latest release tag.");
-                        selectedReleaseTagDiv.textContent = "Error loading tag";
-                        totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
-                        return;
-                    }
-                }
-                let splitParts = splitTag(actualBaseTagName);
-                let modelSuffixToApply = "";
-                if (selectedModelDropdownValue === "C2" || selectedScreenDropdownValue === "C2") {
-                    modelSuffixToApply = "C2";
-                } else if (selectedModelDropdownValue === "Ender") {
-                    modelSuffixToApply = "ender3";
-                } else if (selectedModelDropdownValue === "Aquila X3" || selectedModelDropdownValue === "Aquila") {
-                    modelSuffixToApply = "";
-                } else if (selectedModelDropdownValue) {
-                    modelSuffixToApply = selectedModelDropdownValue;
-                }
-                if (modelSuffixToApply) {
-                    splitParts.model = modelSuffixToApply;
+            async function updateSelectedReleaseTag(exactTagNameFound = null) {
+                let displayTag;
+                let badgeTag;
+                if (exactTagNameFound) {
+                    displayTag = exactTagNameFound;
+                    badgeTag = exactTagNameFound;
                 } else {
-                    splitParts.model = "";
-                }
-                let displayTag = splitParts.version;
-                if (splitParts.month) {
-                    displayTag += `-${splitParts.month}`;
-                }
-                if (splitParts.model) {
-                    displayTag += `-${splitParts.model}`;
-                }
-                if (splitParts.revision) {
-                    displayTag += `-${splitParts.revision}`;
+                    let currentBaseTag = releaseTag.replace("tags/", "");
+                    const selectedModelDropdownValue = document.getElementById("model").value;
+                    const selectedScreenDropdownValue = document.getElementById("screen").value;
+                    let actualBaseTagName = currentBaseTag;
+                    if (currentBaseTag === "latest") {
+                        const latestRelease = await fetchLatestReleaseDetails();
+                        if (latestRelease) {
+                            actualBaseTagName = latestRelease.tag_name;
+                        } else {
+                            console.error("Could not determine actual latest release tag.");
+                            selectedReleaseTagDiv.textContent = "Error loading tag";
+                            totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
+                            return;
+                        }
+                    }
+                    let splitParts = splitTag(actualBaseTagName);
+                    let modelSuffixToApply = "";
+                    if (selectedModelDropdownValue === "C2" || selectedScreenDropdownValue === "C2") {
+                        modelSuffixToApply = "C2";
+                    } else if (selectedModelDropdownValue === "Ender") {
+                        modelSuffixToApply = "ender3";
+                    } else if (selectedModelDropdownValue === "Aquila X3" || selectedModelDropdownValue === "Aquila") {
+                        modelSuffixToApply = "";
+                    } else if (selectedModelDropdownValue) {
+                        modelSuffixToApply = selectedModelDropdownValue;
+                    }
+                    if (modelSuffixToApply) {
+                        splitParts.model = modelSuffixToApply;
+                    } else {
+                        splitParts.model = "";
+                    }
+                    displayTag = splitParts.version;
+                    if (splitParts.month) {
+                        displayTag += `-${splitParts.month}`;
+                    }
+                    if (splitParts.model) {
+                        displayTag += `-${splitParts.model}`;
+                    }
+                    if (splitParts.revision) {
+                        displayTag += `-${splitParts.revision}`;
+                    }
+                    badgeTag = currentBaseTag === "latest" ? "latest" : actualBaseTagName;
                 }
                 selectedReleaseTagDiv.textContent = displayTag;
-                const badgeTag = currentBaseTag === "latest" ? "latest" : actualBaseTagName;
                 totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${badgeTag}/total'> - Total</label>`;
             }
             function fetchReleasesByMonth(month, releases) {
@@ -641,39 +648,69 @@ permalink: /firmware-selector
                     console.error("Error initializing dropdowns:", error);
                 }
             }
-            async function fetchReleaseData(model) {
+            async function fetchReleaseData(selectedModelDropdownValue) {
                 const currentReleaseTag = releaseTag.replace("tags/", "");
-                const selectedRelease = allReleasesData.find(release =>
-                    release.tag_name === currentReleaseTag ||
-                    (currentReleaseTag === "latest" && release.tag_name === (allReleasesData.length > 0 ? allReleasesData[0].tag_name : null))
-                );
-                if (!selectedRelease) {
-                    console.error("Selected release not found in local data:", currentReleaseTag);
-                    return [];
+                let actualBaseTagName;
+                if (currentReleaseTag !== "latest") {
+                    const selectedRelease = allReleasesData.find(release => release.tag_name === currentReleaseTag);
+                    if (selectedRelease) {
+                        console.log(`Explicit release selected: ${currentReleaseTag}. Using this tag directly.`);
+                        return { assets: selectedRelease.assets || [], actualTagNameUsed: currentReleaseTag };
+                    } else {
+                        console.error("Selected specific release not found in local data:", currentReleaseTag);
+                        const latestRelease = await fetchLatestReleaseDetails();
+                        actualBaseTagName = latestRelease ? latestRelease.tag_name : null;
+                        console.warn("Falling back to latest release as explicit tag was not found.");
+                    }
+                } else {
+                    const latestRelease = await fetchLatestReleaseDetails();
+                    actualBaseTagName = latestRelease ? latestRelease.tag_name : null;
                 }
-                const extractedTag = selectedRelease.tag_name;
-                const split = splitTag(extractedTag);
-                const type = document.getElementById("type").value;
-                if (model === "HC32") {
-                    split.model = "HC32";
-                } else if (model === "Ender") {
-                    split.model = "ender3";
-                } else if (model === "C2") {
-                    split.model = "C2";
-                } else if (model === "Aquila X3" || model === "Aquila") {
-                    split.model = "";
+                if (!actualBaseTagName) {
+                    console.error("Could not determine actual base release tag for fetching assets.");
+                    return { assets: [], actualTagNameUsed: null };
                 }
-                const tag = `${split.version}${split.month ? '-' + split.month : ''}${split.model ? '-' + split.model : ''}${split.revision ? '-' + split.revision : ''}`;
-                const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${tag}`;
-                try {
-                    const response = await fetch(apiUrl);
-                    const data = await response.json();
-                    return data.assets || [];
-                } catch (error) {
-                    console.error("Error fetching release assets:", error);
-                    return [];
+                const splitOriginalBaseTag = splitTag(actualBaseTagName);
+                const baseVersionAndMonth = `${splitOriginalBaseTag.version}${splitOriginalBaseTag.month ? '-' + splitOriginalBaseTag.month : ''}`;
+                let potentialApiTags = [];
+                let modelSuffixToAdd = "";
+                if (selectedModelDropdownValue === "C2") {
+                    modelSuffixToAdd = "C2";
+                } else if (selectedModelDropdownValue === "HC32") {
+                    modelSuffixToAdd = "HC32";
+                } else if (selectedModelDropdownValue === "Ender") {
+                    modelSuffixToAdd = "ender3";
                 }
-                return selectedRelease.assets || [];
+                if (modelSuffixToAdd) {
+                    let baseForIteration = `${baseVersionAndMonth}-${modelSuffixToAdd}`;
+                    for (let i = 3; i >= 1; i--) {
+                        potentialApiTags.push(`${baseForIteration}-${i}`);
+                    }
+                    potentialApiTags.push(baseForIteration);
+                }
+                potentialApiTags.push(actualBaseTagName);
+                if (!modelSuffixToAdd || (modelSuffixToAdd && !actualBaseTagName.includes(modelSuffixToAdd))) {
+                     potentialApiTags.push(baseVersionAndMonth);
+                }
+                potentialApiTags = [...new Set(potentialApiTags)];
+                console.log("Attempting to fetch assets with tags (in order of preference):", potentialApiTags);
+                for (const tagToTry of potentialApiTags) {
+                    const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${tagToTry}`;
+                    try {
+                        const response = await fetch(apiUrl);
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.assets && data.assets.length > 0) {
+                                console.log(`Successfully fetched assets for tag: ${tagToTry}`);
+                                return { assets: data.assets, actualTagNameUsed: tagToTry };
+                            }
+                        }
+                    } catch (error) {
+                        console.warn(`Attempting tag ${tagToTry} failed or returned no assets. Trying next...`, error);
+                    }
+                }
+                console.error("No release assets found for the selected model and revisions after all attempts.");
+                return { assets: [], actualTagNameUsed: null };
             }
             async function updateCandidates() {
                 const model = document.getElementById("model").value;
@@ -766,7 +803,10 @@ permalink: /firmware-selector
                 } else {
                     linkPrefix = null;
                 }
-                const assets = await fetchReleaseData(model);
+                const fetchResult = await fetchReleaseData(model);
+                const assets = fetchResult.assets;
+                const actualTagNameUsed = fetchResult.actualTagNameUsed;
+                updateSelectedReleaseTag(actualTagNameUsed);
                 let filteredCandidates = [];
                 const currentProUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
                 const broadenFilterLogic = (assetName) => {
@@ -959,8 +999,12 @@ permalink: /firmware-selector
                     releaseTag = "latest";
                     releaseContainer.style.display = "none";
                 } else {
-                    releaseTag = "";
                     fetchReleasesByMonth(selectedMonth, allReleasesData);
+                    releaseContainer.style.display = "block";
+                    document.querySelectorAll('input[name="release"]').forEach(otherCheckbox => {
+                        otherCheckbox.checked = false;
+                    });
+                    releaseTag = "latest";
                 }
                 updateSelectedReleaseTag();
                 await updateCandidates();
