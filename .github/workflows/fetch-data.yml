@@ -33,9 +33,9 @@ jobs:
             const fs = require("fs");
             const https = require("https");
 
-            async function fetchPage(url) {
+            async function fetchPage(url, timeoutMs = 9000000) {
                 return new Promise((resolve, reject) => {
-                    https.get(url, {
+                    const req = https.get(url, {
                         headers: {
                             "User-Agent": "classicrocker883-firmware-selector"
                         }
@@ -43,6 +43,7 @@ jobs:
                         let data = "";
                         res.on("data", (chunk) => { data += chunk; });
                         res.on("end", () => {
+                            clearTimeout(timeoutId);
                             if (res.statusCode >= 200 && res.statusCode < 300) {
                                 try {
                                     resolve(JSON.parse(data));
@@ -54,14 +55,19 @@ jobs:
                             }
                         });
                     }).on("error", (err) => {
+                        clearTimeout(timeoutId);
                         reject(err);
                     });
+
+                    const timeoutId = setTimeout(() => {
+                        req.destroy(new Error(`Request timed out after ${timeoutMs}ms`));
+                    }, timeoutMs);
                 });
             }
 
-            async function fetchAllReleases(url, page = 1, releases = [], sinceDate = null) {
-                let currentPageUrl = `${url}?page=${page}&per_page=100`;
-                console.log(`Fetching page ${page} from: ${currentPageUrl}`);
+            async function fetchAllReleases(url, releases = [], sinceDate = null) {
+                let currentPageUrl = `${url}`;
+                console.log(`Fetching from: ${currentPageUrl}`);
                 const data = await fetchPage(currentPageUrl);
 
                 if (data.length === 0) {
@@ -72,7 +78,7 @@ jobs:
                 let reachedOlderReleases = false;
 
                 for (const release of data) {
-                    if (sinceDate && new Date(release.published_at) <= sinceDate) {
+                    if (sinceDate && new Date(release.published_at) < sinceDate) {
                         reachedOlderReleases = true;
                         break;
                     }
@@ -82,95 +88,93 @@ jobs:
                 const allReleases = releases.concat(newReleases);
 
                 if (reachedOlderReleases || data.length < 100) {
-                  return allReleases;
+                    return allReleases;
                 } else {
-                  return fetchAllReleases(url, page + 1, allReleases, sinceDate);
+                    return fetchAllReleases(url, allReleases, sinceDate);
                 }
             }
 
             async function main() {
-              const repoApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases";
-              const latestReleaseApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest";
-              const filePath = "assets/data/releases.json";
-              let existingReleases = [];
-              let lastFetchDate = null;
+                const repoApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases";
+                const latestReleaseApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest";
+                const filePath = "assets/data/releases.json";
+                let existingReleases = [];
+                const fourMonthsAgo = new Date();
+                fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
+                console.log(`Limiting fetch to releases published after: ${fourMonthsAgo.toISOString()}`);
 
-              if (fs.existsSync(filePath)) {
-                  try {
-                      const fileContent = fs.readFileSync(filePath, "utf8");
-                      if(fileContent) {
-                        existingReleases = JSON.parse(fileContent);
-                        console.log(`Loaded ${existingReleases.length} existing releases from ${filePath}.`);
-                      }
-                      if (existingReleases.length > 0) {
-                          lastFetchDate = new Date(existingReleases[0].published_at);
-                          console.log(`Optimizing paginated fetch for releases published after: ${lastFetchDate.toISOString()}`);
-                      }
-                  } catch (parseError) {
-                      console.warn(`Could not parse existing releases.json (${parseError.message}), starting fresh.`);
-                      existingReleases = [];
-                  }
-              } else {
-                  console.log("No existing releases.json found. Fetching all releases.");
-              }
-
-              try {
-                let absoluteLatestRelease = null;
-                try {
-                    absoluteLatestRelease = await fetchPage(latestReleaseApiUrl);
-                    console.log(`Fetched absolute latest release: ${absoluteLatestRelease.tag_name}`);
-                } catch (latestError) {
-                    console.warn(`Could not fetch latest release from ${latestReleaseApiUrl}: ${latestError.message}. Proceeding without it.`);
-                }
-
-                const allPaginatedReleases = await fetchAllReleases(repoApiUrl, 1, [], lastFetchDate);
-                console.log(`Fetched ${allPaginatedReleases.length} paginated release(s).`);
-
-                const allReleasesMap = new Map();
-
-                existingReleases.forEach(release => allReleasesMap.set(release.id, release));
-
-                allPaginatedReleases.forEach(release => allReleasesMap.set(release.id, release));
-
-                if (absoluteLatestRelease) {
-                    allReleasesMap.set(absoluteLatestRelease.id, absoluteLatestRelease);
-                }
-
-                let combinedReleases = Array.from(allReleasesMap.values());
-                console.log(`Total unique releases after merging: ${combinedReleases.length}.`);
-
-                let finalSortedReleases;
-                if (absoluteLatestRelease) {
-                    const releasesToSort = combinedReleases.filter(r => r.id !== absoluteLatestRelease.id);
-                    releasesToSort.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-                    finalSortedReleases = [absoluteLatestRelease, ...releasesToSort];
-                } else {
-                    combinedReleases.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-                    finalSortedReleases = combinedReleases;
-                }
-
-                let hasChanges = true;
                 if (fs.existsSync(filePath)) {
-                    const currentFileContent = fs.readFileSync(filePath, "utf8");
-                    if (currentFileContent === JSON.stringify(finalSortedReleases, null, 2)) {
-                        hasChanges = false;
-                        console.log("No changes detected. The file is already up to date.");
+                    try {
+                        const fileContent = fs.readFileSync(filePath, "utf8");
+                        if (fileContent) {
+                            existingReleases = JSON.parse(fileContent);
+                            console.log(`Loaded ${existingReleases.length} existing releases from ${filePath}.`);
+                        }
+                    } catch (parseError) {
+                        console.warn(`Could not parse existing releases.json (${parseError.message}), starting fresh.`);
+                        existingReleases = [];
                     }
+                } else {
+                    console.log("No existing releases.json found. Fetching all releases published in the last 4 months.");
                 }
 
-                if (hasChanges) {
-                    if (!fs.existsSync("assets/data")) {
-                        fs.mkdirSync("assets/data", { recursive: true });
+                try {
+                    let absoluteLatestRelease = null;
+                    try {
+                        absoluteLatestRelease = await fetchPage(latestReleaseApiUrl);
+                        console.log(`Fetched absolute latest release: ${absoluteLatestRelease.tag_name}`);
+                    } catch (latestError) {
+                        console.warn(`Could not fetch latest release from ${latestReleaseApiUrl}: ${latestError.message}. Proceeding without it.`);
                     }
-                    fs.writeFileSync(filePath, JSON.stringify(finalSortedReleases, null, 2));
-                    console.log("Successfully updated and saved releases.json.");
-                } else {
-                    console.log("No new data to commit.");
+
+                    const allPaginatedReleases = await fetchAllReleases(repoApiUrl, [], fourMonthsAgo);
+                    console.log(`Fetched ${allPaginatedReleases.length} paginated release(s).`);
+
+                    const allReleasesMap = new Map();
+
+                    existingReleases.forEach(release => allReleasesMap.set(release.id, release));
+
+                    allPaginatedReleases.forEach(release => allReleasesMap.set(release.id, release));
+
+                    if (absoluteLatestRelease) {
+                        allReleasesMap.set(absoluteLatestRelease.id, absoluteLatestRelease);
+                    }
+
+                    let combinedReleases = Array.from(allReleasesMap.values());
+                    console.log(`Total unique releases after merging: ${combinedReleases.length}.`);
+
+                    let finalSortedReleases;
+                    if (absoluteLatestRelease) {
+                        const releasesToSort = combinedReleases.filter(r => r.id !== absoluteLatestRelease.id);
+                        releasesToSort.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                        finalSortedReleases = [absoluteLatestRelease, ...releasesToSort];
+                    } else {
+                        combinedReleases.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                        finalSortedReleases = combinedReleases;
+                    }
+
+                    let hasChanges = true;
+                    if (fs.existsSync(filePath)) {
+                        const currentFileContent = fs.readFileSync(filePath, "utf8");
+                        if (currentFileContent === JSON.stringify(finalSortedReleases, null, 2)) {
+                            hasChanges = false;
+                            console.log("No changes detected. The file is already up to date.");
+                        }
+                    }
+
+                    if (hasChanges) {
+                        if (!fs.existsSync("assets/data")) {
+                            fs.mkdirSync("assets/data", { recursive: true });
+                        }
+                        fs.writeFileSync(filePath, JSON.stringify(finalSortedReleases, null, 2));
+                        console.log("Successfully updated and saved releases.json.");
+                    } else {
+                        console.log("No new data to commit.");
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch or save releases:", error.message);
+                    process.exit(1);
                 }
-              } catch (error) {
-                console.error("Failed to fetch or save releases:", error.message);
-                process.exit(1);
-              }
             }
             main();
           '
