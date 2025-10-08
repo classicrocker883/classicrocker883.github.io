@@ -33,6 +33,21 @@ jobs:
             const fs = require("fs");
             const https = require("https");
 
+            function cleanReleases(releases) {
+                if (Array.isArray(releases)) {
+                    releases.forEach(release => {
+                        if (release && typeof release === "object") {
+                            delete release.body;
+                            delete release.author;
+                            delete release.mentions_count;
+                            delete release.tarball_url;
+                            delete release.zipball_url;
+                        }
+                    });
+                }
+                return releases;
+            }
+
             async function fetchPage(url, timeoutMs = 9000000) {
                 return new Promise((resolve, reject) => {
                     const req = https.get(url, {
@@ -99,9 +114,9 @@ jobs:
                 const latestReleaseApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest";
                 const filePath = "assets/data/releases.json";
                 let existingReleases = [];
-                const fourMonthsAgo = new Date();
-                fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
-                console.log(`Limiting fetch to releases published after: ${fourMonthsAgo.toISOString()}`);
+                const sixMonthsAgo = new Date();
+                sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                console.log(`Limiting fetch to releases published after: ${sixMonthsAgo.toISOString()}`);
 
                 if (fs.existsSync(filePath)) {
                     try {
@@ -115,7 +130,7 @@ jobs:
                         existingReleases = [];
                     }
                 } else {
-                    console.log("No existing releases.json found. Fetching all releases published in the last 4 months.");
+                    console.log("No existing releases.json found. Fetching all releases published in the last 6 months.");
                 }
 
                 try {
@@ -127,7 +142,7 @@ jobs:
                         console.warn(`Could not fetch latest release from ${latestReleaseApiUrl}: ${latestError.message}. Proceeding without it.`);
                     }
 
-                    const allPaginatedReleases = await fetchAllReleases(repoApiUrl, [], fourMonthsAgo);
+                    const allPaginatedReleases = await fetchAllReleases(repoApiUrl, [], sixMonthsAgo);
                     console.log(`Fetched ${allPaginatedReleases.length} paginated release(s).`);
 
                     const allReleasesMap = new Map();
@@ -153,10 +168,11 @@ jobs:
                         finalSortedReleases = combinedReleases;
                     }
 
+                    const cleanedReleases = cleanReleases(finalSortedReleases);
                     let hasChanges = true;
                     if (fs.existsSync(filePath)) {
                         const currentFileContent = fs.readFileSync(filePath, "utf8");
-                        if (currentFileContent === JSON.stringify(finalSortedReleases, null, 2)) {
+                        if (currentFileContent === JSON.stringify(cleanedReleases, null, 2)) {
                             hasChanges = false;
                             console.log("No changes detected. The file is already up to date.");
                         }
@@ -166,7 +182,7 @@ jobs:
                         if (!fs.existsSync("assets/data")) {
                             fs.mkdirSync("assets/data", { recursive: true });
                         }
-                        fs.writeFileSync(filePath, JSON.stringify(finalSortedReleases, null, 2));
+                        fs.writeFileSync(filePath, JSON.stringify(cleanedReleases, null, 2));
                         console.log("Successfully updated and saved releases.json.");
                     } else {
                         console.log("No new data to commit.");
@@ -187,7 +203,7 @@ jobs:
           if git diff --cached --exit-code assets/data/releases.json; then
             echo "No changes to commit."
           else
-            git commit -m "automated: Update firmware release data"
+            git commit -m "automated: update firmware release data"
             git push
             echo "Changes committed and pushed."
           fi
