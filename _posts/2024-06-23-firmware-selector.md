@@ -17,13 +17,12 @@ image:
     <style>
         .form-row {
             display: flex;
-            justify-content: space-between;
             margin-bottom: 5px;
             border-bottom: 1px solid #ccc;
             padding-bottom: 10px;
         }
         .label-container {
-            flex: 0 0 50%;
+            flex: 0 0 40%;
             text-align: right;
             font-weight: bold;
             color: #883;
@@ -34,11 +33,20 @@ image:
         }
         .select-container {
             padding-left: 2%;
-            margin-right: 50%;
         }
         select {
             text-align: center;
             width: 11em;
+            padding: 2px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            background-color: #333;
+            font-size: 18px;
+            color: #f9f9f9;
+        }
+        .select-release {
+            text-align: center;
+            width: auto;
             padding: 2px;
             border: 1px solid #ccc;
             border-radius: 2px;
@@ -203,13 +211,13 @@ image:
     <label for="month-select">
         <h3><i class="icon fas fa-list-check"></i> Select a Release:</h3>
     </label>
-    <select id="month-select">
+    <select id="month-select" class="select-release">
         <option value="latest" title="The most recent release version">Latest Release</option>
         <option>Loading...</option>
     </select>
     <div id="releases-container" style="display: none;">
         <label>Select a Release:</label>
-        <p>Older Releases may not be fully compatible with the Selector</p>
+        <p><sup>✶</sup>Older Releases may not be fully compatible with the Selector</p>
         <div id="release-list">Select a month to load releases</div>
     </div>
     <br>
@@ -533,13 +541,13 @@ image:
         <p></p>
         <dd><ins><b>Options</b></ins></dd>
         <li><b>[ -IS ]</b><br> | Input Shaping | (Similar to <b>Linear Advance</b>)</li>
-        <sup>Use <b>ONLY</b> if you mean to do the initial calibration✶</sup>
+        <sup>Use <b>ONLY</b> if you mean to do the initial calibration<sup>✶</sup></sup>
         <li><b>[ -MPC ]</b><br> | MPC Autotune | (Replaces <b>PID</b> for hotend)</li>
         <li><b>[ -PLR ]</b><br> | Power-Loss Recovery | (Resumes where a print job left off when there is a <i>power
                 outage</i>)</li>
     </ul>
-    <sup>✶Reminder: Do not use `Input Shaping` (file suffix <i>-IS</i>) <b>unless</b> you do the necessary
-        calibration.<br>
+    <sup><sup>✶</sup>Reminder: Do not use `Input Shaping` (file suffix <i>-IS</i>) <b>unless</b> you do the necessary
+        calibration.<p>
         Prints will be effected regardless. May require a special breakout board or test prints to calibrate.
     </sup>
     <script>
