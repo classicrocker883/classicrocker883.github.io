@@ -208,6 +208,7 @@ image:
     <hr>
 </head>
 <body>
+    <h4 style="text-align: right;">See most popular downloads<i class="fas fa-arrow-right"></i></h4>
     <label for="month-select">
         <h3><i class="icon fas fa-list-check"></i> Select a Release:</h3>
     </label>
@@ -216,17 +217,17 @@ image:
         <option>Loading...</option>
     </select>
     <div id="releases-container" style="display: none;">
-        <label>Select a Release:</label>
-        <p><sup>✶</sup>Older Releases may not be fully compatible with the Selector</p>
-        <div id="release-list">Select a month to load releases</div>
+        <p></p><p></p><label>Select one to load:</label>
+        <div id="release-list"></div>
+        <p></p><p></p><sup>✶</sup>Older Releases may not be fully compatible with the Selector
     </div>
-    <br>
     <div>
-        <br>
+        <p></p>
         <strong>Selected Release Tag:</strong>
         <div id="selected-release-tag">latest</div>
         <div id="total-downloads"></div>
     </div>
+    <p></p>
     <div class="form-row">
         <div class="label-container">
             <label for="broadenSearch"><i class="icon fas fa-magnifying-glass-plus"></i> Broaden Search Results?</label>

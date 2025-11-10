@@ -21,7 +21,15 @@
 {% for entry in all_list limit: MAX_SIZE %}
   {% assign update_list = update_list | push: entry %}
 {% endfor %}
-
+  <section>
+      <div id="top-downloads-container">
+          <h2 class="panel-heading" style="text-align: center;">Most Recent Popular Downloads<br>Top 10</h2>
+          <ol id="top-downloads-list" class="content">
+              <li style="color: #ccc;">Loading downloads...</li>
+          </ol>
+        </div>
+    </section>
+<script src="{{ 'assets/js/top10.js' | relative_url }}"></script>
 {% if update_list.size > 0 %}
   <section id="access-lastmod">
     <h2 class="panel-heading">{{- site.data.locales[include.lang].panel.lastmod -}}</h2>
