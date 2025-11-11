@@ -61,3 +61,10 @@
     margin-bottom: -1px; /* Avoid jumping */
   }
 }
+#most-recent {
+  a:hover {
+    @extend %link-hover;
+
+    margin-bottom: -1px; /* Avoid jumping */
+  }
+}

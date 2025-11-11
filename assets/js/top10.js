@@ -108,8 +108,7 @@ function getTopDownloadsForMonth(releases, targetMonth) {
  */
 async function fetchAndDisplayTopDownloads(currentMonth = null) {
     const listElement = document.getElementById('top-downloads-list');
-    const titleElement = document.getElementById('release-tag-title');
-    if (!listElement || !titleElement) return;
+    if (!listElement) return;
 
     try {
         if (currentMonth === null) {
@@ -124,7 +123,6 @@ async function fetchAndDisplayTopDownloads(currentMonth = null) {
 
         if (!Array.isArray(releases) || releases.length === 0) {
             listElement.innerHTML = '<li style="color: #ccc;">No release data found in JSON.</li>';
-            titleElement.textContent = 'Data Missing';
             return;
         }
 
@@ -139,7 +137,6 @@ async function fetchAndDisplayTopDownloads(currentMonth = null) {
                 BASE_TAG_PREFIX = prefixMatch[1];
             } else {
                  listElement.innerHTML = '<li style="color: #ccc;">Could not determine the base tag prefix.</li>';
-                 titleElement.textContent = 'Tag Structure Error';
                  return;
             }
         }
@@ -159,7 +156,6 @@ async function fetchAndDisplayTopDownloads(currentMonth = null) {
 
             if (latestMonth === 0) {
                 listElement.innerHTML = '<li style="color: #ccc;">Could not determine the latest month in tags.</li>';
-                titleElement.textContent = 'Tag Structure Error';
                 return;
             }
             targetMonth = latestMonth;
@@ -177,14 +173,12 @@ async function fetchAndDisplayTopDownloads(currentMonth = null) {
                 return; // Stop execution of the current call
             } else {
                 // We've fallen back to month 1 and still found no assets
-                titleElement.textContent = `No Assets Found (Checked up to ${BASE_TAG_PREFIX}-1)`;
                 listElement.innerHTML = `<li style="color: #ccc;">No downloaded assets found across latest releases (checked months ${currentMonth ?? targetMonth} down to 1).</li>`;
                 return;
             }
         }
 
         // 5. Display the results
-        // titleElement.textContent = `Top Downloads from Latest Releases: ${releaseTagsUsed.join(', ')}`;
         listElement.innerHTML = ''; // Clear placeholder or loading message
 
         topDownloads.forEach(asset => {
@@ -202,7 +196,6 @@ async function fetchAndDisplayTopDownloads(currentMonth = null) {
 
     } catch (error) {
         console.error("Error fetching or processing top downloads:", error);
-        titleElement.textContent = 'Error';
         listElement.innerHTML = `<li style="color: red;">Failed to load downloads. (Check console for details)</li>`;
     }
 }

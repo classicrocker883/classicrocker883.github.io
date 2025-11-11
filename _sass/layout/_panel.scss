@@ -68,3 +68,13 @@
     @extend %no-bottom-border;
   }
 }
+
+#most-recent {
+  a {
+    &:hover {
+      @extend %link-hover;
+    }
+
+    @extend %no-bottom-border;
+  }
+}
