@@ -248,8 +248,8 @@ image:
                 <option value="none" title="May help to choose a model first">--Select Model--</option>
                 <option value="Aquila" title="Aquila OG/X2">Aquila</option>
                 <option value="Aquila X3" title="Aquila X3/S3 Induction Probe">Aquila X3/S3</option>
-                <option value="C2" title="Monochrome LCD Display">Aquila C2</option>
-                <option value="HC32" title="H32 Chipset">HC32</option>
+                <option value="Aquila C2" title="Monochrome LCD Display">Aquila C2</option>
+                <option value="_HC32" title="H32 Chipset">HC32</option>
                 <option value="Ender" title="Ender-3 V2/S1">Ender-3 V2/S1</option>
             </select>
         </div>
@@ -287,13 +287,13 @@ image:
                 <option value="" title="No specific board type">--Select--</option>
                 <option value="_GD32" title="_GD32">GD32</option>
                 <option value="_N32" title="_N32">N32</option>
-                <option value="_HC32" title="HC32">HC32</option>
+                <option value="HC32" title="HC32">HC32</option>
                 <option value="_427" title="_427">Creality 4.2.7</option>
                 <option value="_422" title="_422">Creality 4.2.2</option>
+                <option value="_SKR-Mini-E3-" title="_SKR-Mini-E3-">BTT SKR Mini E3</option>
                 <option value="-S1-F1" title="-S1-F1">Ender-3 S1 F103</option>
                 <option value="-S1-F4" title="-S1-F4">Ender-3 S1 F401</option>
                 <option value="_E3-Free-runs" title="_E3-Free-runs">Creality E3 Free-runs</option>
-                <option value="_SKR-Mini-E3-" title="_SKR-Mini-E3-">BTT SKR Mini E3</option>
             </select>
         </div>
     </div>
@@ -659,7 +659,7 @@ image:
                     }
                     let splitParts = splitTag(actualBaseTagName);
                     let modelSuffixToApply = "";
-                    if (selectedModel === "C2" || selectedScreen === "C2") {
+                    if (selectedModel === "Aquila C2" || selectedScreen === "C2") {
                         modelSuffixToApply = "C2";
                     } else if (selectedModel === "Ender") {
                         modelSuffixToApply = "ender3";
@@ -752,9 +752,9 @@ image:
                 const baseVersionAndMonth = `${splitOriginalBaseTag.version}${splitOriginalBaseTag.month ? '-' + splitOriginalBaseTag.month : ''}`;
                 let potentialApiTags = [];
                 let modelSuffixToAdd = "";
-                if (selectedModel === "C2") {
+                if (selectedModel === "Aquila C2") {
                     modelSuffixToAdd = "C2";
-                } else if (selectedModel === "HC32") {
+                } else if (selectedModel === "_HC32") {
                     modelSuffixToAdd = "HC32";
                 } else if (selectedModel === "Ender") {
                     modelSuffixToAdd = "ender3";
@@ -843,7 +843,7 @@ image:
                     secondaryOptionsSelect.innerHTML += '<option value="-IS" title="-IS">Input Shaping</option>';
                 }
                 secondaryOptionsSelect.value = secondaryOptions;
-                if (model === "C2" || screen === "C2" || leveling === "_Default") {
+                if (model === "Aquila C2" || screen === "C2" || leveling === "_Default") {
                     proUIEXSelect.value = "";
                     proUIEXSelect.disabled = true;
                     proUIExtraFeaturesWasForcedToNo = true;
@@ -855,9 +855,9 @@ image:
                     }
                 }
                 if (screen === "C2") {
-                    modelSelect.value = "C2";
+                    modelSelect.value = "Aquila C2";
                     screenSelect.disabled = true;
-                } else if (model === "C2") {
+                } else if (model === "Aquila C2") {
                     screenSelect.value = "C2";
                     screenSelect.disabled = true;
                 } else {
@@ -865,15 +865,15 @@ image:
                 }
                 let linkPrefix = "";
                 const screenMap = {
-                    "C2": { "default": "C2" },
-                    "HC32": { "TJC-": "TJC-HC32", "default": "HC32" },
+                    "Aquila C2": { "default": "C2" },
+                    "_HC32": { "TJC-": "TJC-HC32", "default": "HC32" },
                     "Ender": { "TJC-": "TJC-Ender", "default": "Ender" },
                     "default": { "TJC-": "TJC-Aquila", "default": "Aquila" }
                 };
-                if (effectiveModel === "C2" || screen === "C2") {
-                    linkPrefix = screenMap["C2"][screen] || screenMap["C2"]["default"];
-                } else if (effectiveModel === "HC32") {
-                    linkPrefix = screenMap["HC32"][screen] || screenMap["HC32"]["default"];
+                if (effectiveModel === "Aquila C2" || screen === "C2") {
+                    linkPrefix = screenMap["Aquila C2"][screen] || screenMap["Aquila C2"]["default"];
+                } else if (effectiveModel === "_HC32") {
+                    linkPrefix = screenMap["_HC32"][screen] || screenMap["_HC32"]["default"];
                 } else if (effectiveModel === "Ender") {
                     linkPrefix = screenMap["Ender"][screen] || screenMap["Ender"]["default"];
                 } else if (effectiveModel === "Aquila") {
@@ -916,6 +916,7 @@ image:
                             return false;
                         }
                     }
+                    if ((type === "_427" || type === "_422") && assetName.includes("GD32")) return false;
                     if (secondaryFeatures && !assetName.includes(secondaryFeatures)) return false;
                     if (leveling && !assetName.includes(leveling)) return false;
                     if (options && !assetName.includes(options)) return false;
@@ -944,8 +945,14 @@ image:
                         return false;
                     }
                     const allTypes = ["_GD32", "_N32", "HC32", "_427", "_422", "-S1-F1", "-S1-F4", "_SKR-Mini-E3-", "_E3-Free-runs"];
-                    for (const t of allTypes) {
-                        if (type !== t && assetName.includes(t)) return false;
+                    if (type === "_GD32") {
+                        if (!assetName.includes("427") && !assetName.includes("422")) {
+                            return false;
+                        }
+                    } else {
+                        for (const t of allTypes) {
+                            if (type !== t && assetName.includes(t)) return false;
+                        }
                     }
                     if (features === "_SPRT13" && secondaryFeatures === "") {
                         if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPDY5")) return false;
@@ -1006,18 +1013,22 @@ image:
                 const screenSelect = document.getElementById("screen");
                 const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
                 const typeSelect = document.getElementById("type");
-                const hc32TypeOption = typeSelect.querySelector('option[value="_HC32"]');
+                const hc32TypeOption = typeSelect.querySelector('option[value="HC32"]');
                 const gd32TypeOption = typeSelect.querySelector('option[value="_GD32"]');
                 const n32TypeOption = typeSelect.querySelector('option[value="_N32"]');
+                const skrTypeOption = typeSelect.querySelector('option[value="_SKR-Mini-E3-"]');
+                const s1f1TypeOption = typeSelect.querySelector('option[value="-S1-F1"]');
+                const s1f4TypeOption = typeSelect.querySelector('option[value="-S1-F4"]');
+                const e3frTypeOption = typeSelect.querySelector('option[value="_E3-Free-runs"]');
                 const currentBroadenSearchValue = document.getElementById("broadenSearch").value;
                 clearSelections();
                 document.getElementById("broadenSearch").value = currentBroadenSearchValue;
                 const modelPresets = {
                     "Aquila": { type: "_GD32", screen: "DWIN" },
                     "Aquila X3": { type: "_N32", features: "_IND", leveling: "_UBL", screen: "DWIN" },
-                    "HC32": { type: "HC32", screen: "DWIN" },
-                    "Ender": { type: "_422", screen: "DWIN" },
-                    "C2": { type: "_HC32", screen: "C2" }
+                    "Aquila C2": { type: "HC32", screen: "C2" },
+                    "_HC32": { type: "HC32", screen: "DWIN" },
+                    "Ender": { type: "_422", screen: "DWIN" }
                 };
                 const preset = modelPresets[model];
                 if (preset) {
@@ -1026,33 +1037,52 @@ image:
                     if (preset.features) document.getElementById("features").value = preset.features;
                     if (preset.leveling) document.getElementById("leveling").value = preset.leveling;
                 }
-                if (model === "C2") {
-                    screenSelect.value = "C2";
-                    screenSelect.disabled = true;
-                } else {
-                    screenSelect.disabled = false;
-                }
-                if (model === "HC32") {
-                    typeSelect.value = "HC32";
+                if (model === "_HC32") {
                     typeSelect.disabled = true;
                     c2ScreenOption.disabled = true;
                 } else {
                     c2ScreenOption.disabled = false;
                     typeSelect.disabled = false;
                 }
-                if (model === "Aquila" || model === "Aquila X3") {
+                if (model === "Aquila") {
+                    gd32TypeOption.disabled = false;
                     hc32TypeOption.disabled = true;
-                } else {
-                    hc32TypeOption.disabled = false;
-                }
-                if (model === "Ender") {
+                    s1f1TypeOption.disabled = true;
+                    s1f4TypeOption.disabled = true;
+                    e3frTypeOption.disabled = true;
+                    skrTypeOption.disabled = false;
+                } else if (model === "Aquila X3") {
+                    gd32TypeOption.disabled = false;
                     hc32TypeOption.disabled = true;
-                    gd32TypeOption.disabled = true;
+                    skrTypeOption.disabled = true;
+                    s1f1TypeOption.disabled = true;
+                    s1f4TypeOption.disabled = true;
+                    e3frTypeOption.disabled = true;
+                } else if (model === "Ender") {
+                    gd32TypeOption.disabled = false;
+                    hc32TypeOption.disabled = true;
                     n32TypeOption.disabled = true;
+                    skrTypeOption.disabled = true;
+                    s1f1TypeOption.disabled = false;
+                    s1f4TypeOption.disabled = false;
+                    e3frTypeOption.disabled = false;
+                } else if (model === "Aquila C2") {
+                    screenSelect.value = "C2";
+                    screenSelect.disabled = true;
+                    gd32TypeOption.disabled = true;
+                    skrTypeOption.disabled = true;
+                    s1f1TypeOption.disabled = true;
+                    s1f4TypeOption.disabled = true;
+                    e3frTypeOption.disabled = true;
                 } else {
                     hc32TypeOption.disabled = false;
                     gd32TypeOption.disabled = false;
                     n32TypeOption.disabled = false;
+                    skrTypeOption.disabled = false;
+                    s1f1TypeOption.disabled = false;
+                    s1f4TypeOption.disabled = false;
+                    e3frTypeOption.disabled = false;
+                    screenSelect.disabled = false;
                 }
                 updateCandidates();
                 updateSelectedReleaseTag();
