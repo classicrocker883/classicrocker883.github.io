@@ -288,9 +288,9 @@ image:
                 <option value="_GD32" title="_GD32">GD32</option>
                 <option value="_N32" title="_N32">N32</option>
                 <option value="HC32" title="HC32">HC32</option>
+                <option value="_SKR-Mini-E3-" title="_SKR-Mini-E3-">BTT SKR Mini E3</option>
                 <option value="_427" title="_427">Creality 4.2.7</option>
                 <option value="_422" title="_422">Creality 4.2.2</option>
-                <option value="_SKR-Mini-E3-" title="_SKR-Mini-E3-">BTT SKR Mini E3</option>
                 <option value="-S1-F1" title="-S1-F1">Ender-3 S1 F103</option>
                 <option value="-S1-F4" title="-S1-F4">Ender-3 S1 F401</option>
                 <option value="_E3-Free-runs" title="_E3-Free-runs">Creality E3 Free-runs</option>
@@ -458,17 +458,18 @@ image:
         Board types <b>422</b>/<b>427</b> and leveling options <b>Default</b>/<b>Manual Mesh</b> should have additional features enabled,
         which may not be available in base <b>UBL</b>/<b>BLT</b> <b>ProUI-EX</b> versions due to memory space limitations.
     </p>
-    <p>There are no significant differences in firmware compatibility between models. For example, a Creality 4.2.7
-        board for an Aquila will work on an Ender-3 V2/S1.<br>
+    <p>There are no significant differences in firmware compatibility between models.<br>
+        For example, a Creality 4.2.7 board for an Aquila will work on an Ender-3 V2/S1.<br>
         The differences are mainly in color schemes and naming — whether it's a <b>Creality Ender</b> or <b>Voxelab Aquila</b>.
     </p>
     <p>Boards like <i>Creality E3 Free-runs</i> and <i>Ender-3 S1 F103</i> / <i>Ender-3 S1 F401</i> are currently only selectable under the
         <b>Ender-3 V2/S1</b> model.<br>
-        The <i>BTT SKR Mini E3</i> is available under both models and will work in either case.
+        The <i>BTT SKR Mini E3</i> is available only for <b>Aquila</b> model, but will work in either case.
     </p>
-    <p>If you are using a 12864 Monochrome Display, it is only listed under Model <b>C2</b>.<br>
-        This is because the <b>Voxelab Aquila C2</b> exclusively uses <i>only</i> this type of LCD.<br>
-        While the firmware can be used on an <b>Ender-3</b>/<b>Pro</b>, it is recommended to use official or alternative firmware.
+    <p>If you are using a <i>12864 Monochrome Display</i>, it is only listed under <b>Aquila C2</b> model.<br>
+        This is because the <b>Voxelab Aquila C2</b> exclusively uses this type of LCD.<br>
+        While this firmware can be used on an <b>Ender-3</b>/<b>Pro</b>, albeit using the same board/chip type,<br>
+        it is recommended to use official or alternative firmware.
     </p>
     <dl>
         <dt>
@@ -944,7 +945,7 @@ image:
                     } else if (!assetName.includes(features)) {
                         return false;
                     }
-                    const allTypes = ["_GD32", "_N32", "HC32", "_427", "_422", "-S1-F1", "-S1-F4", "_SKR-Mini-E3-", "_E3-Free-runs"];
+                    const allTypes = ["_GD32", "_N32", "HC32", "_SKR-Mini-E3-", "_427", "_422", "-S1-F1", "-S1-F4", "_E3-Free-runs"];
                     if (type === "_GD32") {
                         if (!assetName.includes("427") && !assetName.includes("422")) {
                             return false;
@@ -1013,9 +1014,9 @@ image:
                 const screenSelect = document.getElementById("screen");
                 const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
                 const typeSelect = document.getElementById("type");
-                const hc32TypeOption = typeSelect.querySelector('option[value="HC32"]');
                 const gd32TypeOption = typeSelect.querySelector('option[value="_GD32"]');
                 const n32TypeOption = typeSelect.querySelector('option[value="_N32"]');
+                const hc32TypeOption = typeSelect.querySelector('option[value="HC32"]');
                 const skrTypeOption = typeSelect.querySelector('option[value="_SKR-Mini-E3-"]');
                 const s1f1TypeOption = typeSelect.querySelector('option[value="-S1-F1"]');
                 const s1f4TypeOption = typeSelect.querySelector('option[value="-S1-F4"]');
@@ -1046,13 +1047,15 @@ image:
                 }
                 if (model === "Aquila") {
                     gd32TypeOption.disabled = false;
+                    n32TypeOption.disabled = false;
                     hc32TypeOption.disabled = true;
+                    skrTypeOption.disabled = false;
                     s1f1TypeOption.disabled = true;
                     s1f4TypeOption.disabled = true;
                     e3frTypeOption.disabled = true;
-                    skrTypeOption.disabled = false;
                 } else if (model === "Aquila X3") {
                     gd32TypeOption.disabled = false;
+                    n32TypeOption.disabled = false;
                     hc32TypeOption.disabled = true;
                     skrTypeOption.disabled = true;
                     s1f1TypeOption.disabled = true;
@@ -1060,8 +1063,8 @@ image:
                     e3frTypeOption.disabled = true;
                 } else if (model === "Ender") {
                     gd32TypeOption.disabled = false;
-                    hc32TypeOption.disabled = true;
                     n32TypeOption.disabled = true;
+                    hc32TypeOption.disabled = true;
                     skrTypeOption.disabled = true;
                     s1f1TypeOption.disabled = false;
                     s1f4TypeOption.disabled = false;
@@ -1070,14 +1073,16 @@ image:
                     screenSelect.value = "C2";
                     screenSelect.disabled = true;
                     gd32TypeOption.disabled = true;
+                    n32TypeOption.disabled = false;
+                    hc32TypeOption.disabled = false;
                     skrTypeOption.disabled = true;
                     s1f1TypeOption.disabled = true;
                     s1f4TypeOption.disabled = true;
                     e3frTypeOption.disabled = true;
                 } else {
-                    hc32TypeOption.disabled = false;
                     gd32TypeOption.disabled = false;
                     n32TypeOption.disabled = false;
+                    hc32TypeOption.disabled = false;
                     skrTypeOption.disabled = false;
                     s1f1TypeOption.disabled = false;
                     s1f4TypeOption.disabled = false;
