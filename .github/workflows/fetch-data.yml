@@ -2,10 +2,7 @@ name: Fetch Firmware Release Data
 
 on:
   schedule:
-    - cron: '22 12  1 * *'
-    - cron: '22 12  8 * *'
-    - cron: '22 12 18 * *'
-    - cron: '22 12 28 * *'
+    - cron: '22 12 2,10,18,26 * *'
 
   workflow_dispatch:
 
