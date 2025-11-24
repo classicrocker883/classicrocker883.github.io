@@ -468,7 +468,7 @@ image:
     </p>
     <p>Boards like <i>Creality E3 Free-runs</i> and <i>Ender-3 S1 F103</i> / <i>Ender-3 S1 F401</i> are currently only selectable under the
         <b>Ender-3 V2/S1</b> model.<br>
-        The <i>BTT SKR Mini E3</i> is available only for <b>Aquila</b> model, but will work in either case.
+        The <i>BTT SKR Mini E3</i> is available for <b>Aquila</b> and <b>Ender-3 V2/S1</b> model, but will work in either case.
     </p>
     <p>If you are using a <i>12864 Monochrome Display</i>, it is only listed under <b>Aquila C2</b> model.<br>
         This is because the <b>Voxelab Aquila C2</b> exclusively uses this type of LCD.<br>
@@ -712,7 +712,9 @@ image:
                         modelSuffixToApply = "ender3";
                     } else if (selectedModel === "Aquila X3" || selectedModel === "Aquila") {
                         modelSuffixToApply = "";
-                    } else if (selectedModel) {
+                    } else if (selectedModel === "_HC32") {
+                        modelSuffixToApply = "HC32";
+                    } else {
                         modelSuffixToApply = selectedModel;
                     }
                     if (modelSuffixToApply) {
@@ -1129,7 +1131,7 @@ image:
                     gd32TypeOption.disabled = false;
                     n32TypeOption.disabled = true;
                     hc32TypeOption.disabled = true;
-                    skrTypeOption.disabled = true;
+                    skrTypeOption.disabled = false;
                     s1f1TypeOption.disabled = false;
                     s1f4TypeOption.disabled = false;
                     e3frTypeOption.disabled = false;
