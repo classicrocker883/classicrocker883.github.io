@@ -589,651 +589,652 @@ image:
         </ol>
     </p>
     <pre id="output"></pre>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const selectMonth = document.getElementById("month-select");
-            const releaseContainer = document.getElementById("releases-container");
-            const releaseList = document.getElementById("release-list");
-            const selectedReleaseTagDiv = document.getElementById("selected-release-tag");
-            const resetButton = document.getElementById("resetButton");
-            const totalDownloads = document.getElementById("total-downloads");
-            const optionsSelect = document.getElementById("options");
-            const secondaryOptionsSelect = document.getElementById("secondaryOptions");
-            const deprecatedPopup = document.getElementById("deprecatedPopup");
-            const okButton = document.getElementById("okButton");
-            let releaseTag = "latest";
-            const repoUrl = '/assets/data/releases.json';
-            let allReleasesData = [];
-            let cachedLatestTagName = null;
-            let proUIExtraFeaturesWasForcedToNo = false;
-            const getToken = () => document.getElementById('tokenInput').value.trim();
-            async function fetchAllReleases(url) {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    return data;
-                } catch (error) {
-                    console.error("Error fetching local releases data:", error);
-                    return [];
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const selectMonth = document.getElementById("month-select");
+        const releaseContainer = document.getElementById("releases-container");
+        const releaseList = document.getElementById("release-list");
+        const selectedReleaseTagDiv = document.getElementById("selected-release-tag");
+        const resetButton = document.getElementById("resetButton");
+        const totalDownloads = document.getElementById("total-downloads");
+        const optionsSelect = document.getElementById("options");
+        const secondaryOptionsSelect = document.getElementById("secondaryOptions");
+        const deprecatedPopup = document.getElementById("deprecatedPopup");
+        const okButton = document.getElementById("okButton");
+        let releaseTag = "latest";
+        const repoUrl = '/assets/data/releases.json';
+        let allReleasesData = [];
+        let cachedLatestTagName = null;
+        let proUIExtraFeaturesWasForcedToNo = false;
+        const getToken = () => document.getElementById('tokenInput').value.trim();
+        async function fetchAllReleases(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Error fetching local releases data:", error);
+                return [];
             }
-            async function fetchLatestReleaseDetails() {
-                try {
-                    const tokenValue = getToken();
-                    if (!tokenValue) {
-                        console.warn("No token provided for fetchLatestReleaseDetails.");
-                        const response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest');
+        }
+        async function fetchLatestReleaseDetails() {
+            try {
+                const tokenValue = getToken();
+                if (!tokenValue) {
+                    console.warn("No token provided for fetchLatestReleaseDetails.");
+                    const response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest');
+                }
+                const response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest', {
+                    headers: {
+                      'Authorization': `token ${tokenValue}`
                     }
-                    const response = await fetch('https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest', {
-                        headers: {
-                          'Authorization': `token ${tokenValue}`
-                        }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Error fetching latest release from GitHub API:", error);
+                return null;
+            }
+        }
+        function formatMonthYear(date) {
+            return new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short" });
+        }
+        function getReleaseMonths(releases) {
+            const months = new Set();
+            releases.forEach(release => months.add(formatMonthYear(release.published_at)));
+            return Array.from(months).sort((a, b) => new Date(b) - new Date(a));
+        }
+        function splitTag(tag) {
+            const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(C2|HC32|ender3))?(?:-(-?\d+[a-z]*))?$/;
+            const match = tag.match(regex);
+            return {
+                version: match ? match[1] : "",
+                month: match ? match[2] : "",
+                model: match ? match[3] : "",
+                revision: match ? match[4] : ""
+            };
+        }
+        function createCheckbox(release) {
+            const label = document.createElement("label");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = release.tag_name;
+            checkbox.name = "release";
+            checkbox.addEventListener("change", (event) => {
+                if (event.target.checked) {
+                    releaseTag = `tags/${event.target.value}`;
+                    document.querySelectorAll('input[name="release"]').forEach(otherCheckbox => {
+                        if (otherCheckbox !== event.target) otherCheckbox.checked = false;
                     });
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    return data;
-                } catch (error) {
-                    console.error("Error fetching latest release from GitHub API:", error);
-                    return null;
-                }
-            }
-            function formatMonthYear(date) {
-                return new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short" });
-            }
-            function getReleaseMonths(releases) {
-                const months = new Set();
-                releases.forEach(release => months.add(formatMonthYear(release.published_at)));
-                return Array.from(months).sort((a, b) => new Date(b) - new Date(a));
-            }
-            function splitTag(tag) {
-                const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(C2|HC32|ender3))?(?:-(-?\d+[a-z]*))?$/;
-                const match = tag.match(regex);
-                return {
-                    version: match ? match[1] : "",
-                    month: match ? match[2] : "",
-                    model: match ? match[3] : "",
-                    revision: match ? match[4] : ""
-                };
-            }
-            function createCheckbox(release) {
-                const label = document.createElement("label");
-                const checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.value = release.tag_name;
-                checkbox.name = "release";
-                checkbox.addEventListener("change", (event) => {
-                    if (event.target.checked) {
-                        releaseTag = `tags/${event.target.value}`;
-                        document.querySelectorAll('input[name="release"]').forEach(otherCheckbox => {
-                            if (otherCheckbox !== event.target) otherCheckbox.checked = false;
-                        });
-                    } else {
-                        if (document.querySelectorAll('input[name="release"]:checked').length === 0) {
-                            releaseTag = "latest";
-                            selectMonth.value = "latest";
-                        }
-                    }
-                    updateSelectedReleaseTag();
-                    updateCandidates();
-                });
-                label.append(checkbox, release.name);
-                releaseList.appendChild(label);
-            }
-            async function updateSelectedReleaseTag(exactTagNameFound = null) {
-                let displayTag;
-                let badgeTag;
-                if (exactTagNameFound) {
-                    displayTag = exactTagNameFound;
-                    badgeTag = exactTagNameFound;
                 } else {
-                    let currentBaseTag = releaseTag.replace("tags/", "");
-                    const selectedModel = document.getElementById("model").value;
-                    const selectedScreen = document.getElementById("screen").value;
-                    let actualBaseTagName = currentBaseTag;
-                    if (currentBaseTag === "latest") {
-                        actualBaseTagName = cachedLatestTagName;
-                        if (!actualBaseTagName) {
-                            console.error("Could not determine actual latest release tag from cache.");
-                            selectedReleaseTagDiv.textContent = "Error loading tag";
-                            totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
-                            return;
-                        }
+                    if (document.querySelectorAll('input[name="release"]:checked').length === 0) {
+                        releaseTag = "latest";
+                        selectMonth.value = "latest";
                     }
-                    let splitParts = splitTag(actualBaseTagName);
-                    let modelSuffixToApply = "";
-                    if (selectedModel === "Aquila C2" || selectedScreen === "C2") {
-                        modelSuffixToApply = "C2";
-                    } else if (selectedModel === "Ender") {
-                        modelSuffixToApply = "ender3";
-                    } else if (selectedModel === "Aquila X3" || selectedModel === "Aquila") {
-                        modelSuffixToApply = "";
-                    } else if (selectedModel === "_HC32") {
-                        modelSuffixToApply = "HC32";
-                    } else {
-                        modelSuffixToApply = selectedModel;
-                    }
-                    if (modelSuffixToApply) {
-                        splitParts.model = modelSuffixToApply;
-                    } else {
-                        splitParts.model = "";
-                    }
-                    displayTag = splitParts.version;
-                    if (splitParts.month) {
-                        displayTag += `-${splitParts.month}`;
-                    }
-                    if (splitParts.model) {
-                        displayTag += `-${splitParts.model}`;
-                    }
-                    if (splitParts.revision) {
-                        displayTag += `-${splitParts.revision}`;
-                    }
-                    badgeTag = currentBaseTag === "latest" ? "latest" : actualBaseTagName;
                 }
-                selectedReleaseTagDiv.textContent = displayTag;
-                totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${badgeTag}/total'> - Total</label>`;
-            }
-            function fetchReleasesByMonth(month, releases) {
-                const filteredReleases = releases.filter(release => formatMonthYear(release.published_at) === month);
-                releaseList.innerHTML = "";
-                if (filteredReleases.length > 0) {
-                    filteredReleases.forEach(createCheckbox);
-                    releaseContainer.style.display = "block";
-                } else {
-                    releaseList.textContent = "No releases found for this month.";
-                    releaseContainer.style.display = "none";
-                }
-            }
-            function populateMonthOptions(releaseMonths) {
-                selectMonth.innerHTML = '<option value="latest" title="The most recent release version">Latest Release</option>';
-                releaseMonths.forEach(month => {
-                    const option = document.createElement("option");
-                    option.value = month;
-                    option.textContent = month;
-                    selectMonth.appendChild(option);
-                });
-            }
-            async function initializeDropdowns() {
-                try {
-                    const latestReleaseFromApi = await fetchLatestReleaseDetails();
-                    if (latestReleaseFromApi) {
-                        cachedLatestTagName = latestReleaseFromApi.tag_name;
-                    }
-                    allReleasesData = await fetchAllReleases(repoUrl);
-                    if (!cachedLatestTagName && allReleasesData.length > 0) {
-                        allReleasesData.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-                        cachedLatestTagName = allReleasesData[0].tag_name;
-                    }
-                    if (allReleasesData.length > 0) {
-                        const releaseMonths = getReleaseMonths(allReleasesData);
-                        populateMonthOptions(releaseMonths);
-                    } else {
-                        console.warn("No local release data loaded. Month dropdown may not populate fully.");
-                        selectMonth.innerHTML = '<option value="latest">Error Loading Releases</option>';
-                    }
-                    selectMonth.value = "latest";
-                    releaseTag = "latest";
-                    await updateCandidates();
-                    updateSelectedReleaseTag();
-                } catch (error) {
-                    console.error("Error initializing dropdowns:", error);
-                }
-            }
-            async function fetchReleaseData(selectedModel) {
-                const currentReleaseTag = releaseTag.replace("tags/", "");
-                let actualBaseTagName;
-                if (currentReleaseTag !== "latest") {
-                    const selectedRelease = allReleasesData.find(release => release.tag_name === currentReleaseTag);
-                    if (selectedRelease) {
-                        console.log(`Explicit release selected: ${currentReleaseTag}. Using this tag directly.`);
-                        return { assets: selectedRelease.assets || [], actualTagNameUsed: currentReleaseTag };
-                    } else {
-                        console.error("Selected specific release not found in local data:", currentReleaseTag);
-                        actualBaseTagName = cachedLatestTagName;
-                        console.warn("Falling back to cached latest release as explicit tag was not found.");
-                    }
-                } else {
+                updateSelectedReleaseTag();
+                updateCandidates();
+            });
+            label.append(checkbox, release.name);
+            releaseList.appendChild(label);
+        }
+        async function updateSelectedReleaseTag(exactTagNameFound = null) {
+            let displayTag;
+            let badgeTag;
+            if (exactTagNameFound) {
+                displayTag = exactTagNameFound;
+                badgeTag = exactTagNameFound;
+            } else {
+                let currentBaseTag = releaseTag.replace("tags/", "");
+                const selectedModel = document.getElementById("model").value;
+                const selectedScreen = document.getElementById("screen").value;
+                let actualBaseTagName = currentBaseTag;
+                if (currentBaseTag === "latest") {
                     actualBaseTagName = cachedLatestTagName;
+                    if (!actualBaseTagName) {
+                        console.error("Could not determine actual latest release tag from cache.");
+                        selectedReleaseTagDiv.textContent = "Error loading tag";
+                        totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/latest/total'> - Total</label>`;
+                        return;
+                    }
                 }
-                if (!actualBaseTagName) {
-                    console.error("Could not determine actual base release tag for fetching assets.");
-                    return { assets: [], actualTagNameUsed: null };
-                }
-                const splitOriginalBaseTag = splitTag(actualBaseTagName);
-                const baseVersionAndMonth = `${splitOriginalBaseTag.version}${splitOriginalBaseTag.month ? '-' + splitOriginalBaseTag.month : ''}`;
-                let potentialApiTags = [];
-                let modelSuffixToAdd = "";
-                if (selectedModel === "Aquila C2") {
-                    modelSuffixToAdd = "C2";
-                } else if (selectedModel === "_HC32") {
-                    modelSuffixToAdd = "HC32";
+                let splitParts = splitTag(actualBaseTagName);
+                let modelSuffixToApply = "";
+                if (selectedModel === "Aquila C2" || selectedScreen === "C2") {
+                    modelSuffixToApply = "C2";
                 } else if (selectedModel === "Ender") {
-                    modelSuffixToAdd = "ender3";
+                    modelSuffixToApply = "ender3";
+                } else if (selectedModel === "Aquila X3" || selectedModel === "Aquila") {
+                    modelSuffixToApply = "";
+                } else if (selectedModel === "_HC32") {
+                    modelSuffixToApply = "HC32";
+                } else {
+                    modelSuffixToApply = selectedModel;
                 }
-                if (modelSuffixToAdd) {
-                    let baseForIteration = `${baseVersionAndMonth}-${modelSuffixToAdd}`;
-                    for (let i = 3; i >= 1; i--) {
-                        potentialApiTags.push(`${baseForIteration}-${i}`);
-                    }
-                    potentialApiTags.push(baseForIteration);
+                if (modelSuffixToApply) {
+                    splitParts.model = modelSuffixToApply;
+                } else {
+                    splitParts.model = "";
                 }
-                potentialApiTags.push(actualBaseTagName);
-                if (!modelSuffixToAdd || (modelSuffixToAdd && !actualBaseTagName.includes(modelSuffixToAdd))) {
-                     potentialApiTags.push(baseVersionAndMonth);
+                displayTag = splitParts.version;
+                if (splitParts.month) {
+                    displayTag += `-${splitParts.month}`;
                 }
-                potentialApiTags = [...new Set(potentialApiTags)];
-                console.log("Attempting to fetch assets with tags (in order of preference):", potentialApiTags);
-                for (const tagToTry of potentialApiTags) {
-                    const tokenValue = getToken();
-                    const headers = tokenValue ? { 'Authorization': `token ${tokenValue}` } : {};
-                    const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${tagToTry}`;
-                    try {
-                        const response = tokenValue
-                            ? await fetch(apiUrl, { headers: headers })
-                            : await fetch(apiUrl);
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.assets && data.assets.length > 0) {
-                                console.log(`Successfully fetched assets from Live API for tag: ${tagToTry}`);
-                                return { assets: data.assets, actualTagNameUsed: tagToTry };
-                            }
-                        }
-                    } catch (error) {
-                        console.warn(`Live API attempt for tag ${tagToTry} failed. Trying local cache as fallback.`);
-                    }
+                if (splitParts.model) {
+                    displayTag += `-${splitParts.model}`;
                 }
-                console.warn("Live API failed for all potential tags. Falling back to local releases.json for assets.");
-                for (const tagToTry of potentialApiTags) {
-                     const localRelease = allReleasesData.find(release => release.tag_name === tagToTry);
-                    if (localRelease && localRelease.assets && localRelease.assets.length > 0) {
-                        console.log(`Successfully fetched assets from local cache for tag: ${tagToTry}`);
-                        return { assets: localRelease.assets, actualTagNameUsed: tagToTry };
-                    }
+                if (splitParts.revision) {
+                    displayTag += `-${splitParts.revision}`;
                 }
-                console.error("No release assets found in Live API or local data for the determined tag and selected model.");
+                badgeTag = currentBaseTag === "latest" ? "latest" : actualBaseTagName;
+            }
+            selectedReleaseTagDiv.textContent = displayTag;
+            totalDownloads.innerHTML = `<label><img alt='GitHub Downloads (all assets)' src='https://img.shields.io/github/downloads/classicrocker883/MRiscoCProUI/${badgeTag}/total'> - Total</label>`;
+        }
+        function fetchReleasesByMonth(month, releases) {
+            const filteredReleases = releases.filter(release => formatMonthYear(release.published_at) === month);
+            releaseList.innerHTML = "";
+            if (filteredReleases.length > 0) {
+                filteredReleases.forEach(createCheckbox);
+                releaseContainer.style.display = "block";
+            } else {
+                releaseList.textContent = "No releases found for this month.";
+                releaseContainer.style.display = "none";
+            }
+        }
+        function populateMonthOptions(releaseMonths) {
+            selectMonth.innerHTML = '<option value="latest" title="The most recent release version">Latest Release</option>';
+            releaseMonths.forEach(month => {
+                const option = document.createElement("option");
+                option.value = month;
+                option.textContent = month;
+                selectMonth.appendChild(option);
+            });
+        }
+        async function initializeDropdowns() {
+            try {
+                const latestReleaseFromApi = await fetchLatestReleaseDetails();
+                if (latestReleaseFromApi) {
+                    cachedLatestTagName = latestReleaseFromApi.tag_name;
+                }
+                allReleasesData = await fetchAllReleases(repoUrl);
+                if (!cachedLatestTagName && allReleasesData.length > 0) {
+                    allReleasesData.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                    cachedLatestTagName = allReleasesData[0].tag_name;
+                }
+                if (allReleasesData.length > 0) {
+                    const releaseMonths = getReleaseMonths(allReleasesData);
+                    populateMonthOptions(releaseMonths);
+                } else {
+                    console.warn("No local release data loaded. Month dropdown may not populate fully.");
+                    selectMonth.innerHTML = '<option value="latest">Error Loading Releases</option>';
+                }
+                selectMonth.value = "latest";
+                releaseTag = "latest";
+                await updateCandidates();
+                updateSelectedReleaseTag();
+            } catch (error) {
+                console.error("Error initializing dropdowns:", error);
+            }
+        }
+        async function fetchReleaseData(selectedModel) {
+            const currentReleaseTag = releaseTag.replace("tags/", "");
+            let actualBaseTagName;
+            if (currentReleaseTag !== "latest") {
+                const selectedRelease = allReleasesData.find(release => release.tag_name === currentReleaseTag);
+                if (selectedRelease) {
+                    console.log(`Explicit release selected: ${currentReleaseTag}. Using this tag directly.`);
+                    return { assets: selectedRelease.assets || [], actualTagNameUsed: currentReleaseTag };
+                } else {
+                    console.error("Selected specific release not found in local data:", currentReleaseTag);
+                    actualBaseTagName = cachedLatestTagName;
+                    console.warn("Falling back to cached latest release as explicit tag was not found.");
+                }
+            } else {
+                actualBaseTagName = cachedLatestTagName;
+            }
+            if (!actualBaseTagName) {
+                console.error("Could not determine actual base release tag for fetching assets.");
                 return { assets: [], actualTagNameUsed: null };
             }
-            async function updateCandidates() {
-                const model = document.getElementById("model").value;
-                const screen = document.getElementById("screen").value;
-                const type = document.getElementById("type").value;
-                const features = document.getElementById("features").value;
-                const secondaryFeatures = document.getElementById("secondaryFeatures").value;
-                const secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
-                const secondaryFeaturesSelect = document.getElementById("secondaryFeatures");
-                const leveling = document.getElementById("leveling").value;
-                const options = document.getElementById("options").value;
-                const secondaryOptions = document.getElementById("secondaryOptions").value;
-                const secondaryOptionsDiv = document.getElementById("secondaryOptionsDiv");
-                const secondaryOptionsSelect = document.getElementById("secondaryOptions");
-                const broadenSearch = document.getElementById("broadenSearch").value;
-                const modelSelect = document.getElementById("model");
-                const screenSelect = document.getElementById("screen");
-                const proUIEXSelect = document.getElementById("proUIExtraFeatures");
-                let effectiveModel = model;
-                if (model === "Aquila X3") {
-                    effectiveModel = "Aquila";
+            const splitOriginalBaseTag = splitTag(actualBaseTagName);
+            const baseVersionAndMonth = `${splitOriginalBaseTag.version}${splitOriginalBaseTag.month ? '-' + splitOriginalBaseTag.month : ''}`;
+            let potentialApiTags = [];
+            let modelSuffixToAdd = "";
+            if (selectedModel === "Aquila C2") {
+                modelSuffixToAdd = "C2";
+            } else if (selectedModel === "_HC32") {
+                modelSuffixToAdd = "HC32";
+            } else if (selectedModel === "Ender") {
+                modelSuffixToAdd = "ender3";
+            }
+            if (modelSuffixToAdd) {
+                let baseForIteration = `${baseVersionAndMonth}-${modelSuffixToAdd}`;
+                for (let i = 3; i >= 1; i--) {
+                    potentialApiTags.push(`${baseForIteration}-${i}`);
                 }
-                let effectiveFeaturesForDisplay = features;
-                if (features === "none" && broadenSearch === "Yes") {
-                    effectiveFeaturesForDisplay = "";
-                }
-                secondaryFeaturesDiv.style.display = (effectiveFeaturesForDisplay === "_SPRT13" || effectiveFeaturesForDisplay === "_SPDY5" || effectiveFeaturesForDisplay === "_BMP" || effectiveFeaturesForDisplay === "_IND") ? "block" : "none";
-                secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS" || options === "-PLR") ? "block" : "none";
-                secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
-                if (effectiveFeaturesForDisplay === "_SPRT13") {
-                    secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
-                    secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
-                    secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
-                } else if (effectiveFeaturesForDisplay === "_SPDY5") {
-                    secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
-                    secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
-                    secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
-                } else if (effectiveFeaturesForDisplay === "_BMP" || effectiveFeaturesForDisplay === "_IND") {
-                    secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
-                    secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
-                }
-                secondaryFeaturesSelect.value = secondaryFeatures;
-                secondaryOptionsSelect.innerHTML = '<option value="" title="No specific secondary option">--Select--</option>';
-                if (options === "-MPC") {
-                    secondaryOptionsSelect.innerHTML += '<option value="-IS" title="-IS">Input Shaping</option>';
-                    secondaryOptionsSelect.innerHTML += '<option value="-PLR" title="-PLR">Power-loss Recovery</option>';
-                } else if (options === "-IS") {
-                    secondaryOptionsSelect.innerHTML += '<option value="-MPC" title="-MPC">MPC</option>';
-                    secondaryOptionsSelect.innerHTML += '<option value="-PLR" title="-PLR">Power-loss Recovery</option>';
-                } else if (options === "-PLR") {
-                    secondaryOptionsSelect.innerHTML += '<option value="-MPC" title="-MPC">MPC</option>';
-                    secondaryOptionsSelect.innerHTML += '<option value="-IS" title="-IS">Input Shaping</option>';
-                }
-                secondaryOptionsSelect.value = secondaryOptions;
-                if (model === "Aquila C2" || screen === "C2" || leveling === "_Default") {
-                    proUIEXSelect.value = "";
-                    proUIEXSelect.disabled = true;
-                    proUIExtraFeaturesWasForcedToNo = true;
-                } else {
-                    proUIEXSelect.disabled = false;
-                    if (proUIExtraFeaturesWasForcedToNo) {
-                        proUIEXSelect.value = "-ProUI";
-                        proUIExtraFeaturesWasForcedToNo = false;
+                potentialApiTags.push(baseForIteration);
+            }
+            potentialApiTags.push(actualBaseTagName);
+            if (!modelSuffixToAdd || (modelSuffixToAdd && !actualBaseTagName.includes(modelSuffixToAdd))) {
+                 potentialApiTags.push(baseVersionAndMonth);
+            }
+            potentialApiTags = [...new Set(potentialApiTags)];
+            console.log("Attempting to fetch assets with tags (in order of preference):", potentialApiTags);
+            for (const tagToTry of potentialApiTags) {
+                const tokenValue = getToken();
+                const headers = tokenValue ? { 'Authorization': `token ${tokenValue}` } : {};
+                const apiUrl = `https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/tags/${tagToTry}`;
+                try {
+                    const response = tokenValue
+                        ? await fetch(apiUrl, { headers: headers })
+                        : await fetch(apiUrl);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.assets && data.assets.length > 0) {
+                            console.log(`Successfully fetched assets from Live API for tag: ${tagToTry}`);
+                            return { assets: data.assets, actualTagNameUsed: tagToTry };
+                        }
                     }
+                } catch (error) {
+                    console.warn(`Live API attempt for tag ${tagToTry} failed. Trying local cache as fallback.`);
                 }
-                if (screen === "C2") {
-                    modelSelect.value = "Aquila C2";
-                    screenSelect.disabled = true;
-                } else if (model === "Aquila C2") {
-                    screenSelect.value = "C2";
-                    screenSelect.disabled = true;
-                } else {
-                    screenSelect.disabled = false;
+            }
+            console.warn("Live API failed for all potential tags. Falling back to local releases.json for assets.");
+            for (const tagToTry of potentialApiTags) {
+                 const localRelease = allReleasesData.find(release => release.tag_name === tagToTry);
+                if (localRelease && localRelease.assets && localRelease.assets.length > 0) {
+                    console.log(`Successfully fetched assets from local cache for tag: ${tagToTry}`);
+                    return { assets: localRelease.assets, actualTagNameUsed: tagToTry };
                 }
-                let linkPrefix = "";
-                const screenMap = {
-                    "Aquila C2": { "default": "C2" },
-                    "_HC32": { "TJC-": "TJC-HC32", "default": "HC32" },
-                    "Ender": { "TJC-": "TJC-Ender", "default": "Ender" },
-                    "default": { "TJC-": "TJC-Aquila", "default": "Aquila" }
-                };
-                if (effectiveModel === "Aquila C2" || screen === "C2") {
-                    linkPrefix = screenMap["Aquila C2"][screen] || screenMap["Aquila C2"]["default"];
-                } else if (effectiveModel === "_HC32") {
-                    linkPrefix = screenMap["_HC32"][screen] || screenMap["_HC32"]["default"];
-                } else if (effectiveModel === "Ender") {
-                    linkPrefix = screenMap["Ender"][screen] || screenMap["Ender"]["default"];
-                } else if (effectiveModel === "Aquila") {
-                    linkPrefix = screenMap["default"][screen] || screenMap["default"]["default"];
-                } else {
-                    linkPrefix = null;
+            }
+            console.error("No release assets found in Live API or local data for the determined tag and selected model.");
+            return { assets: [], actualTagNameUsed: null };
+        }
+        async function updateCandidates() {
+            const model = document.getElementById("model").value;
+            const screen = document.getElementById("screen").value;
+            const type = document.getElementById("type").value;
+            const features = document.getElementById("features").value;
+            const secondaryFeatures = document.getElementById("secondaryFeatures").value;
+            const secondaryFeaturesDiv = document.getElementById("secondaryFeaturesDiv");
+            const secondaryFeaturesSelect = document.getElementById("secondaryFeatures");
+            const leveling = document.getElementById("leveling").value;
+            const options = document.getElementById("options").value;
+            const secondaryOptions = document.getElementById("secondaryOptions").value;
+            const secondaryOptionsDiv = document.getElementById("secondaryOptionsDiv");
+            const secondaryOptionsSelect = document.getElementById("secondaryOptions");
+            const broadenSearch = document.getElementById("broadenSearch").value;
+            const modelSelect = document.getElementById("model");
+            const screenSelect = document.getElementById("screen");
+            const proUIEXSelect = document.getElementById("proUIExtraFeatures");
+            let effectiveModel = model;
+            if (model === "Aquila X3") {
+                effectiveModel = "Aquila";
+            }
+            let effectiveFeaturesForDisplay = features;
+            if (features === "none" && broadenSearch === "Yes") {
+                effectiveFeaturesForDisplay = "";
+            }
+            secondaryFeaturesDiv.style.display = (effectiveFeaturesForDisplay === "_SPRT13" || effectiveFeaturesForDisplay === "_SPDY5" || effectiveFeaturesForDisplay === "_BMP" || effectiveFeaturesForDisplay === "_IND") ? "block" : "none";
+            secondaryOptionsDiv.style.display = (options === "-MPC" || options === "-IS" || options === "-PLR") ? "block" : "none";
+            secondaryFeaturesSelect.innerHTML = '<option value="" title="No specific secondary feature">--Select--</option>';
+            if (effectiveFeaturesForDisplay === "_SPRT13") {
+                secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
+                secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
+                secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
+            } else if (effectiveFeaturesForDisplay === "_SPDY5") {
+                secondaryFeaturesSelect.innerHTML += '<option value="_BMP" title="_BMP">BIQU MicroProbe V2</option>';
+                secondaryFeaturesSelect.innerHTML += '<option value="_IND" title="_IND">Induction Probe</option>';
+                secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
+            } else if (effectiveFeaturesForDisplay === "_BMP" || effectiveFeaturesForDisplay === "_IND") {
+                secondaryFeaturesSelect.innerHTML += '<option value="_SPRT13" title="_SPRT13">Creality Sprite</option>';
+                secondaryFeaturesSelect.innerHTML += '<option value="_SPDY5" title="_SPDY5">Creality Spider Speedy</option>';
+            }
+            secondaryFeaturesSelect.value = secondaryFeatures;
+            secondaryOptionsSelect.innerHTML = '<option value="" title="No specific secondary option">--Select--</option>';
+            if (options === "-MPC") {
+                secondaryOptionsSelect.innerHTML += '<option value="-IS" title="-IS">Input Shaping</option>';
+                secondaryOptionsSelect.innerHTML += '<option value="-PLR" title="-PLR">Power-loss Recovery</option>';
+            } else if (options === "-IS") {
+                secondaryOptionsSelect.innerHTML += '<option value="-MPC" title="-MPC">MPC</option>';
+                secondaryOptionsSelect.innerHTML += '<option value="-PLR" title="-PLR">Power-loss Recovery</option>';
+            } else if (options === "-PLR") {
+                secondaryOptionsSelect.innerHTML += '<option value="-MPC" title="-MPC">MPC</option>';
+                secondaryOptionsSelect.innerHTML += '<option value="-IS" title="-IS">Input Shaping</option>';
+            }
+            secondaryOptionsSelect.value = secondaryOptions;
+            if (model === "Aquila C2" || screen === "C2" || leveling === "_Default") {
+                proUIEXSelect.value = "";
+                proUIEXSelect.disabled = true;
+                proUIExtraFeaturesWasForcedToNo = true;
+            } else {
+                proUIEXSelect.disabled = false;
+                if (proUIExtraFeaturesWasForcedToNo) {
+                    proUIEXSelect.value = "-ProUI";
+                    proUIExtraFeaturesWasForcedToNo = false;
                 }
-                const fetchResult = await fetchReleaseData(model);
-                const assets = fetchResult.assets;
-                const actualTagNameUsed = fetchResult.actualTagNameUsed;
-                updateSelectedReleaseTag(actualTagNameUsed);
-                let filteredCandidates = [];
-                const currentProUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
-                const broadenFilterLogic = (assetName) => {
-                    if (!assetName.startsWith(linkPrefix)) return false;
-                    if (type && !assetName.includes(type)) return false;
-                    if (broadenSearch === "Yes") {
-                        if (features === "none") {
-                        } else if (features === "") {
-                            const forbiddenSuffixes = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
-                            for (const suffix of forbiddenSuffixes) {
-                                if (assetName.includes(suffix)) {
-                                    return false;
-                                }
-                            }
-                        } else {
-                            if (!assetName.includes(features)) {
+            }
+            if (screen === "C2") {
+                modelSelect.value = "Aquila C2";
+                screenSelect.disabled = true;
+            } else if (model === "Aquila C2") {
+                screenSelect.value = "C2";
+                screenSelect.disabled = true;
+            } else {
+                screenSelect.disabled = false;
+            }
+            let linkPrefix = "";
+            const screenMap = {
+                "Aquila C2": { "default": "C2" },
+                "_HC32": { "TJC-": "TJC-HC32", "default": "HC32" },
+                "Ender": { "TJC-": "TJC-Ender", "default": "Ender" },
+                "default": { "TJC-": "TJC-Aquila", "default": "Aquila" }
+            };
+            if (effectiveModel === "Aquila C2" || screen === "C2") {
+                linkPrefix = screenMap["Aquila C2"][screen] || screenMap["Aquila C2"]["default"];
+            } else if (effectiveModel === "_HC32") {
+                linkPrefix = screenMap["_HC32"][screen] || screenMap["_HC32"]["default"];
+            } else if (effectiveModel === "Ender") {
+                linkPrefix = screenMap["Ender"][screen] || screenMap["Ender"]["default"];
+            } else if (effectiveModel === "Aquila") {
+                linkPrefix = screenMap["default"][screen] || screenMap["default"]["default"];
+            } else {
+                linkPrefix = null;
+            }
+            const fetchResult = await fetchReleaseData(model);
+            const assets = fetchResult.assets;
+            const actualTagNameUsed = fetchResult.actualTagNameUsed;
+            updateSelectedReleaseTag(actualTagNameUsed);
+            let filteredCandidates = [];
+            const currentProUIExtraFeatures = document.getElementById("proUIExtraFeatures").value;
+            const broadenFilterLogic = (assetName) => {
+                if (!assetName.startsWith(linkPrefix)) return false;
+                if (type && !assetName.includes(type)) return false;
+                if (broadenSearch === "Yes") {
+                    if (features === "none") {
+                    } else if (features === "") {
+                        const forbiddenSuffixes = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
+                        for (const suffix of forbiddenSuffixes) {
+                            if (assetName.includes(suffix)) {
                                 return false;
                             }
                         }
                     } else {
-                        const allFeaturesSuffixes = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
-                        if (features === "none" || features === "") {
-                            for (const suffix of allFeaturesSuffixes) {
-                                if (assetName.includes(suffix)) {
-                                    return false;
-                                }
-                            }
-                        } else if (!assetName.includes(features)) {
+                        if (!assetName.includes(features)) {
                             return false;
                         }
                     }
-                    if ((type === "_427" || type === "_422") && assetName.includes("GD32")) return false;
-                    if (secondaryFeatures && !assetName.includes(secondaryFeatures)) return false;
-                    if (leveling && !assetName.includes(leveling)) return false;
-                    if (options && !assetName.includes(options)) return false;
-                    if (secondaryOptions && !assetName.includes(secondaryOptions)) return false;
-                    if (currentProUIExtraFeatures === "" && assetName.includes("-ProUI")) {
-                        return false;
-                    }
-                    if (currentProUIExtraFeatures === "-ProUI" && !assetName.includes("-ProUI")) {
-                        return false;
-                    }
-                    return true;
-                };
-                const specificFilterLogic = (assetName) => {
-                    if (!assetName.startsWith(linkPrefix)) return false;
-                    if (type && !assetName.includes(type)) return false;
-                    if (secondaryFeatures && !assetName.includes(secondaryFeatures)) return false;
-                    if (leveling && !assetName.includes(leveling)) return false;
-                    if (options && !assetName.includes(options)) return false;
-                    if (secondaryOptions && !assetName.includes(secondaryOptions)) return false;
-                    const allFeatures = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
+                } else {
+                    const allFeaturesSuffixes = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
                     if (features === "none" || features === "") {
-                        for (const f of allFeatures) {
-                            if (assetName.includes(f)) return false;
+                        for (const suffix of allFeaturesSuffixes) {
+                            if (assetName.includes(suffix)) {
+                                return false;
+                            }
                         }
                     } else if (!assetName.includes(features)) {
                         return false;
                     }
-                    const allTypes = ["_GD32", "_N32", "HC32", "_SKR-Mini-E3-", "_427", "_422", "-S1-F1", "-S1-F4", "_E3-Free-runs"];
-                    if (type === "_GD32") {
-                        if (!assetName.includes("427") && !assetName.includes("422")) {
-                            return false;
-                        }
-                    } else {
-                        for (const t of allTypes) {
-                            if (type !== t && assetName.includes(t)) return false;
-                        }
+                }
+                if ((type === "_427" || type === "_422") && assetName.includes("GD32")) return false;
+                if (secondaryFeatures && !assetName.includes(secondaryFeatures)) return false;
+                if (leveling && !assetName.includes(leveling)) return false;
+                if (options && !assetName.includes(options)) return false;
+                if (secondaryOptions && !assetName.includes(secondaryOptions)) return false;
+                if (currentProUIExtraFeatures === "" && assetName.includes("-ProUI")) {
+                    return false;
+                }
+                if (currentProUIExtraFeatures === "-ProUI" && !assetName.includes("-ProUI")) {
+                    return false;
+                }
+                return true;
+            };
+            const specificFilterLogic = (assetName) => {
+                if (!assetName.startsWith(linkPrefix)) return false;
+                if (type && !assetName.includes(type)) return false;
+                if (secondaryFeatures && !assetName.includes(secondaryFeatures)) return false;
+                if (leveling && !assetName.includes(leveling)) return false;
+                if (options && !assetName.includes(options)) return false;
+                if (secondaryOptions && !assetName.includes(secondaryOptions)) return false;
+                const allFeatures = ["_BMP", "_IND", "_SPRT13", "_SPDY5"];
+                if (features === "none" || features === "") {
+                    for (const f of allFeatures) {
+                        if (assetName.includes(f)) return false;
                     }
-                    if (features === "_SPRT13" && secondaryFeatures === "") {
-                        if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPDY5")) return false;
-                    }
-                    if (features === "_SPDY5" && secondaryFeatures === "") {
-                        if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPRT13")) return false;
-                    }
-                    if ((features === "_BMP" || features === "_IND") && secondaryFeatures === "") {
-                        if (assetName.includes("_SPRT13") || assetName.includes("_SPDY5")) return false;
-                    }
-                    const allLeveling = ["_UBL", "_BLT", "_MM", "_Default"];
-                    for (const l of allLeveling) {
-                        if (leveling !== l && assetName.includes(l)) return false;
-                    }
-                    const allOptions = ["-MPC", "-IS", "-PLR"];
-                    if (options === "") {
-                        for (const o of allOptions) {
-                            if (assetName.includes(o)) return false;
-                        }
-                    } else {
-                        if (options === "-MPC" && secondaryOptions === "") {
-                            if (assetName.includes("-IS") || assetName.includes("-PLR")) return false;
-                        }
-                        if (options === "-IS" && secondaryOptions === "") {
-                            if (assetName.includes("-MPC") || assetName.includes("-PLR")) return false;
-                        }
-                        if (options === "-PLR" && secondaryOptions === "") {
-                            if (assetName.includes("-MPC") || assetName.includes("-IS")) return false;
-                        }
-                    }
-                    if (currentProUIExtraFeatures === "" && assetName.includes("-ProUI")) {
+                } else if (!assetName.includes(features)) {
+                    return false;
+                }
+                const allTypes = ["_GD32", "_N32", "HC32", "_SKR-Mini-E3-", "_427", "_422", "-S1-F1", "-S1-F4", "_E3-Free-runs"];
+                if (type === "_GD32") {
+                    if (!assetName.includes("427") && !assetName.includes("422")) {
                         return false;
                     }
-                    if (currentProUIExtraFeatures === "-ProUI" && !assetName.includes("-ProUI")) {
-                        return false;
+                } else {
+                    for (const t of allTypes) {
+                        if (type !== t && assetName.includes(t)) return false;
                     }
-                    return true;
-                };
-                if (broadenSearch === "Yes") {
-                    filteredCandidates = assets.filter(asset => broadenFilterLogic(asset.name));
-                } else {
-                    filteredCandidates = assets.filter(asset => specificFilterLogic(asset.name));
                 }
-                const candidatesList = document.getElementById("candidates");
-                candidatesList.innerHTML = "";
-                if (filteredCandidates.length > 0) {
-                    filteredCandidates.forEach(candidate => {
-                        const url = candidate.browser_download_url;
-                        const filename = url.substring(url.lastIndexOf('/') + 1);
-                        candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style='color: brown'>${filename}</span><a style='margin-left: auto; margin-right: 2%; font-size: 20px;' href='${url}' class='fas fa-download'></a></span></div>`;
-                    });
-                } else {
-                    candidatesList.innerHTML = "No candidates found.";
+                if (features === "_SPRT13" && secondaryFeatures === "") {
+                    if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPDY5")) return false;
                 }
+                if (features === "_SPDY5" && secondaryFeatures === "") {
+                    if (assetName.includes("_BMP") || assetName.includes("_IND") || assetName.includes("_SPRT13")) return false;
+                }
+                if ((features === "_BMP" || features === "_IND") && secondaryFeatures === "") {
+                    if (assetName.includes("_SPRT13") || assetName.includes("_SPDY5")) return false;
+                }
+                const allLeveling = ["_UBL", "_BLT", "_MM", "_Default"];
+                for (const l of allLeveling) {
+                    if (leveling !== l && assetName.includes(l)) return false;
+                }
+                const allOptions = ["-MPC", "-IS", "-PLR"];
+                if (options === "") {
+                    for (const o of allOptions) {
+                        if (assetName.includes(o)) return false;
+                    }
+                } else {
+                    if (options === "-MPC" && secondaryOptions === "") {
+                        if (assetName.includes("-IS") || assetName.includes("-PLR")) return false;
+                    }
+                    if (options === "-IS" && secondaryOptions === "") {
+                        if (assetName.includes("-MPC") || assetName.includes("-PLR")) return false;
+                    }
+                    if (options === "-PLR" && secondaryOptions === "") {
+                        if (assetName.includes("-MPC") || assetName.includes("-IS")) return false;
+                    }
+                }
+                if (currentProUIExtraFeatures === "" && assetName.includes("-ProUI")) {
+                    return false;
+                }
+                if (currentProUIExtraFeatures === "-ProUI" && !assetName.includes("-ProUI")) {
+                    return false;
+                }
+                return true;
+            };
+            if (broadenSearch === "Yes") {
+                filteredCandidates = assets.filter(asset => broadenFilterLogic(asset.name));
+            } else {
+                filteredCandidates = assets.filter(asset => specificFilterLogic(asset.name));
             }
-            function updateModelSelections() {
-                const model = document.getElementById("model").value;
-                const screenSelect = document.getElementById("screen");
-                const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
-                const typeSelect = document.getElementById("type");
-                const gd32TypeOption = typeSelect.querySelector('option[value="_GD32"]');
-                const n32TypeOption = typeSelect.querySelector('option[value="_N32"]');
-                const hc32TypeOption = typeSelect.querySelector('option[value="HC32"]');
-                const skrTypeOption = typeSelect.querySelector('option[value="_SKR-Mini-E3-"]');
-                const s1f1TypeOption = typeSelect.querySelector('option[value="-S1-F1"]');
-                const s1f4TypeOption = typeSelect.querySelector('option[value="-S1-F4"]');
-                const e3frTypeOption = typeSelect.querySelector('option[value="_E3-Free-runs"]');
-                const currentBroadenSearchValue = document.getElementById("broadenSearch").value;
-                clearSelections();
-                document.getElementById("broadenSearch").value = currentBroadenSearchValue;
-                const modelPresets = {
-                    "Aquila": { type: "_GD32", screen: "DWIN" },
-                    "Aquila X3": { type: "_N32", features: "_IND", leveling: "_UBL", screen: "DWIN" },
-                    "Aquila C2": { type: "HC32", screen: "C2" },
-                    "_HC32": { type: "HC32", screen: "DWIN" },
-                    "Ender": { type: "_422", screen: "DWIN" }
-                };
-                const preset = modelPresets[model];
-                if (preset) {
-                    if (preset.screen) screenSelect.value = preset.screen;
-                    if (preset.type) document.getElementById("type").value = preset.type;
-                    if (preset.features) document.getElementById("features").value = preset.features;
-                    if (preset.leveling) document.getElementById("leveling").value = preset.leveling;
-                }
-                if (model === "_HC32") {
-                    typeSelect.disabled = true;
-                    c2ScreenOption.disabled = true;
-                } else {
-                    c2ScreenOption.disabled = false;
-                    typeSelect.disabled = false;
-                }
-                if (model === "Aquila") {
-                    gd32TypeOption.disabled = false;
-                    n32TypeOption.disabled = false;
-                    hc32TypeOption.disabled = true;
-                    skrTypeOption.disabled = false;
-                    s1f1TypeOption.disabled = true;
-                    s1f4TypeOption.disabled = true;
-                    e3frTypeOption.disabled = true;
-                } else if (model === "Aquila X3") {
-                    gd32TypeOption.disabled = false;
-                    n32TypeOption.disabled = false;
-                    hc32TypeOption.disabled = true;
-                    skrTypeOption.disabled = true;
-                    s1f1TypeOption.disabled = true;
-                    s1f4TypeOption.disabled = true;
-                    e3frTypeOption.disabled = true;
-                } else if (model === "Ender") {
-                    gd32TypeOption.disabled = false;
-                    n32TypeOption.disabled = true;
-                    hc32TypeOption.disabled = true;
-                    skrTypeOption.disabled = false;
-                    s1f1TypeOption.disabled = false;
-                    s1f4TypeOption.disabled = false;
-                    e3frTypeOption.disabled = false;
-                } else if (model === "Aquila C2") {
-                    screenSelect.value = "C2";
-                    screenSelect.disabled = true;
-                    gd32TypeOption.disabled = true;
-                    n32TypeOption.disabled = false;
-                    hc32TypeOption.disabled = false;
-                    skrTypeOption.disabled = true;
-                    s1f1TypeOption.disabled = true;
-                    s1f4TypeOption.disabled = true;
-                    e3frTypeOption.disabled = true;
-                } else {
-                    gd32TypeOption.disabled = false;
-                    n32TypeOption.disabled = false;
-                    hc32TypeOption.disabled = false;
-                    skrTypeOption.disabled = false;
-                    s1f1TypeOption.disabled = false;
-                    s1f4TypeOption.disabled = false;
-                    e3frTypeOption.disabled = false;
-                    screenSelect.disabled = false;
-                }
-                updateCandidates();
-                updateSelectedReleaseTag();
+            const candidatesList = document.getElementById("candidates");
+            candidatesList.innerHTML = "";
+            if (filteredCandidates.length > 0) {
+                filteredCandidates.forEach(candidate => {
+                    const url = candidate.browser_download_url;
+                    const filename = url.substring(url.lastIndexOf('/') + 1);
+                    candidatesList.innerHTML += `<div class='candidates-row'><span class='downloadcontainer'><span style='color: brown'>${filename}</span><a style='margin-left: auto; margin-right: 2%; font-size: 20px;' href='${url}' class='fas fa-download'></a></span></div>`;
+                });
+            } else {
+                candidatesList.innerHTML = "No candidates found.";
             }
-            function clearSelections() {
-                document.querySelectorAll('#proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(selection => selection.selectedIndex = 0);
-                document.getElementById("secondaryFeaturesDiv").style.display = "none";
-                document.getElementById("secondaryOptionsDiv").style.display = "none";
+        }
+        function updateModelSelections() {
+            const model = document.getElementById("model").value;
+            const screenSelect = document.getElementById("screen");
+            const c2ScreenOption = screenSelect.querySelector('option[value="C2"]');
+            const typeSelect = document.getElementById("type");
+            const gd32TypeOption = typeSelect.querySelector('option[value="_GD32"]');
+            const n32TypeOption = typeSelect.querySelector('option[value="_N32"]');
+            const hc32TypeOption = typeSelect.querySelector('option[value="HC32"]');
+            const skrTypeOption = typeSelect.querySelector('option[value="_SKR-Mini-E3-"]');
+            const s1f1TypeOption = typeSelect.querySelector('option[value="-S1-F1"]');
+            const s1f4TypeOption = typeSelect.querySelector('option[value="-S1-F4"]');
+            const e3frTypeOption = typeSelect.querySelector('option[value="_E3-Free-runs"]');
+            const currentBroadenSearchValue = document.getElementById("broadenSearch").value;
+            clearSelections();
+            document.getElementById("broadenSearch").value = currentBroadenSearchValue;
+            const modelPresets = {
+                "Aquila": { type: "_GD32", screen: "DWIN" },
+                "Aquila X3": { type: "_N32", features: "_IND", leveling: "_UBL", screen: "DWIN" },
+                "Aquila C2": { type: "HC32", screen: "C2" },
+                "_HC32": { type: "HC32", screen: "DWIN" },
+                "Ender": { type: "_422", screen: "DWIN" }
+            };
+            const preset = modelPresets[model];
+            if (preset) {
+                if (preset.screen) screenSelect.value = preset.screen;
+                if (preset.type) document.getElementById("type").value = preset.type;
+                if (preset.features) document.getElementById("features").value = preset.features;
+                if (preset.leveling) document.getElementById("leveling").value = preset.leveling;
             }
-            function resetSelections() {
-                document.getElementById("model").selectedIndex = 0;
-                clearSelections();
-                document.getElementById("broadenSearch").value = "No";
-                document.getElementById("screen").disabled = false;
-                selectMonth.value = "latest";
+            if (model === "_HC32") {
+                typeSelect.disabled = true;
+                c2ScreenOption.disabled = true;
+            } else {
+                c2ScreenOption.disabled = false;
+                typeSelect.disabled = false;
+            }
+            if (model === "Aquila") {
+                gd32TypeOption.disabled = false;
+                n32TypeOption.disabled = false;
+                hc32TypeOption.disabled = true;
+                skrTypeOption.disabled = false;
+                s1f1TypeOption.disabled = true;
+                s1f4TypeOption.disabled = true;
+                e3frTypeOption.disabled = true;
+            } else if (model === "Aquila X3") {
+                gd32TypeOption.disabled = false;
+                n32TypeOption.disabled = false;
+                hc32TypeOption.disabled = true;
+                skrTypeOption.disabled = true;
+                s1f1TypeOption.disabled = true;
+                s1f4TypeOption.disabled = true;
+                e3frTypeOption.disabled = true;
+            } else if (model === "Ender") {
+                gd32TypeOption.disabled = false;
+                n32TypeOption.disabled = true;
+                hc32TypeOption.disabled = true;
+                skrTypeOption.disabled = false;
+                s1f1TypeOption.disabled = false;
+                s1f4TypeOption.disabled = false;
+                e3frTypeOption.disabled = false;
+            } else if (model === "Aquila C2") {
+                screenSelect.value = "C2";
+                screenSelect.disabled = true;
+                gd32TypeOption.disabled = true;
+                n32TypeOption.disabled = false;
+                hc32TypeOption.disabled = false;
+                skrTypeOption.disabled = true;
+                s1f1TypeOption.disabled = true;
+                s1f4TypeOption.disabled = true;
+                e3frTypeOption.disabled = true;
+            } else {
+                gd32TypeOption.disabled = false;
+                n32TypeOption.disabled = false;
+                hc32TypeOption.disabled = false;
+                skrTypeOption.disabled = false;
+                s1f1TypeOption.disabled = false;
+                s1f4TypeOption.disabled = false;
+                e3frTypeOption.disabled = false;
+                screenSelect.disabled = false;
+            }
+            updateCandidates();
+            updateSelectedReleaseTag();
+        }
+        function clearSelections() {
+            document.querySelectorAll('#proUIExtraFeatures, #screen, #type, #features, #secondaryFeatures, #leveling, #options, #secondaryOptions').forEach(selection => selection.selectedIndex = 0);
+            document.getElementById("secondaryFeaturesDiv").style.display = "none";
+            document.getElementById("secondaryOptionsDiv").style.display = "none";
+        }
+        function resetSelections() {
+            document.getElementById("model").selectedIndex = 0;
+            clearSelections();
+            document.getElementById("broadenSearch").value = "No";
+            document.getElementById("screen").disabled = false;
+            selectMonth.value = "latest";
+            releaseTag = "latest";
+            releaseContainer.style.display = "none";
+            proUIExtraFeaturesWasForcedToNo = false;
+            updateSelectedReleaseTag();
+            updateCandidates();
+        }
+        function handleOptionsChange() {
+            if (optionsSelect.value === "-PLR" || secondaryOptionsSelect.value === "-PLR") {
+                deprecatedPopup.style.display = "flex";
+            } else {
+                deprecatedPopup.style.display = "none";
+            }
+        }
+        document.getElementById('fetchBtn').addEventListener('click', async () => {
+            const token = document.getElementById('tokenInput').value.trim();
+            document.getElementById('output').textContent = '';
+            if (token) {
+                alert('GitHub Token has been applied for subsequent firmware selector searches and release fetching.');
+            } else {
+                alert('Token input cleared. Searching will proceed without GitHub API authorization.');
+            }
+            await updateCandidates();
+        });
+        document.getElementById("features").addEventListener("change", () => {
+            document.getElementById("secondaryFeatures").value = "";
+            updateCandidates();
+        });
+        document.getElementById("options").addEventListener("change", () => {
+            document.getElementById("secondaryOptions").value = "";
+            if (releaseTag === "latest") {
+                handleOptionsChange();
+            }
+            updateCandidates();
+        });
+        document.getElementById("secondaryOptions").addEventListener("change", () => {
+            if (releaseTag === "latest") {
+                handleOptionsChange();
+            }
+            updateCandidates();
+        });
+        document.getElementById("model").addEventListener("change", updateModelSelections);
+        document.querySelectorAll('#broadenSearch, #proUIExtraFeatures, #screen, #type, #secondaryFeatures, #leveling').forEach(input => input.addEventListener("change", updateCandidates));
+        selectMonth.addEventListener("change", async (event) => {
+            const selectedMonth = event.target.value;
+            if (selectedMonth === "latest") {
                 releaseTag = "latest";
                 releaseContainer.style.display = "none";
-                proUIExtraFeaturesWasForcedToNo = false;
-                updateSelectedReleaseTag();
-                updateCandidates();
+            } else {
+                fetchReleasesByMonth(selectedMonth, allReleasesData);
+                releaseContainer.style.display = "block";
+                document.querySelectorAll('input[name="release"]').forEach(otherCheckbox => {
+                    otherCheckbox.checked = false;
+                });
+                releaseTag = "latest";
             }
-            function handleOptionsChange() {
-                if (optionsSelect.value === "-PLR" || secondaryOptionsSelect.value === "-PLR") {
-                    deprecatedPopup.style.display = "flex";
-                } else {
-                    deprecatedPopup.style.display = "none";
-                }
-            }
-            document.getElementById('fetchBtn').addEventListener('click', async () => {
-                const token = document.getElementById('tokenInput').value.trim();
-                document.getElementById('output').textContent = '';
-                if (token) {
-                    alert('GitHub Token has been applied for subsequent firmware selector searches and release fetching.');
-                } else {
-                    alert('Token input cleared. Searching will proceed without GitHub API authorization.');
-                }
-                await updateCandidates();
-            });
-            document.getElementById("features").addEventListener("change", () => {
-                document.getElementById("secondaryFeatures").value = "";
-                updateCandidates();
-            });
-            document.getElementById("options").addEventListener("change", () => {
-                document.getElementById("secondaryOptions").value = "";
-                if (releaseTag === "latest") {
-                    handleOptionsChange();
-                }
-                updateCandidates();
-            });
-            document.getElementById("secondaryOptions").addEventListener("change", () => {
-                if (releaseTag === "latest") {
-                    handleOptionsChange();
-                }
-                updateCandidates();
-            });
-            document.getElementById("model").addEventListener("change", updateModelSelections);
-            document.querySelectorAll('#broadenSearch, #proUIExtraFeatures, #screen, #type, #secondaryFeatures, #leveling').forEach(input => input.addEventListener("change", updateCandidates));
-            selectMonth.addEventListener("change", async (event) => {
-                const selectedMonth = event.target.value;
-                if (selectedMonth === "latest") {
-                    releaseTag = "latest";
-                    releaseContainer.style.display = "none";
-                } else {
-                    fetchReleasesByMonth(selectedMonth, allReleasesData);
-                    releaseContainer.style.display = "block";
-                    document.querySelectorAll('input[name="release"]').forEach(otherCheckbox => {
-                        otherCheckbox.checked = false;
-                    });
-                    releaseTag = "latest";
-                }
-                updateSelectedReleaseTag();
-                await updateCandidates();
-            });
-            resetButton.addEventListener("mousedown", () => resetButton.style.animationPlayState = "running");
-            resetButton.addEventListener("mouseup", () => resetButton.style.animationPlayState = "paused");
-            resetButton.addEventListener("click", resetSelections);
-            okButton.addEventListener("click", () => {
-                deprecatedPopup.style.display = "none";
-            });
-            initializeDropdowns();
+            updateSelectedReleaseTag();
+            await updateCandidates();
         });
-    </script>
+        resetButton.addEventListener("mousedown", () => resetButton.style.animationPlayState = "running");
+        resetButton.addEventListener("mouseup", () => resetButton.style.animationPlayState = "paused");
+        resetButton.addEventListener("click", resetSelections);
+        okButton.addEventListener("click", () => {
+            deprecatedPopup.style.display = "none";
+        });
+        initializeDropdowns();
+    });
+</script>
 </html>
