@@ -1013,13 +1013,11 @@ image:
                     return false;
                 }
                 const allTypes = ["_GD32", "_N32", "HC32", "_SKR-Mini-E3-", "_427", "_422", "-S1-F1", "-S1-F4", "_E3-Free-runs"];
-                if (type === "_GD32") {
-                    if (!assetName.includes("427") && !assetName.includes("422")) {
+                for (const t of allTypes) {
+                    if (assetName.includes(t)) {
+                        if (type === t) continue;
+                        if ((type === "_422" || type === "_427") && t === "_GD32") continue;
                         return false;
-                    }
-                } else {
-                    for (const t of allTypes) {
-                        if (type !== t && assetName.includes(t)) return false;
                     }
                 }
                 if (features === "_SPRT13" && secondaryFeatures === "") {
