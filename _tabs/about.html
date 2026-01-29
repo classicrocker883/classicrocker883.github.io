@@ -9,500 +9,97 @@ redirect_from:
   - /assets/
   - /posts/
 ---
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            padding: 20px;
-            background-color: #1a202c;
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-        h1, h2 {
-            color: #90cdf4;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-        p {
-            color: #cbd5e0;
-            margin-bottom: 20px;
-        }
-        .dropdown label, .checkbox-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #a0aec0;
-        }
-        select {
-            padding: 10px 12px;
-            border: 1px solid #4a5568;
-            border-radius: 8px;
-            background-color: #2d3748;
-            color: #e2e8f0;
-            width: 100%;
-            max-width: 400px;
-        }
-        select:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
-        }
-        .debug-info {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 8px;
-            background-color: #1a202c;
-            color: #e2e8f0;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            overflow-x: auto;
-            border: 1px solid #4a5568;
-        }
-        .debug-info h3 {
-            color: #90cdf4;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        .debug-info p {
-            margin-bottom: 5px;
-            color: #e2e8f0;
-            word-break: break-all;
-        }
-        .debug-info strong {
-            color: #a78bfa;
-        }
-        #download-container {
-            margin-top: 20px;
-            text-align: left;
-            display: none;
-        }
-        #download-btn {
-            display: inline-block;
-            background-color: #4f46e5;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        #download-btn:hover {
-            background-color: #4338ca;
-            transform: translateY(-2px);
-        }
-        .checkbox-group {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #4a5568;
-            border-radius: 8px;
-            background-color: #2d3748;
-            display: none;
-            max-width: 400px;
-        }
-        .checkbox-group.active {
-            display: block;
-        }
-        .checkbox-group .checkbox-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 10px;
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            border: 1px solid #718096;
-            background-color: #4a5568;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            position: relative;
-            flex-shrink: 0;
-        }
-        .checkbox-group input[type="checkbox"]:checked {
-            background-color: #4f46e5;
-            border-color: #4f46e5;
-        }
-        .checkbox-group input[type="checkbox"]:checked::after {
-            content: '✔';
-            color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 14px;
-        }
-        .checkbox-group label {
-            margin-bottom: 0;
-            cursor: pointer;
-            font-weight: normal;
-            color: #e2e8f0;
-        }
-    </style>
-</head>
-<body>
-    <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl">Download Debug Info</h1>
-        <h2 class="text-2xl">Latest Firmware & Files</h2>
-        <p>Select your model below. The system will automatically find the correct "Latest" release tag for that specific model.</p>
-
-        <!-- Month Selection -->
-        <div class="dropdown mb-4">
-            <label for="releaseMonths" class="text-lg">Select a Month:</label>
-            <select id="releaseMonths">
-                <option value="latest">Latest Release</option>
-                <option disabled>Loading...</option>
-            </select>
-        </div>
-
-        <!-- Specific Release Checkboxes -->
-        <div id="releaseCheckboxes" class="checkbox-group">
-            <p class="text-gray-400 mb-3 text-sm font-semibold uppercase">Select a specific release version:</p>
-            <div id="releaseList"></div>
-        </div>
-
-        <!-- Model Selection -->
-        <div class="dropdown mb-4">
-            <label for="models" class="text-lg">Filter by Model:</label>
-            <select id="models">
-                <option value="Aquila" selected>Aquila (GD32/N32/X3)</option>
-                <option value="C2">Aquila C2</option>
-                <option value="HC32">HC32</option>
-                <option value="Ender">Ender-3 V2/S1</option>
-            </select>
-        </div>
-
-        <!-- File Selection -->
-        <div class="dropdown mb-4">
-            <label for="files" class="text-lg">Choose a file:</label>
-            <select id="files" disabled>
-                <option value="" disabled selected>Loading files...</option>
-            </select>
-        </div>
-
-        <!-- Download Button -->
-        <div id="download-container">
-            <a href="#" id="download-btn" target="_blank">Download File</a>
-        </div>
-
-        <!-- Debug Info Panel -->
-        <div class="debug-info" id="debug-info">
-            <h3>Debug Info</h3>
-            <p><strong>Release Tag:</strong> <span id="debug-releaseTag">Initializing...</span></p>
-            <p><strong>API URL:</strong> <span id="debug-apiUrl">-</span></p>
-            <p><strong>Download Count:</strong> <span id="debug-downloadCount">-</span></p>
-        </div>
+<div class="about-container">
+    <div style="text-align: center;">
+    <div style="display: flex; justify-content: center;"><img alt="Firmware Selector Logo"
+        src="https://classicrocker883.github.io/assets/img/firmware-selector.png" width="200" height="200">
+    </div>
+        <h1>MRiscoCProUI Firmware</h1>
+        <p>Professional-grade firmware for Voxelab Aquila and Creality Ender-3 V2/S1 3D Printers.</p>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // DOM Elements
-            const monthSelect = document.getElementById("releaseMonths");
-            const releaseCheckboxesDiv = document.getElementById("releaseCheckboxes");
-            const releaseListDiv = document.getElementById("releaseList");
-            const modelSelect = document.getElementById("models");
-            const fileSelect = document.getElementById("files");
-            const downloadContainer = document.getElementById("download-container");
-            const downloadBtn = document.getElementById("download-btn");
+    <hr>
 
-            // Debug Elements
-            const debugReleaseTag = document.getElementById("debug-releaseTag");
-            const debugApiUrl = document.getElementById("debug-apiUrl");
-            const debugDownloadCount = document.getElementById("debug-downloadCount");
+    <h2><i class="fas fa-microchip"></i> Project Overview</h2>
+    <p>
+        This project provides optimized firmware configurations designed to unlock the full potential of your 3D printer hardware.
+        Building upon the powerful Marlin base, <b>MRiscoCProUI</b> introduces advanced features, a highly customizable user interface,
+        and extensive support for various board architectures.
+    </p>
 
-            // State
-            let allReleasesData = [];
-            let currentAssets = [];
+    <h2><i class="fas fa-cubes"></i> Supported Hardware</h2>
+    <p>While the firmware is compatible with a wide range of hardware, including <i>Induction Probes</i>, it is specifically tuned for the following:</p>
 
-            // This stores the raw "Latest" tag name from GitHub (e.g. "2.1.3")
-            // We use this as a base to calculate model-specific tags (e.g. "2.1.3-C2")
-            let latestBaseTag = null;
+    <h3>Models</h3>
+    <ul>
+        <li><b>Voxelab Aquila Series:</b> Original Aquila, X2, X3, Max, S2, S3, and C2.</li>
+        <li><b>Creality Ender Series:</b> Ender-3 V2, Ender-3 S1, and V2 Neo.</li>
+    </ul>
 
-            let isLatestMode = true;
+    <h3>Chipsets & Mainboards</h3>
+    <p>Support for a variety of processors and boards:</p>
+    <ul>
+        <li><b>Aquila Chipsets:</b> GD32, N32, HC32, STM32F103.</li>
+        <li><b>Creality Boards:</b> 4.2.2, 4.2.7, STM32F401, GD32F303, E3 Free-runs (TMC2209).</li>
+        <li><b>Aftermarket Boards:</b> BigTreeTech (BTT) SKR Mini E3 V2.0, V3.0, V3.0.1.</li>
+    </ul>
 
-            const REPO_OWNER = "classicrocker883";
-            const REPO_NAME = "MRiscoCProUI";
-            const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases`;
+    <hr>
 
-            init();
+    <h2><i class="fas fa-wand-magic-sparkles"></i> Key Features</h2>
 
-            async function init() {
-                try {
-                    // 1. Fetch all releases info
-                    const response = await fetch(`${API_BASE}`);
-                    if (!response.ok) throw new Error("Failed to fetch releases");
+    <h3><i class="fas fa-layer-group"></i> Bed Leveling Systems</h3>
+    <ul>
+        <li><b>Unified Bed Leveling (_UBL):</b> <i>(Recommended)</i> Combines manual leveling with automated probing for maximum accuracy.</li>
+        <li><b>Bilinear Leveling (_BLT):</b> Standard grid-based auto-leveling for CR-Touch, BL-Touch, and 3D-Touch sensors.</li>
+        <li><b>Manual Mesh (_MM):</b> Allows users without a probe to create a high-precision digital mesh.</li>
+        <li><b>Default:</b> Stock UI; no ProUI-EX, or mesh leveling.</li>
+    </ul>
 
-                    allReleasesData = await response.json();
+    <h3><i class="fas fa-gears"></i> Advanced Capabilities</h3>
+    <ul>
+        <li><b>Input Shaping (-IS):</b> Compensates for printer vibrations to reduce "ghosting" and ringing artifacts (requires calibration).</li>
+        <li><b>Model Predictive Control (-MPC):</b> A modern, physics-based temperature control algorithm that replaces traditional PID tuning for better thermal stability.</li>
+        <li><b>ProUI Extra Features (ProUI-EX):</b> Exclusive toolbar options, physical dimension adjustments, and advanced settings. May include new G-code (as C)</li>
+    </ul>
 
-                    // 2. Determine what the API considers "Latest" to get the base version number
-                    const latestResp = await fetch(`${API_BASE}/latest`);
-                    if (latestResp.ok) {
-                        const latestData = await latestResp.json();
-                        latestBaseTag = latestData.tag_name;
-                    } else {
-                        // Fallback: use the first tag in the list
-                        if (allReleasesData.length > 0) latestBaseTag = allReleasesData[0].tag_name;
-                    }
+    <h3><i class="fas fa-fire-burner"></i> Hotend Support</h3>
+    <p>Pre-configured support for high-performance extruders:</p>
+    <ul>
+        <li><b>Creality Sprite Extruder:</b> (Thermistor #13)</li>
+        <li><b>Spider Speedy Ceramic:</b> (Thermistor #5)</li>
+    </ul>
 
-                    populateMonths(allReleasesData);
+    <hr>
 
-                    // 3. Trigger initial load
-                    await updateAssetsBasedOnSelection();
+    <h2><i class="fas fa-desktop"></i> Display Assets</h2>
+    <div style="background-color: #333; color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 5px solid #ffcc00;">
+        <p>
+            <i class="fas fa-exclamation-triangle" style="color: #ffcc00;"></i> <b>Important:</b>
+            To ensure the User Interface (icons, fonts, colors) displays correctly, you must update your screen's firmware assets.
+        </p>
+    </div>
+    <p>The firmware supports multiple screen types, including:</p>
+    <ul>
+        <li><b>DWIN / DACAI:</b> The standard color screens found on most V2/Aquila units.</li>
+        <li><b>TJC:</b> High-refresh-rate screens often used as replacements.</li>
+        <li><b>12864 Monochrome:</b> Specific support for the Aquila C2 / Ender-3 LCDs (No ProUI features).</li>
+    </ul>
 
-                } catch (error) {
-                    console.error("Initialization Error:", error);
-                    debugApiUrl.textContent = "Error fetching initial data";
-                }
-            }
+    <hr>
 
-            // --- Core Logic: Tag Splitting & Construction ---
+    <h2><i class="fas fa-code-branch"></i> Compatibility Notes</h2>
+    <p>
+        Firmware compatibility is often broader than the model name on the printer. For example, a
+        <b>Creality 4.2.7</b> board installed in a Voxelab Aquila will function perfectly with Ender-3 V2 firmware options.
+        The primary differences often lie in the boot logo and default color schemes.
+    </p>
 
-            function splitTag(tag) {
-                // Regex provided by user to parse tag structure
-                const regex = /^(\d+\.\d+\.\d+[a-z]*)(?:-(-?\d+))?(?:-(C2|HC32|ender3))?(?:-(-?\d+[a-z]*))?$/;
-                const match = tag.match(regex);
-                return {
-                    version: match ? match[1] : "",
-                    month: match ? match[2] : "",
-                    model: match ? match[3] : "",
-                    revision: match ? match[4] : ""
-                };
-            }
-
-            function reconstructTag(parts) {
-                let tag = parts.version;
-                if (parts.month) tag += `-${parts.month}`;
-                if (parts.model) tag += `-${parts.model}`;
-                if (parts.revision) tag += `-${parts.revision}`;
-                return tag;
-            }
-
-            function calculateTagForModel(baseTag, modelValue) {
-                if (!baseTag) return "latest";
-
-                let splitParts = splitTag(baseTag);
-                let modelSuffixToApply = "";
-
-                // Map UI values to Tag Suffixes
-                if (modelValue === "C2") {
-                    modelSuffixToApply = "C2";
-                } else if (modelValue === "Ender") {
-                    modelSuffixToApply = "ender3";
-                } else if (modelValue === "Aquila") {
-                    modelSuffixToApply = ""; // Standard Aquila has no model suffix in this scheme
-                } else if (modelValue === "HC32") {
-                    modelSuffixToApply = "HC32";
-                }
-
-                // Apply suffix
-                splitParts.model = modelSuffixToApply;
-
-                return reconstructTag(splitParts);
-            }
-
-            // --- Fetching Logic ---
-
-            async function updateAssetsBasedOnSelection() {
-                const selectedModel = modelSelect.value;
-                let targetTag = "latest";
-
-                if (isLatestMode && latestBaseTag) {
-                    // DYNAMIC LOGIC: Calculate specific tag based on model
-                    targetTag = calculateTagForModel(latestBaseTag, selectedModel);
-                } else if (!isLatestMode) {
-                    // Checkbox logic: find checked box
-                    const checked = document.querySelector('input[name="release-version"]:checked');
-                    if (checked) {
-                        targetTag = checked.value;
-                    } else {
-                        fileSelect.innerHTML = '<option>Select a release above...</option>';
-                        fileSelect.disabled = true;
-                        return;
-                    }
-                }
-
-                await fetchAssetsForTag(targetTag);
-            }
-
-            async function fetchAssetsForTag(tag) {
-                fileSelect.innerHTML = '<option>Loading files...</option>';
-                fileSelect.disabled = true;
-                downloadContainer.style.display = 'none';
-
-                // Construct API URL
-                // Note: If tag is literally "latest" (fallback), use /latest endpoint
-                // Otherwise use /tags/{tag}
-                const url = (tag === "latest")
-                    ? `${API_BASE}/latest`
-                    : `${API_BASE}/tags/${tag}`;
-
-                // Update Debug Info
-                debugApiUrl.textContent = url;
-                debugReleaseTag.textContent = tag;
-                debugDownloadCount.textContent = "-";
-
-                try {
-                    const res = await fetch(url);
-                    if (!res.ok) {
-                        // If specific tag fails (e.g. 2.1.3-C2 doesn't exist), try falling back to base?
-                        // For this simple version, we'll just report not found.
-                        throw new Error(`Release tag '${tag}' not found.`);
-                    }
-                    const data = await res.json();
-
-                    currentAssets = data.assets || [];
-                    filterAndRenderFiles();
-                } catch (err) {
-                    console.warn(err);
-                    fileSelect.innerHTML = `<option>Release '${tag}' not found</option>`;
-                    debugApiUrl.textContent += " (404/Error)";
-                }
-            }
-
-            function filterAndRenderFiles() {
-                const selectedModel = modelSelect.value;
-                fileSelect.innerHTML = '<option value="" disabled selected>Select a file...</option>';
-
-                if (!currentAssets.length) {
-                    fileSelect.innerHTML = '<option disabled>No assets found</option>';
-                    return;
-                }
-
-                // Standard Filtering Logic (Client side filter of assets inside the tag)
-                const filteredAssets = currentAssets.filter(asset => {
-                    const name = asset.name;
-
-                    if (selectedModel === "C2") {
-                        return name.startsWith("C2");
-                    } else if (selectedModel === "HC32") {
-                        return name.includes("HC32");
-                    } else if (selectedModel === "Ender") {
-                        return name.includes("Ender") || name.startsWith("Ender");
-                    } else if (selectedModel === "Aquila") {
-                        if (name.includes("C2") || name.includes("HC32") || name.includes("Ender")) return false;
-                        return name.startsWith("Aquila");
-                    }
-                    return true;
-                });
-
-                if (filteredAssets.length === 0) {
-                    const opt = document.createElement("option");
-                    opt.disabled = true;
-                    opt.textContent = "No compatible files found in this release.";
-                    fileSelect.appendChild(opt);
-                } else {
-                    filteredAssets.forEach(asset => {
-                        const opt = document.createElement("option");
-                        opt.value = asset.browser_download_url;
-                        opt.textContent = asset.name;
-                        opt.dataset.downloads = asset.download_count;
-                        fileSelect.appendChild(opt);
-                    });
-                    fileSelect.disabled = false;
-                }
-            }
-
-            function formatMonthYear(dateString) {
-                const date = new Date(dateString);
-                return date.toLocaleDateString("en-US", { year: "numeric", month: "short" });
-            }
-
-            function populateMonths(releases) {
-                const months = new Set();
-                releases.forEach(r => months.add(formatMonthYear(r.published_at)));
-
-                monthSelect.innerHTML = '<option value="latest">Latest Release</option>';
-                months.forEach(month => {
-                    const opt = document.createElement("option");
-                    opt.value = month;
-                    opt.textContent = month;
-                    monthSelect.appendChild(opt);
-                });
-            }
-
-            function populateReleaseCheckboxes(month) {
-                releaseListDiv.innerHTML = "";
-                const releasesInMonth = allReleasesData.filter(r => formatMonthYear(r.published_at) === month);
-
-                if (releasesInMonth.length > 0) {
-                    releasesInMonth.forEach(release => {
-                        const div = document.createElement("div");
-                        div.className = "checkbox-item";
-
-                        const checkbox = document.createElement("input");
-                        checkbox.type = "checkbox";
-                        checkbox.value = release.tag_name;
-                        checkbox.id = `rel-${release.tag_name}`;
-                        checkbox.name = "release-version";
-
-                        const label = document.createElement("label");
-                        label.htmlFor = `rel-${release.tag_name}`;
-                        label.textContent = release.name || release.tag_name;
-                        label.className = "ml-2 text-gray-300";
-
-                        checkbox.addEventListener("change", (e) => {
-                            if (e.target.checked) {
-                                document.querySelectorAll('input[name="release-version"]').forEach(cb => {
-                                    if (cb !== e.target) cb.checked = false;
-                                });
-                                updateAssetsBasedOnSelection();
-                            }
-                        });
-
-                        div.appendChild(checkbox);
-                        div.appendChild(label);
-                        releaseListDiv.appendChild(div);
-                    });
-                    releaseCheckboxesDiv.classList.add("active");
-                } else {
-                    releaseCheckboxesDiv.classList.remove("active");
-                }
-            }
-
-            // --- Event Listeners ---
-
-            monthSelect.addEventListener("change", (e) => {
-                const val = e.target.value;
-                if (val === "latest") {
-                    isLatestMode = true;
-                    releaseCheckboxesDiv.classList.remove("active");
-                    updateAssetsBasedOnSelection();
-                } else {
-                    isLatestMode = false;
-                    populateReleaseCheckboxes(val);
-                    fileSelect.innerHTML = '<option>Select a release version above</option>';
-                    fileSelect.disabled = true;
-                }
-            });
-
-            modelSelect.addEventListener("change", () => {
-                // When model changes, if we are in latest mode, we must re-fetch
-                // because the "Latest" tag might change from (e.g.) 2.1.3 to 2.1.3-C2
-                if (isLatestMode) {
-                    updateAssetsBasedOnSelection();
-                } else {
-                    // If specific release is selected, just re-filter the current assets locally
-                    filterAndRenderFiles();
-                }
-                downloadContainer.style.display = 'none';
-                debugDownloadCount.textContent = "-";
-            });
-
-            fileSelect.addEventListener("change", (e) => {
-                const url = e.target.value;
-                const selectedOption = e.target.options[e.target.selectedIndex];
-                const downloads = selectedOption.dataset.downloads;
-                downloadBtn.href = url;
-                downloadContainer.style.display = "block";
-                debugDownloadCount.textContent = downloads;
-            });
-        });
-    </script>
-</body>
-</html>
+    <br>
+    <div style="text-align: center;">
+        <a href="/firmware-selector" class="button" style="background-color: #0073e6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            <i class="fas fa-download"></i> Go to Firmware Selector
+        </a>
+    </div>
+    <br>
+</div>
