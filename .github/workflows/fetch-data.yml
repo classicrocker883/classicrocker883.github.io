@@ -52,7 +52,7 @@ jobs:
                             const options = {
                                 headers: {
                                     "User-Agent": "classicrocker883-firmware-selector",
-                                    "Authorization": `token ${process.env.GH_TOKEN}`
+                                    "Authorization": process.env.GH_TOKEN ? `token ${process.env.GH_TOKEN}` : ""
                                 },
                                 timeout: 20000
                             };
@@ -168,4 +168,4 @@ jobs:
             echo "Changes committed and pushed."
           fi
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.MYTOKEN }}
