@@ -30,162 +30,125 @@ jobs:
             const fs = require("fs");
             const https = require("https");
 
+            const PRUNE_WINDOW_MONTHS = 18;
+            const PER_PAGE = 20;
+            const pruneCutoff = new Date();
+            pruneCutoff.setMonth(pruneCutoff.getMonth() - PRUNE_WINDOW_MONTHS);
+
+            const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
             function cleanReleases(releases) {
-                if (Array.isArray(releases)) {
-                    releases.forEach(release => {
-                        if (release && typeof release === "object") {
-                            delete release.body;
-                            delete release.author;
-                            delete release.mentions_count;
-                            delete release.tarball_url;
-                            delete release.zipball_url;
-                        }
-                    });
-                }
-                return releases;
-            }
-
-            async function fetchPage(url, timeoutMs = 9000000) {
-                return new Promise((resolve, reject) => {
-                    const req = https.get(url, {
-                        headers: {
-                            "User-Agent": "classicrocker883-firmware-selector"
-                        }
-                    }, (res) => {
-                        let data = "";
-                        res.on("data", (chunk) => { data += chunk; });
-                        res.on("end", () => {
-                            clearTimeout(timeoutId);
-                            if (res.statusCode >= 200 && res.statusCode < 300) {
-                                try {
-                                    resolve(JSON.parse(data));
-                                } catch (e) {
-                                    reject(new Error(`Failed to parse JSON from ${url}: ${e.message}`));
-                                }
-                            } else {
-                                reject(new Error(`Failed to fetch ${url}, Status: ${res.statusCode}, Message: ${data}`));
-                            }
-                        });
-                    }).on("error", (err) => {
-                        clearTimeout(timeoutId);
-                        reject(err);
-                    });
-
-                    const timeoutId = setTimeout(() => {
-                        req.destroy(new Error(`Request timed out after ${timeoutMs}ms`));
-                    }, timeoutMs);
+                if (!Array.isArray(releases)) return [];
+                return releases.map(release => {
+                    const { body, author, mentions_count, tarball_url, zipball_url, ...clean } = release;
+                    return clean;
                 });
             }
 
-            async function fetchAllReleases(url, releases = [], sinceDate = null) {
-                let currentPageUrl = `${url}`;
-                console.log(`Fetching from: ${currentPageUrl}`);
-                const data = await fetchPage(currentPageUrl);
-
-                if (data.length === 0) {
-                    return releases;
+            async function fetchPage(url, retries = 3) {
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        return await new Promise((resolve, reject) => {
+                            const options = {
+                                headers: {
+                                    "User-Agent": "classicrocker883-firmware-selector",
+                                    "Authorization": `token ${process.env.GH_TOKEN}`
+                                },
+                                timeout: 20000
+                            };
+                            https.get(url, options, (res) => {
+                                let data = "";
+                                res.on("data", (chunk) => { data += chunk; });
+                                res.on("end", () => {
+                                    if (res.statusCode === 200) {
+                                        resolve(JSON.parse(data));
+                                    } else if (res.statusCode === 403) {
+                                        reject(new Error("Rate limited or Forbidden. Check GH_TOKEN."));
+                                    } else {
+                                        reject(new Error(`Status: ${res.statusCode}`));
+                                    }
+                                });
+                            }).on("error", reject);
+                        });
+                    } catch (err) {
+                        if (i === retries - 1) throw err;
+                        console.log(`[Retry ${i+1}] Error: ${err.message}. Retrying...`);
+                        await sleep(3000 * (i + 1));
+                    }
                 }
+            }
 
-                const newReleases = [];
-                let reachedOlderReleases = false;
+            async function fetchAllReleases(baseUrl) {
+                let allReleases = [];
+                let page = 1;
+                console.log(`Pruning Cutoff Date: ${pruneCutoff.toISOString()}`);
 
-                for (const release of data) {
-                    if (sinceDate && new Date(release.published_at) < sinceDate) {
-                        reachedOlderReleases = true;
+                while (true) {
+                    const url = `${baseUrl}?per_page=${PER_PAGE}&page=${page}`;
+                    console.log(`Fetching Page ${page}...`);
+
+                    const data = await fetchPage(url);
+                    if (!data || data.length === 0) {
+                        console.log("No more data found on GitHub.");
                         break;
                     }
-                    newReleases.push(release);
-                }
 
-                const allReleases = releases.concat(newReleases);
+                    allReleases = allReleases.concat(data);
+                    const oldestInBatch = new Date(data[data.length - 1].published_at);
+                    console.log(`  -> Page ${page} contains ${data.length} items. Oldest in batch: ${oldestInBatch.toISOString()}`);
 
-                if (reachedOlderReleases || data.length < 100) {
-                    return allReleases;
-                } else {
-                    return fetchAllReleases(url, allReleases, sinceDate);
+                    if (oldestInBatch < pruneCutoff) {
+                        console.log("  -> Reached 18-month cutoff. Stopping fetch.");
+                        break;
+                    }
+
+                    if (data.length < PER_PAGE) {
+                        console.log("  -> Last page reached (incomplete batch).");
+                        break;
+                    }
+
+                    page++;
+                    await sleep(1000);
                 }
+                return allReleases;
             }
 
             async function main() {
                 const repoApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases";
-                const latestReleaseApiUrl = "https://api.github.com/repos/classicrocker883/MRiscoCProUI/releases/latest";
                 const filePath = "assets/data/releases.json";
-                let existingReleases = [];
-                const sixMonthsAgo = new Date();
-                sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-                console.log(`Limiting fetch to releases published after: ${sixMonthsAgo.toISOString()}`);
-
-                if (fs.existsSync(filePath)) {
-                    try {
-                        const fileContent = fs.readFileSync(filePath, "utf8");
-                        if (fileContent) {
-                            existingReleases = JSON.parse(fileContent);
-                            console.log(`Loaded ${existingReleases.length} existing releases from ${filePath}.`);
-                        }
-                    } catch (parseError) {
-                        console.warn(`Could not parse existing releases.json (${parseError.message}), starting fresh.`);
-                        existingReleases = [];
-                    }
-                } else {
-                    console.log("No existing releases.json found. Fetching all releases published in the last 6 months.");
-                }
 
                 try {
-                    let absoluteLatestRelease = null;
-                    try {
-                        absoluteLatestRelease = await fetchPage(latestReleaseApiUrl);
-                        console.log(`Fetched absolute latest release: ${absoluteLatestRelease.tag_name}`);
-                    } catch (latestError) {
-                        console.warn(`Could not fetch latest release from ${latestReleaseApiUrl}: ${latestError.message}. Proceeding without it.`);
-                    }
+                    if (!process.env.GH_TOKEN) console.warn("WARNING: No GH_TOKEN found. You may hit rate limits.");
 
-                    const allPaginatedReleases = await fetchAllReleases(repoApiUrl, [], sixMonthsAgo);
-                    console.log(`Fetched ${allPaginatedReleases.length} paginated release(s).`);
-
-                    const allReleasesMap = new Map();
-
-                    existingReleases.forEach(release => allReleasesMap.set(release.id, release));
-
-                    allPaginatedReleases.forEach(release => allReleasesMap.set(release.id, release));
-
-                    if (absoluteLatestRelease) {
-                        allReleasesMap.set(absoluteLatestRelease.id, absoluteLatestRelease);
-                    }
-
-                    let combinedReleases = Array.from(allReleasesMap.values());
-                    console.log(`Total unique releases after merging: ${combinedReleases.length}.`);
-
-                    let finalSortedReleases;
-                    if (absoluteLatestRelease) {
-                        const releasesToSort = combinedReleases.filter(r => r.id !== absoluteLatestRelease.id);
-                        releasesToSort.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-                        finalSortedReleases = [absoluteLatestRelease, ...releasesToSort];
-                    } else {
-                        combinedReleases.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-                        finalSortedReleases = combinedReleases;
-                    }
-
-                    const cleanedReleases = cleanReleases(finalSortedReleases);
-                    let hasChanges = true;
+                    const githubReleases = await fetchAllReleases(repoApiUrl);
+                    let existingReleases = [];
                     if (fs.existsSync(filePath)) {
-                        const currentFileContent = fs.readFileSync(filePath, "utf8");
-                        if (currentFileContent === JSON.stringify(cleanedReleases, null, 2)) {
-                            hasChanges = false;
-                            console.log("No changes detected. The file is already up to date.");
-                        }
+                        existingReleases = JSON.parse(fs.readFileSync(filePath, "utf8"));
                     }
 
-                    if (hasChanges) {
-                        if (!fs.existsSync("assets/data")) {
-                            fs.mkdirSync("assets/data", { recursive: true });
+                    const githubMap = new Map(githubReleases.map(r => [r.id, r]));
+                    const finalMap = new Map();
+
+                    existingReleases.forEach(rel => {
+                        const pubDate = new Date(rel.published_at);
+                        if (pubDate < pruneCutoff) {
+                            finalMap.set(rel.id, rel);
+                        } else if (githubMap.has(rel.id)) {
+                            finalMap.set(rel.id, rel);
+                        } else {
+                            console.log(`[PRUNE] Ghost tag removed (Newer than 18mo but deleted from GH): ${rel.tag_name}`);
                         }
-                        fs.writeFileSync(filePath, JSON.stringify(cleanedReleases, null, 2));
-                        console.log("Successfully updated and saved releases.json.");
-                    } else {
-                        console.log("No new data to commit.");
-                    }
+                    });
+
+                    githubReleases.forEach(rel => finalMap.set(rel.id, rel));
+
+                    const combined = Array.from(finalMap.values())
+                        .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
+                    fs.writeFileSync(filePath, JSON.stringify(cleanReleases(combined), null, 2));
+                    console.log(`Success! Final count: ${combined.length} releases.`);
                 } catch (error) {
-                    console.error("Failed to fetch or save releases:", error.message);
+                    console.error("Critical Error:", error.message);
                     process.exit(1);
                 }
             }
