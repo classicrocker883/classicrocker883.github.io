@@ -23,6 +23,8 @@ jobs:
           node-version: 24
 
       - name: Fetch and save releases data
+        env:
+          GH_TOKEN: ${{ secrets.MYTOKEN }}
         run: |
           mkdir -p assets/data
 
@@ -156,16 +158,17 @@ jobs:
           '
 
       - name: Commit and push if changes
+        env:
+          GH_TOKEN: ${{ secrets.MYTOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
           git add assets/data/releases.json
           if git diff --cached --exit-code assets/data/releases.json; then
             echo "No changes to commit."
           else
             git commit -m "automated: update firmware release data"
-            git push
+            git push origin HEAD
             echo "Changes committed and pushed."
           fi
-        env:
-          GH_TOKEN: ${{ secrets.MYTOKEN }}
