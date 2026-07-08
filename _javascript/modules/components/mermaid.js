@@ -3,7 +3,7 @@
  */
 
 const MERMAID = 'mermaid';
-const themeMap = Theme.newThemeMap('default', 'dark');
+const themeMap = Theme.newThemeMap('light', 'dark');
 
 function refreshTheme(event) {
   if (
