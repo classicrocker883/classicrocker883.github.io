@@ -204,6 +204,8 @@ permalink: /firmware-selector
 </head>
 <body>
     <h4 style="text-align: right;">See most popular downloads<i class="fas fa-arrow-right"></i></h4>
+    <p>If you are not sure which <code>Model</code>/<code>Board</code> to choose, see<br>
+        <a href="#info">ℹ️ Selection Guide</a></p>
     <label for="month-select">
         <h3><i class="icon fas fa-list-check"></i> Select a Release:</h3>
     </label>
@@ -275,7 +277,7 @@ permalink: /firmware-selector
     </div>
     <div class="form-row">
         <div class="label-container">
-            <label for="type"><i class="icon fas fa-microchip"></i> Board Type:</label>
+            <label for="type"><i class="icon fas fa-microchip"></i> Board:</label>
         </div>
         <div class="select-container">
             <select id="type">
@@ -401,55 +403,26 @@ permalink: /firmware-selector
         </table>
     </div>
     <hr>
-    <br>
-    <h2>🖥️ Display Assets</h2>
-    <hr>
+    <h2 id="info">ℹ️ Selection Guide</h2>
+    <p>If an option is not selectable (greyed out), select a different <b>Model</b>. <br>
+        See <a href="#specialversions"><b>Special Versions</b></a> for more details.
+    </p>
     <div>
         <ul>
             <li>
-                <b>TJC Screen Assets</b> <img src="https://cdn-icons-png.flaticon.com/128/4298/4298296.png" alt="touchscreen" style="width: 20px; height: auto; vertical-align: top;"><br>
-                <a href="https://github.com/classicrocker883/MRiscoCProUI/blob/HEAD/display%20assets/tjc_update.zip?raw=true" rel="nofollow">📲Click to Download <code>tjc_update.zip</code></a><br>
-                (for TJC screen update if you haven't already)
-                <p></p>
+                <b>Model</b>: <i>Aquila C2</i> - with monochrome 12864 LCD <i>ONLY</i>.
             </li>
-            <br>
             <li>
-                <b>Aquila LCD Display Assets</b><br>
-                <img src="https://github.com/classicrocker883/MRiscoCProUI/assets/18502096/30ed1822-e5d5-4be5-9283-636390933178" style="width: 150px; height: auto;" alt="Aquila LCD Display Assets" />
-                <p>
-                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Aquila%20Display%20Firmware/Firmware%20Sets" rel="nofollow">🗂️Click to Download DWIN_SET</a> - (DWIN units)
-                <p></p>
-                </p>
+                <b>Model</b>: <i>HC32</i> - <b>Aquila</b> with color LCD <i>ONLY</i> (<code>H32</code> sticker).
             </li>
-            <br>
             <li>
-                <b>Creality LCD Display Assets</b><br>
-                <img src="https://raw.githubusercontent.com/mriscoc/Ender3V2S1/Ender3V2S1-Released/screenshots/main.jpg" style="width: 150px; height: auto;" alt="Creality LCD Display Assets" />
-                <p>
-                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/DWIN_SET" rel="nofollow">🗂️Click to Download DWIN_SET</a> - (DWIN units)<br>
-                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/private" rel="nofollow">📲Click to Download private</a> - (DACAI units)
-                <p></p>
-                </p>
+                <b>Board</b>: <i>BTT SKR Mini E3</i> - only selectable under <b>Aquila</b> and <b>Ender-3 V2/S1</b>.
             </li>
-            <br>
             <li>
-                <b>Giadej LCD Display Assets</b><br>
-                <img src="https://github.com/classicrocker883/MRiscoCProUI/raw/HEAD/display%20assets/Giadej%20compilation/preview1.jpg" style="width: 150px; height: auto;" alt="Giadej LCD Display Assets" />
-                <p>
-                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/DWIN_SET" rel="nofollow">🗂️Click to Download DWIN_SET</a> - (DWIN units)<br>
-                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/private" rel="nofollow">📲Click to Download private</a> - (DACAI units)
-                    <p></p>
-                </p>
-            </li>
-            <br>
-            <li>
-                <b>12864 Monochrome Display</b><br>
-                <img src="https://preview.redd.it/voxelab-aquila-c2-with-the-h32-chipset-v0-h2ctv1nh4g0d1.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=38f534aacd0f45b276fd21b0efaff7f75067045e" style="width: 150px; height: auto;" alt="12864 Monochrome Display">
-                <p>See Model: Aquila C2</p>
+                <b>Board</b>: <i>Creality E3 Free-runs</i> - only selectable under <b>Ender-3 V2/S1</b>.
             </li>
         </ul>
     </div>
-    <br>
     <h2 id="versions">📚 Versions</h2>
     <hr>
     <p>Most versions <i>now</i> include options like <code>POWER_LOSS_RECOVERY</code>, even if it's not listed in the filename.<br>
@@ -493,7 +466,7 @@ permalink: /firmware-selector
                     Leveling</a></sup>
         </li>
     </ul>
-    <h3>Special Versions</h3>
+    <h3 id="specialversions">Special Versions</h3>
     <dl>
         <dt><sup>(List of file prefixes and suffixes)</sup></dt>
     </dl>
@@ -552,6 +525,53 @@ permalink: /firmware-selector
         Prints will be effected regardless. May require a special breakout board or test prints to calibrate.
     </p>
     </sup>
+    <h2>🖥️ Display Assets</h2>
+    <hr>
+    <div>
+        <ul>
+            <li>
+                <b>TJC Screen Assets</b> <img src="https://cdn-icons-png.flaticon.com/128/4298/4298296.png" alt="touchscreen" style="width: 20px; height: auto; vertical-align: top;"><br>
+                <a href="https://github.com/classicrocker883/MRiscoCProUI/blob/HEAD/display%20assets/tjc_update.zip?raw=true" rel="nofollow">📲Click to Download <code>tjc_update.zip</code></a><br>
+                (for TJC screen update if you haven't already)
+                <p></p>
+            </li>
+            <br>
+            <li>
+                <b>Aquila LCD Display Assets</b><br>
+                <img src="https://github.com/classicrocker883/MRiscoCProUI/assets/18502096/30ed1822-e5d5-4be5-9283-636390933178" style="width: 150px; height: auto;" alt="Aquila LCD Display Assets" />
+                <p>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Aquila%20Display%20Firmware/Firmware%20Sets" rel="nofollow">🗂️Click to Download DWIN_SET</a> - (DWIN units)
+                <p></p>
+                </p>
+            </li>
+            <br>
+            <li>
+                <b>Creality LCD Display Assets</b><br>
+                <img src="https://raw.githubusercontent.com/mriscoc/Ender3V2S1/Ender3V2S1-Released/screenshots/main.jpg" style="width: 150px; height: auto;" alt="Creality LCD Display Assets" />
+                <p>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/DWIN_SET" rel="nofollow">🗂️Click to Download DWIN_SET</a> - (DWIN units)<br>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Creality%20Display%20Firmware/private" rel="nofollow">📲Click to Download private</a> - (DACAI units)
+                <p></p>
+                </p>
+            </li>
+            <br>
+            <li>
+                <b>Giadej LCD Display Assets</b><br>
+                <img src="https://github.com/classicrocker883/MRiscoCProUI/raw/HEAD/display%20assets/Giadej%20compilation/preview1.jpg" style="width: 150px; height: auto;" alt="Giadej LCD Display Assets" />
+                <p>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/DWIN_SET" rel="nofollow">🗂️Click to Download DWIN_SET</a> - (DWIN units)<br>
+                    <a href="https://downgit.github.io/#/home?url=https://github.com/classicrocker883/MRiscoCProUI/tree/HEAD/display%20assets/Giadej%20compilation/private" rel="nofollow">📲Click to Download private</a> - (DACAI units)
+                    <p></p>
+                </p>
+            </li>
+            <br>
+            <li>
+                <b>12864 Monochrome Display</b><br>
+                <img src="https://preview.redd.it/voxelab-aquila-c2-with-the-h32-chipset-v0-h2ctv1nh4g0d1.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=38f534aacd0f45b276fd21b0efaff7f75067045e" style="width: 150px; height: auto;" alt="12864 Monochrome Display">
+                <p>See Model: Aquila C2</p>
+            </li>
+        </ul>
+    </div>
     <hr>
     <h2 id="api-rate-limit-header">GitHub API Rate Limit</h2>
     <h3>Enter your GitHub &nbsp;<i>Personal Access Token</i> :</h3>
