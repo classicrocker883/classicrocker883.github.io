@@ -1160,7 +1160,7 @@ image:
                 gd32TypeOption.disabled = true;
                 n32TypeOption.disabled = false;
                 hc32TypeOption.disabled = false;
-                skrTypeOption.disabled = true;
+                skrTypeOption.disabled = false;
                 s1f1TypeOption.disabled = true;
                 s1f4TypeOption.disabled = true;
                 e3frTypeOption.disabled = true;
