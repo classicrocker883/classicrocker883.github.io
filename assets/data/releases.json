@@ -479,7 +479,7 @@
         "state": "uploaded",
         "size": 174184,
         "digest": "sha256:75a65b948867c765efcfdda75496e16fec89f19958d48898126f493f659076dc",
-        "download_count": 8,
+        "download_count": 9,
         "created_at": "2026-07-13T23:01:12Z",
         "updated_at": "2026-07-13T23:01:12Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_422_Default-07-13.bin"
@@ -4943,7 +4943,7 @@
         "state": "uploaded",
         "size": 224172,
         "digest": "sha256:b64e52a532fed417ce4ae82e935caec69cdd753804cad0f35e921a1eae89112a",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T23:58:42Z",
         "updated_at": "2026-07-13T23:58:43Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_427_UBL-ProUI-EX-07-13.bin"
@@ -5015,7 +5015,7 @@
         "state": "uploaded",
         "size": 236272,
         "digest": "sha256:79ee22d059a8fdf2e4650e09a6ed813693c825ed7d56218584d7c1e18786764d",
-        "download_count": 1,
+        "download_count": 2,
         "created_at": "2026-07-13T23:41:48Z",
         "updated_at": "2026-07-13T23:41:48Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_427_UBL-ProUI-EX-IS-MPC-07-13.bin"
@@ -5231,7 +5231,7 @@
         "state": "uploaded",
         "size": 223900,
         "digest": "sha256:7981702012f0e37c1d20f8ac3ea0533d16ed2a33923d9793161bf86af9d41207",
-        "download_count": 49,
+        "download_count": 51,
         "created_at": "2026-07-13T23:45:20Z",
         "updated_at": "2026-07-13T23:45:20Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_GD32_BLT-ProUI-EX-07-13.bin"
@@ -5267,7 +5267,7 @@
         "state": "uploaded",
         "size": 230084,
         "digest": "sha256:c9d0f84f2cd786a1607569d9c46c8c05f8c497c43b79add6f6314bd02a61c402",
-        "download_count": 8,
+        "download_count": 9,
         "created_at": "2026-07-13T23:45:17Z",
         "updated_at": "2026-07-13T23:45:17Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_GD32_BLT-ProUI-EX-IS-07-13.bin"
@@ -5843,7 +5843,7 @@
         "state": "uploaded",
         "size": 192036,
         "digest": "sha256:1ddf12188daf5a0ecd5f6ed3d6136a1b6d2f6e4e51f0568a68d60fb3935e9dd7",
-        "download_count": 13,
+        "download_count": 15,
         "created_at": "2026-07-13T23:06:15Z",
         "updated_at": "2026-07-13T23:06:16Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_GD32_Default-MPC-07-13.bin"
@@ -6311,7 +6311,7 @@
         "state": "uploaded",
         "size": 211636,
         "digest": "sha256:5e9595889ca0a2e12b7645c6f51c43c0f30241c762ec6dbaac33ce1f4fd91285",
-        "download_count": 31,
+        "download_count": 34,
         "created_at": "2026-07-13T23:18:42Z",
         "updated_at": "2026-07-13T23:18:43Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_GD32_MM-ProUI-EX-07-13.bin"
@@ -6347,7 +6347,7 @@
         "state": "uploaded",
         "size": 217796,
         "digest": "sha256:a9155656306fbd09094dcd41bae7cbd1822ce2403d858116896fe1a6e4ab2bbc",
-        "download_count": 8,
+        "download_count": 9,
         "created_at": "2026-07-13T23:18:16Z",
         "updated_at": "2026-07-13T23:18:16Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_GD32_MM-ProUI-EX-IS-07-13.bin"
@@ -8327,7 +8327,7 @@
         "state": "uploaded",
         "size": 227628,
         "digest": "sha256:da9c79106c1afa4880ac5a7d438a4a50413264836d40ad42e9ea53fb88f6519e",
-        "download_count": 15,
+        "download_count": 16,
         "created_at": "2026-07-13T23:56:47Z",
         "updated_at": "2026-07-13T23:56:48Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_GD32_UBL-ProUI-EX-07-13.bin"
@@ -8471,7 +8471,7 @@
         "state": "uploaded",
         "size": 216052,
         "digest": "sha256:7811d1f445d6139b25c9c2bcaf5738325b0e2a9e1806d3f449dbc66b5c7a7c19",
-        "download_count": 9,
+        "download_count": 11,
         "created_at": "2026-07-14T00:14:58Z",
         "updated_at": "2026-07-14T00:14:58Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_BLT-07-14.bin"
@@ -8615,7 +8615,7 @@
         "state": "uploaded",
         "size": 224204,
         "digest": "sha256:9de8295f434b01051e3dad7d19c080d99a77bcb55f57e62f4fb9363ed19b0fde",
-        "download_count": 24,
+        "download_count": 25,
         "created_at": "2026-07-14T00:14:26Z",
         "updated_at": "2026-07-14T00:14:26Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_BLT-ProUI-EX-07-14.bin"
@@ -8687,7 +8687,7 @@
         "state": "uploaded",
         "size": 231692,
         "digest": "sha256:9b1a2cb6cd227d9776ba6f95653a629c5157dffe3d4cebeefa5c8513e66d5dc6",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-14T00:03:33Z",
         "updated_at": "2026-07-14T00:03:33Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_BLT-ProUI-EX-IS-MPC-07-14.bin"
@@ -9191,7 +9191,7 @@
         "state": "uploaded",
         "size": 187036,
         "digest": "sha256:cd9a0ea1a5940d766f3832ad0bbd30c31a4d02a5f7f40bdfc41be727b8ea0ec6",
-        "download_count": 37,
+        "download_count": 38,
         "created_at": "2026-07-13T23:05:37Z",
         "updated_at": "2026-07-13T23:05:37Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_Default-07-13.bin"
@@ -9263,7 +9263,7 @@
         "state": "uploaded",
         "size": 225524,
         "digest": "sha256:02c3856861c7998dab9683c9fdb0a1615de259f46f5bb3dd5620a77e26192ba7",
-        "download_count": 15,
+        "download_count": 17,
         "created_at": "2026-07-14T00:11:01Z",
         "updated_at": "2026-07-14T00:11:01Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_IND_SPDY5_UBL-ProUI-EX-07-14.bin"
@@ -9551,7 +9551,7 @@
         "state": "uploaded",
         "size": 225380,
         "digest": "sha256:3d9adf0398c9174de7fd826c534521f0623de9c3512dbb0899e4b5000bb368bc",
-        "download_count": 34,
+        "download_count": 35,
         "created_at": "2026-07-14T00:11:06Z",
         "updated_at": "2026-07-14T00:11:06Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_IND_UBL-ProUI-EX-07-14.bin"
@@ -9695,7 +9695,7 @@
         "state": "uploaded",
         "size": 212092,
         "digest": "sha256:736a2e508ffb53ea19d2b740a34e6a64a41e60968def94b8af72bc45aa893091",
-        "download_count": 28,
+        "download_count": 29,
         "created_at": "2026-07-13T23:06:46Z",
         "updated_at": "2026-07-13T23:06:46Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_MM-ProUI-EX-07-13.bin"
@@ -9767,7 +9767,7 @@
         "state": "uploaded",
         "size": 223820,
         "digest": "sha256:178feec1721abd90c554f0f9cf378bdedee1fc76e9caee1b789807a1e7590128",
-        "download_count": 13,
+        "download_count": 14,
         "created_at": "2026-07-13T23:18:13Z",
         "updated_at": "2026-07-13T23:18:14Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_MM-ProUI-EX-IS-MPC-07-13.bin"
@@ -11567,7 +11567,7 @@
         "state": "uploaded",
         "size": 228196,
         "digest": "sha256:524dea679a3aac0cad0b04abc4806c3dab3858b8d888455c1615954a57c49d1b",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-14T00:11:37Z",
         "updated_at": "2026-07-14T00:11:37Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_SPRT13_UBL-ProUI-EX-07-14.bin"
@@ -11603,7 +11603,7 @@
         "state": "uploaded",
         "size": 228996,
         "digest": "sha256:d7c6e8a064f1a59aad75cddb39ddef95faa15964852a054dc8523d445d330cd6",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2026-07-13T23:57:01Z",
         "updated_at": "2026-07-13T23:57:01Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_SPRT13_UBL-ProUI-EX-IS-07-13.bin"
@@ -11639,7 +11639,7 @@
         "state": "uploaded",
         "size": 226172,
         "digest": "sha256:46bf9063679a480a4f34e47ef773e292270f642f3890ced42f6a64af0ee92dae",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2026-07-13T23:54:00Z",
         "updated_at": "2026-07-13T23:54:00Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_SPRT13_UBL-ProUI-EX-IS-MPC-07-13.bin"
@@ -11675,7 +11675,7 @@
         "state": "uploaded",
         "size": 231516,
         "digest": "sha256:115b88a6ff9595b1bc197c5a886099a2b6f287046365b7849834d5148b736d74",
-        "download_count": 0,
+        "download_count": 1,
         "created_at": "2026-07-14T00:07:01Z",
         "updated_at": "2026-07-14T00:07:01Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_SPRT13_UBL-ProUI-EX-MPC-07-14.bin"
@@ -11711,7 +11711,7 @@
         "state": "uploaded",
         "size": 228084,
         "digest": "sha256:979799c5f1112ff9ac016be72d52bc3976b1342e2df73e30089ac5e68e597bb9",
-        "download_count": 61,
+        "download_count": 65,
         "created_at": "2026-07-14T00:10:29Z",
         "updated_at": "2026-07-14T00:10:29Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_UBL-ProUI-EX-07-14.bin"
@@ -11783,7 +11783,7 @@
         "state": "uploaded",
         "size": 226052,
         "digest": "sha256:1e5a1a96aa78a8b720ccd05b148a40619f8556de03de9de1109ab87a7c598c63",
-        "download_count": 14,
+        "download_count": 16,
         "created_at": "2026-07-13T23:53:55Z",
         "updated_at": "2026-07-13T23:53:55Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_N32_UBL-ProUI-EX-IS-MPC-07-13.bin"
@@ -12179,7 +12179,7 @@
         "state": "uploaded",
         "size": 229212,
         "digest": "sha256:6e953e226157636ab0dbfea2ebeee273e3534bf9241d987ec2688af5a89b684a",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T23:04:45Z",
         "updated_at": "2026-07-13T23:04:45Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_SKR-Mini-E3-V3-0-1_MM-ProUI-EX-07-13.bin"
@@ -12575,7 +12575,7 @@
         "state": "uploaded",
         "size": 252492,
         "digest": "sha256:28b7a9f49e34af0eb3b638c96afc0bcb166393b0ec328b1e8819e76b4ca491fa",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2026-07-13T23:03:44Z",
         "updated_at": "2026-07-13T23:03:44Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_SKR-Mini-E3-V3_MM-ProUI-EX-07-13.bin"
@@ -12647,7 +12647,7 @@
         "state": "uploaded",
         "size": 264380,
         "digest": "sha256:76ff685fa048abfcc7d682de951bbda7e3faa6be99c0bc3392378d5bc956df42",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2026-07-13T23:01:58Z",
         "updated_at": "2026-07-13T23:01:58Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_SKR-Mini-E3-V3_MM-ProUI-EX-IS-MPC-07-13.bin"
@@ -12683,7 +12683,7 @@
         "state": "uploaded",
         "size": 257996,
         "digest": "sha256:cb63f9a738d6de4baf2cb024253edf5e7efba33147bda8754761e5f83dfe8e65",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T23:10:50Z",
         "updated_at": "2026-07-13T23:10:51Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_SKR-Mini-E3-V3_MM-ProUI-EX-MPC-07-13.bin"
@@ -13547,7 +13547,7 @@
         "state": "uploaded",
         "size": 281208,
         "digest": "sha256:e435b3cb5bdae99a7de3236b902b2129ff955a2b8b3131852c6538e319c5d239",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T23:21:33Z",
         "updated_at": "2026-07-13T23:21:33Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7/Aquila_SKR-Mini-E3-V3_UBL-ProUI-EX-MPC-07-13.bin"
@@ -27570,7 +27570,7 @@
         "state": "uploaded",
         "size": 188752,
         "digest": "sha256:d9ae1cc5e084398d10cfeb87fb29802303f04217746d68599b07a88df0a8d4d7",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2026-07-13T22:56:03Z",
         "updated_at": "2026-07-13T22:56:04Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-C2/C2_422_Default-07-13.bin"
@@ -29298,7 +29298,7 @@
         "state": "uploaded",
         "size": 245160,
         "digest": "sha256:30aba9c16c10d71e9a0803a25da667689e1d557e49b8535f0f4ecbf6003f944b",
-        "download_count": 13,
+        "download_count": 14,
         "created_at": "2026-07-13T23:14:22Z",
         "updated_at": "2026-07-13T23:14:22Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-C2/C2_422_UBL-07-13.bin"
@@ -31134,7 +31134,7 @@
         "state": "uploaded",
         "size": 225832,
         "digest": "sha256:1b680b9af96954ec672bfdbcb885b581c8bf3c7ea13afe8e5be5e602830a50c7",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2026-07-13T23:00:51Z",
         "updated_at": "2026-07-13T23:00:51Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-C2/C2_427_SPRT13_BLT-MPC-07-13.bin"
@@ -31746,7 +31746,7 @@
         "state": "uploaded",
         "size": 185300,
         "digest": "sha256:acc5b784174cf80acf8d83565723a21ebebc18603b6aca410457d3e9f3a67a89",
-        "download_count": 20,
+        "download_count": 21,
         "created_at": "2026-07-13T22:54:20Z",
         "updated_at": "2026-07-13T22:54:20Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-C2/C2_HC32_Default-07-13.bin"
@@ -33781,7 +33781,7 @@
         "state": "uploaded",
         "size": 193228,
         "digest": "sha256:324f3b274d2dc4b12621a363cac92c95a352a5f5fe96fb1a698aabfff1d26605",
-        "download_count": 15,
+        "download_count": 16,
         "created_at": "2026-07-13T22:36:47Z",
         "updated_at": "2026-07-13T22:36:47Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-HC32/HC32_BLT-ProUI-EX-07-13.bin"
@@ -33817,7 +33817,7 @@
         "state": "uploaded",
         "size": 199568,
         "digest": "sha256:da4d890224e53b8dbe5262cf0e496ccac058e44678d4267af9856a7a199db065",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2026-07-13T22:37:59Z",
         "updated_at": "2026-07-13T22:37:59Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-HC32/HC32_BLT-ProUI-EX-IS-07-13.bin"
@@ -34285,7 +34285,7 @@
         "state": "uploaded",
         "size": 168568,
         "digest": "sha256:a4c721ac04d17fd956b77a2319c1d950f3720519a3ee5a3e5b0b2c5b478a55d6",
-        "download_count": 18,
+        "download_count": 19,
         "created_at": "2026-07-13T22:29:57Z",
         "updated_at": "2026-07-13T22:29:57Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-HC32/HC32_Default-07-13.bin"
@@ -34321,7 +34321,7 @@
         "state": "uploaded",
         "size": 174900,
         "digest": "sha256:b834928d485baec1325ec08e14ee4e78c9de11c8ea27e932814c17fbfecb26d9",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2026-07-13T22:30:49Z",
         "updated_at": "2026-07-13T22:30:49Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-HC32/HC32_Default-IS-07-13.bin"
@@ -34429,7 +34429,7 @@
         "state": "uploaded",
         "size": 181728,
         "digest": "sha256:891d80f3a63133eef468773382be150ea2427309933f25ce2158fab0c201e112",
-        "download_count": 27,
+        "download_count": 32,
         "created_at": "2026-07-13T22:35:30Z",
         "updated_at": "2026-07-13T22:35:30Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-HC32/HC32_MM-ProUI-EX-07-13.bin"
@@ -34465,7 +34465,7 @@
         "state": "uploaded",
         "size": 188076,
         "digest": "sha256:c5eac8dc90138bbfd04d26739424325bfd351133436f07bb1f115f88f8272fc7",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2026-07-13T22:31:25Z",
         "updated_at": "2026-07-13T22:31:25Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-HC32/HC32_MM-ProUI-EX-IS-07-13.bin"
@@ -34573,7 +34573,7 @@
         "state": "uploaded",
         "size": 181872,
         "digest": "sha256:86534e322e9c97ac3b352c67954270c2277ea84802eb169e338b39ad8c4321e0",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2026-07-13T22:30:01Z",
         "updated_at": "2026-07-13T22:30:01Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-HC32/HC32_MM-ProUI-EX_SPDY5-07-13.bin"
@@ -39272,7 +39272,7 @@
         "state": "uploaded",
         "size": 191608,
         "digest": "sha256:44df90a5f4a720bcc6511d3a79871a606ae175b0e68413deb95b9b3f30bbeed4",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T21:37:25Z",
         "updated_at": "2026-07-13T21:37:25Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender-S1-F4_SPDY5_BMP_UBL-ProUI-EX-07-13.bin"
@@ -39668,7 +39668,7 @@
         "state": "uploaded",
         "size": 219452,
         "digest": "sha256:43bd65176e5f7f788fcd327b84964218b8152bd573228a26d88887849cded7db",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2026-07-13T22:34:53Z",
         "updated_at": "2026-07-13T22:34:54Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_422_BLT-ProUI-EX-MPC-07-13.bin"
@@ -39920,7 +39920,7 @@
         "state": "uploaded",
         "size": 231952,
         "digest": "sha256:004a65c3d12fb05b8f96ac6af1144d8cd0a55f17fab96c04aec60f87336614ce",
-        "download_count": 2,
+        "download_count": 4,
         "created_at": "2026-07-13T22:22:28Z",
         "updated_at": "2026-07-13T22:22:29Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_422_BMP_UBL-ProUI-EX-IS-MPC-07-13.bin"
@@ -40244,7 +40244,7 @@
         "state": "uploaded",
         "size": 205412,
         "digest": "sha256:166a8c0fdac98c238f9d70bf1f461a6d52d1a0102fb9d224bc9d9925c240075e",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2026-07-13T21:46:38Z",
         "updated_at": "2026-07-13T21:46:38Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_422_MM-ProUI-EX-MPC-07-13.bin"
@@ -41576,7 +41576,7 @@
         "state": "uploaded",
         "size": 224204,
         "digest": "sha256:52a2963c17c7b6c11efd41f327b216fe86d2049ccd88213995c3b499348cc37e",
-        "download_count": 11,
+        "download_count": 15,
         "created_at": "2026-07-13T22:34:03Z",
         "updated_at": "2026-07-13T22:34:03Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_422_UBL-ProUI-EX-07-13.bin"
@@ -41648,7 +41648,7 @@
         "state": "uploaded",
         "size": 236312,
         "digest": "sha256:427efde6486bb71b21a9996222665003b447d99278c9c2e2f851492c191b0c95",
-        "download_count": 19,
+        "download_count": 20,
         "created_at": "2026-07-13T22:22:23Z",
         "updated_at": "2026-07-13T22:22:23Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_422_UBL-ProUI-EX-IS-MPC-07-13.bin"
@@ -41720,7 +41720,7 @@
         "state": "uploaded",
         "size": 213668,
         "digest": "sha256:189b46e66edc652d6c7772a3d46063cff5c53e11cd3c537e1b2d0989d23396dd",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2026-07-13T22:24:33Z",
         "updated_at": "2026-07-13T22:24:33Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_BLT-ProUI-EX-07-13.bin"
@@ -41756,7 +41756,7 @@
         "state": "uploaded",
         "size": 219876,
         "digest": "sha256:cda1b8fdc8378417e9bff9203051be7678151b00e9455ab4a449a69598373809",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T22:12:03Z",
         "updated_at": "2026-07-13T22:12:03Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_BLT-ProUI-EX-IS-07-13.bin"
@@ -41792,7 +41792,7 @@
         "state": "uploaded",
         "size": 225760,
         "digest": "sha256:fd9e774ae3588f1eec54e4a50632b2d658196b3abdc402f0e06230bca4d665a3",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2026-07-13T22:16:16Z",
         "updated_at": "2026-07-13T22:16:17Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_BLT-ProUI-EX-IS-MPC-07-13.bin"
@@ -41828,7 +41828,7 @@
         "state": "uploaded",
         "size": 219428,
         "digest": "sha256:1dd9c91aa7b99f9627e7dcc250ceaa6cce9284f51056ae94ad541c2973fde99e",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2026-07-13T22:12:42Z",
         "updated_at": "2026-07-13T22:12:42Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_BLT-ProUI-EX-MPC-07-13.bin"
@@ -42152,7 +42152,7 @@
         "state": "uploaded",
         "size": 174152,
         "digest": "sha256:62d0dd3cee9756ee095d8dfdccd2b19566a3ae0df3d29cd5c65dac4c88b88307",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T21:32:36Z",
         "updated_at": "2026-07-13T21:32:37Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_Default-07-13.bin"
@@ -42188,7 +42188,7 @@
         "state": "uploaded",
         "size": 180288,
         "digest": "sha256:8fe3c9994190490a936db49690cd0d8bdbe00c90a1e4cd18fa8b1488f8fe7658",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2026-07-13T21:34:29Z",
         "updated_at": "2026-07-13T21:34:29Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_Default-IS-07-13.bin"
@@ -42224,7 +42224,7 @@
         "state": "uploaded",
         "size": 186172,
         "digest": "sha256:16418dbd0767fbeea45a03eb0c2e1078a929cb28ba76191524238e7823c63d39",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2026-07-13T21:40:43Z",
         "updated_at": "2026-07-13T21:40:44Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_Default-IS-MPC-07-13.bin"
@@ -42260,7 +42260,7 @@
         "state": "uploaded",
         "size": 179904,
         "digest": "sha256:d901f4b63f35e857aabea88a33a4c1ef34a4dc2a5e498bb69578c84166b42c3f",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T21:40:38Z",
         "updated_at": "2026-07-13T21:40:39Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_Default-MPC-07-13.bin"
@@ -42296,7 +42296,7 @@
         "state": "uploaded",
         "size": 199612,
         "digest": "sha256:755f0eb701104a4be1f23f903a614b26793b7ac43f14226b789967725a1b6b80",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2026-07-13T21:45:21Z",
         "updated_at": "2026-07-13T21:45:22Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_427_MM-ProUI-EX-07-13.bin"
@@ -44024,7 +44024,7 @@
         "state": "uploaded",
         "size": 217740,
         "digest": "sha256:0eb2cf9da931b4fb2b7f07965930b78e10d9de31559fa26c834b56338a79250e",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2026-07-13T21:34:08Z",
         "updated_at": "2026-07-13T21:34:09Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_E3-Free-runs_MM-ProUI-EX-07-13.bin"
@@ -44888,7 +44888,7 @@
         "state": "uploaded",
         "size": 241124,
         "digest": "sha256:44044424b9551bb13479de6bf0de8f2128ce5e1681bce08b53df84aa37313529",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2026-07-13T21:52:00Z",
         "updated_at": "2026-07-13T21:52:00Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_E3-Free-runs_UBL-ProUI-EX-07-13.bin"
@@ -45032,7 +45032,7 @@
         "state": "uploaded",
         "size": 207684,
         "digest": "sha256:255cc0fed95a02872b153ad505ba24c9b91b1a206ea82e2b616177dfb2fce260",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2026-07-13T22:44:29Z",
         "updated_at": "2026-07-13T22:44:30Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_GD32_422_BLT-ProUI-EX-07-13.bin"
@@ -45608,7 +45608,7 @@
         "state": "uploaded",
         "size": 193812,
         "digest": "sha256:ea4ebb4a63c7f7e44254ffba7f6af89aa652e024a19e27310a386a6cf38c00f7",
-        "download_count": 3,
+        "download_count": 4,
         "created_at": "2026-07-13T21:38:22Z",
         "updated_at": "2026-07-13T21:38:23Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_GD32_422_MM-ProUI-EX-07-13.bin"
@@ -47048,7 +47048,7 @@
         "state": "uploaded",
         "size": 217360,
         "digest": "sha256:5837e1b371343cdecc5283d2bc9a4b1ab165c57b9f1593285aa0c3479462ac75",
-        "download_count": 2,
+        "download_count": 4,
         "created_at": "2026-07-13T22:27:21Z",
         "updated_at": "2026-07-13T22:27:21Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_GD32_422_UBL-ProUI-EX-07-13.bin"
@@ -49388,7 +49388,7 @@
         "state": "uploaded",
         "size": 226124,
         "digest": "sha256:506cb2a16092f17cf28d7a0735b1081c587b5b0b43a59da64533dfdd759f63d6",
-        "download_count": 3,
+        "download_count": 5,
         "created_at": "2026-07-13T21:43:15Z",
         "updated_at": "2026-07-13T21:43:15Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_SKR-Mini-E3-V2_MM-ProUI-EX-07-13.bin"
@@ -51008,7 +51008,7 @@
         "state": "uploaded",
         "size": 287328,
         "digest": "sha256:218ef64ff8009844f10fbd0e03b211cd84d82f7972930a5d857e9ad821a0a1df",
-        "download_count": 5,
+        "download_count": 6,
         "created_at": "2026-07-13T21:57:53Z",
         "updated_at": "2026-07-13T21:57:53Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/Ender_SKR-Mini-E3-V3_UBL-ProUI-EX-IS-MPC-07-13.bin"
@@ -51548,7 +51548,7 @@
         "state": "uploaded",
         "size": 192304,
         "digest": "sha256:da4cba5f23eb6e091216a293084628eaf212ab1a634d29440a8b0810007d37fa",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2026-07-13T21:32:25Z",
         "updated_at": "2026-07-13T21:32:25Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/TJC-Ender-S1-F4_SPRT13_BMP_UBL-ProUI-EX-MPC-07-13.bin"
@@ -51620,7 +51620,7 @@
         "state": "uploaded",
         "size": 194540,
         "digest": "sha256:aaa2dc99714d685e53ba4eed089b3e10b97824ed93ad164ec20b365e638fff6c",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2026-07-13T21:37:29Z",
         "updated_at": "2026-07-13T21:37:30Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/TJC-Ender-S1-F4_SPRT13_UBL-ProUI-EX-MPC-07-13.bin"
@@ -52232,7 +52232,7 @@
         "state": "uploaded",
         "size": 199528,
         "digest": "sha256:82b3f9812a1638d89ca8994e05e991059533ffa4c7965e947b3a095320ea27d7",
-        "download_count": 6,
+        "download_count": 7,
         "created_at": "2026-07-13T21:47:33Z",
         "updated_at": "2026-07-13T21:47:33Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/TJC-Ender_422_MM-ProUI-EX-07-13.bin"
@@ -53672,7 +53672,7 @@
         "state": "uploaded",
         "size": 224096,
         "digest": "sha256:4e6814879428f7e2800e5f40afb994b76a34dafeb04d7bb355efe299b7418359",
-        "download_count": 3,
+        "download_count": 5,
         "created_at": "2026-07-13T22:32:08Z",
         "updated_at": "2026-07-13T22:32:08Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/TJC-Ender_422_UBL-ProUI-EX-07-13.bin"
@@ -55904,7 +55904,7 @@
         "state": "uploaded",
         "size": 236180,
         "digest": "sha256:5ab050ac35382a5d37602ced8c41e361dadb5237016844d0fb27bc062ca280c6",
-        "download_count": 9,
+        "download_count": 13,
         "created_at": "2026-07-13T22:06:18Z",
         "updated_at": "2026-07-13T22:06:18Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/TJC-Ender_427_UBL-ProUI-EX-IS-MPC-07-13.bin"
@@ -57704,7 +57704,7 @@
         "state": "uploaded",
         "size": 193796,
         "digest": "sha256:033f90a58fcda9d69513692b676b5fe20f0b1a2020a5b25dba5f123b081a02e5",
-        "download_count": 4,
+        "download_count": 6,
         "created_at": "2026-07-13T21:47:19Z",
         "updated_at": "2026-07-13T21:47:19Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-7-ender3/TJC-Ender_GD32_422_MM-ProUI-EX-07-13.bin"
@@ -71619,7 +71619,7 @@
         "state": "uploaded",
         "size": 215692,
         "digest": "sha256:ed4e91327dcd8234d262263250738de44bbc5a61e41a49c0811a717e285e7f2c",
-        "download_count": 28,
+        "download_count": 29,
         "created_at": "2026-04-18T06:41:38Z",
         "updated_at": "2026-04-18T06:41:38Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-4/Aquila_N32_BLT-04-18.bin"
@@ -108756,7 +108756,7 @@
         "state": "uploaded",
         "size": 193780,
         "digest": "sha256:b23d0a3beaec9c91c7903cb80dcd6bd1e528b81ac4b065fb2a73967333e215fa",
-        "download_count": 23,
+        "download_count": 24,
         "created_at": "2026-04-18T04:14:31Z",
         "updated_at": "2026-04-18T04:14:31Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3h-4-ender3/Ender_GD32_422_MM-ProUI-EX-04-18.bin"
@@ -158978,7 +158978,7 @@
         "state": "uploaded",
         "size": 215532,
         "digest": "sha256:2b361a8c0d27058f7abccf1b454915c64503ebf79cc57617c5f5504b8ffcb197",
-        "download_count": 30,
+        "download_count": 31,
         "created_at": "2025-12-26T07:44:45Z",
         "updated_at": "2025-12-26T07:44:45Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3g-12/Aquila_N32_BLT-12-26.bin"
@@ -189491,7 +189491,7 @@
         "state": "uploaded",
         "size": 213856,
         "digest": "sha256:62214c07930feee6c906c06f6a28037a883fa43d58f76fa7a3e109a30769bc71",
-        "download_count": 4,
+        "download_count": 5,
         "created_at": "2025-11-23T08:37:40Z",
         "updated_at": "2025-11-23T08:37:40Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3g-11-1/Aquila_422_BLT-ProUI-EX-11-23.bin"
@@ -197915,7 +197915,7 @@
         "state": "uploaded",
         "size": 216724,
         "digest": "sha256:0e08b0148d20549df073f0d73037f38335fa030987bd91c6d69855690d1005a4",
-        "download_count": 2,
+        "download_count": 3,
         "created_at": "2025-11-23T09:03:08Z",
         "updated_at": "2025-11-23T09:03:08Z",
         "browser_download_url": "https://github.com/classicrocker883/MRiscoCProUI/releases/download/2.1.3g-11-1/Aquila_N32_BLT-11-23.bin"
